@@ -1,0 +1,173 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../wysiwyg-tool-behavior.html">
+<link rel="import" href="../wysiwyg-tool-styles.html">
+<dom-module id="wysiwyg-tool-insert-ordered-list">
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<style>
+			paper-icon-button[disabled] {
+				color: inherit;
+			}
+		</style>
+		<paper-icon-button icon="editor:format-list-numbered" disabled="[[disabled]]"></paper-icon-button>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-insert-ordered-list',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				ready: function () {
+					this._setCommand('insertOrderedList');
+				}
+			}
+		);
+	</script>
+</dom-module>
+<dom-module id="wysiwyg-tool-insert-unordered-list">
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<style>
+			paper-icon-button[disabled] {
+				color: inherit;
+			}
+		</style>
+		<paper-icon-button icon="editor:format-list-bulleted" disabled="[[disabled]]"></paper-icon-button>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-insert-unordered-list',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				ready: function () {
+					this._setCommand('insertUnorderedList');
+				}
+			}
+		);
+	</script>
+</dom-module>
+<dom-module id="wysiwyg-tool-insert-list">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+
+			paper-tooltip[disabled] {
+				visibility: hidden;
+			}
+		</style>
+		<div class="layout horizontal">
+			<wysiwyg-tool-insert-ordered-list id="ordered"></wysiwyg-tool-insert-ordered-list>
+			<wysiwyg-tool-insert-unordered-list id="unordered"></wysiwyg-tool-insert-unordered-list>
+		</div>
+		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+shift+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" disabled$="[[disabled]]">Ctrl + Shift + L</paper-tooltip>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-insert-list',
+				properties: {
+					canRedo: {
+						type: Boolean,
+						value: false,
+						readOnly: true,
+						observer: '_canRedoChanged'
+					},
+					canUndo: {
+						type: Boolean,
+						value: false,
+						readOnly: true,
+						observer: '_canUndoChanged'
+					},
+					disabled: {
+						type: Boolean,
+						value: true,
+						computed: '_computeDisabled(range0.*, value, commonAncestorPath)',
+						reflectToAttribute: true
+					},
+					keysTarget: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_keysTargetChanged'
+					},
+					range0: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_range0Changed'
+					},
+					selectedLink: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_selectedLinkChanged'
+					},
+					value: {
+						type: String,
+						value: '',
+						readOnly: true,
+						observer: '_valueChanged'
+					},
+					commonAncestorPath: {
+						type: Array,
+						value: null,
+						readOnly: true,
+						observer: '_commonAncestorPathChanged'
+					}
+				},
+				_canRedoChanged: function () {
+					this.$.ordered._setCanRedo(this.canRedo);
+					this.$.unordered._setCanRedo(this.canRedo);
+				},
+				_canUndoChanged: function () {
+					this.$.ordered._setCanUndo(this.canUndo);
+					this.$.unordered._setCanUndo(this.canUndo);
+				},
+				_commonAncestorPathChanged: function () {
+					this.$.ordered._setCommonAncestorPath(this.commonAncestorPath);
+					this.$.unordered._setCommonAncestorPath(this.commonAncestorPath);
+				},
+				_computeDisabled: function () {
+					if (!this.range0) return true;
+					return !document.queryCommandEnabled('insertOrderedList');
+				},
+				_keysPressed: function (event, detail) {
+					if (this.$.ordered.queryCommandState()) {
+						this.$.unordered.execCommand(event);
+					} else if (this.$.unordered.queryCommandState()) {
+						this.$.unordered.execCommand(event);
+					} else {
+						this.$.ordered.execCommand(event);
+					}
+				},
+				_keysTargetChanged: function () {
+					this.$.ordered._setKeysTarget(this.keysTarget);
+					this.$.unordered._setKeysTarget(this.keysTarget);
+				},
+				_range0Changed: function () {
+					this.$.ordered._setRange0(this.range0);
+					this.$.unordered._setRange0(this.range0);
+				},
+				_selectedLinkChanged: function () {
+					this.$.ordered._setSelectedLink(this.selectedLink);
+					this.$.unordered._setSelectedLink(this.selectedLink);
+				},
+				_valueChanged: function () {
+					this.$.ordered._setValue(this.value);
+					this.$.unordered._setValue(this.value);
+				}
+			}
+		);
+	</script>
+</dom-module>

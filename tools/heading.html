@@ -1,0 +1,81 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../font-roboto/roboto.html">
+<link rel="import" href="../wysiwyg-tool-behavior.html">
+<link rel="import" href="../wysiwyg-tool-styles.html">
+<dom-module id="wysiwyg-tool-heading">
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<style>
+			:host {
+				font-family: Roboto;
+			}
+
+			paper-button {
+				color: inherit!important;
+				font-weight: bold;
+				background: transparent;
+				min-width: 40px;
+				border-radius: 50%;
+				line-height: 24px;
+				font-size: 18px;
+				margin: 0;
+				padding: 8px;
+			}
+
+			paper-button[disabled] {
+				color: inherit!important;
+				background: transparent;
+			}
+		</style>
+		<paper-button disabled="[[disabled]]" id="button">H[[level]]</paper-button>
+		<paper-tooltip id="tooltip" for="button">Ctrl + [[level]]</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+[[level]]" on-keys-pressed="execCommand"></iron-a11y-keys>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-heading',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				properties: {
+					level: {
+						type: Number,
+						value: 1,
+						observer: '_levelChanged'
+					}
+				},
+				ready: function () {
+					this._setCommand('formatBlock');
+				},
+				execCommand: function () {
+					if (this.disabled || !this.range0) return false;
+
+					if (!this.active) {
+						document.execCommand('formatBlock', null, 'H' + this.level);
+					} else {
+						document.execCommand('formatBlock', null, 'P');
+					}
+				},
+				queryCommandState: function () {
+					if (this.range0 && this.commonAncestorPath) {
+						for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+							if (this.commonAncestorPath[i].tagName === 'H' + this.level) return true;
+						}
+					}
+
+					return false;
+				},
+				_levelChanged: function () {
+					if ([1, 2, 3, 4, 5, 6].indexOf(this.level) === -1) {
+						this.level = 1;
+					}
+				}
+			}
+		);
+	</script>
+</dom-module>

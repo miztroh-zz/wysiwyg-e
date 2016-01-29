@@ -1,0 +1,114 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../../paper-material/paper-material.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../wysiwyg-tool-behavior.html">
+<link rel="import" href="../wysiwyg-tool-styles.html">
+<dom-module id="wysiwyg-tool-create-link-and-unlink">
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<style>
+			paper-icon-button[disabled] {
+				color: inherit;
+			}
+
+			paper-button {
+				color: #2A9AF2;
+			}
+
+			#remove {
+				color: #d23f31;
+			}
+
+			paper-input {
+				--paper-input-container-focus-color: #2a9af2;
+				--paper-input-container-invalid-color: #d23f31;
+			}
+		</style>
+		<paper-icon-button icon="editor:insert-link" disabled="[[disabled]]" id="button"></paper-icon-button>
+		<paper-tooltip id="tooltip" for="button">Ctrl + K</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+k" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<iron-dropdown id="dropdown" on-iron-overlay-closed="_ironOverlayClosed">
+			<paper-material class="dropdown-content" style="padding: 8px 16px 18px 16px; background: white;">
+				<paper-input label="URL" always-float-label value="{{url}}"></paper-input>
+				<div class="horizontal layout">
+					<paper-button hidden$="[[!selectedLink]]" id="remove">Remove</paper-button>
+					<div class="flex"></div>
+					<paper-button id="updateInsert">
+						<span hidden$="[[!selectedLink]]">Update</span>
+						<span hidden$="[[selectedLink]]">Insert</span>
+					</paper-button>
+				</div>
+			</paper-material>
+		</iron-dropdown>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-create-link-and-unlink',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				properties: {
+					url: {
+						type: String
+					}
+				},
+				execCommand: function (event) {
+					if (this.disabled || !this.range0) return;
+					var target = Polymer.dom(event).rootTarget;
+
+					if (this.$.updateInsert.contains(target)) {
+						var url = this.url;
+						this.$.dropdown.opened = false;
+
+						this.async(
+							function () {
+								document.execCommand('createLink', false, url);
+							},
+							10
+						);
+					} else if (this.$.remove.contains(target)) {
+						this.$.dropdown.opened = false;
+
+						this.async(
+							function () {
+								document.execCommand('unlink');
+							},
+							10
+						);
+					} else {
+						this.$.dropdown.opened = true;
+					}
+				},
+				ready: function () {
+					this.$.dropdown.positionTarget = this.$.button;
+				},
+				queryCommandEnabled: function () {
+					if (!this.range0) return false;
+					return !!this.range0.toString().length;
+				},
+				queryCommandState: function () {
+					if (!this.range0 || !this.selectedLink) return false;
+					return this.selectedLink.textContent === this.range0.toString();
+				},
+				_ironOverlayClosed: function (event) {
+					this.url = '';
+					this.fire('restore-selection');
+				},
+				_selectedLinkChanged: function () {
+					WYSIWYG.ToolBehavior._selectedLinkChanged.apply(this, arguments);
+
+					if (this.selectedLink) {
+						this.url = this.selectedLink.href;
+					}
+				}
+			}
+		);
+	</script>
+</dom-module>

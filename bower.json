@@ -1,0 +1,39 @@
+{
+  "name": "wysiwyg-editor",
+  "homepage": "https://github.com/miztroh/wysiwyg-editor",
+  "authors": [
+    "Jonathan Cox <miztroh@gmail.com>"
+  ],
+  "description": "A what-you-see-is-what-you-get editor created with Polymer",
+  "main": "wysiwyg-editor.html",
+  "moduleType": [],
+  "keywords": [
+    "polymer",
+    "web-components",
+    "wysiwyg",
+    "editor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "polymer/polymer#latest",
+    "font-roboto": "PolymerElements/font-roboto#latest",
+    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#latest",
+    "iron-dropdown": "PolymerElements/iron-dropdown#latest",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#latest",
+    "iron-icons": "PolymerElements/iron-icons#latest",
+    "paper-button": "PolymerElements/paper-button#latest",
+    "paper-icon-button": "PolymerElements/paper-icon-button#latest",
+    "paper-input": "PolymerElements/paper-input#latest",
+    "paper-material": "PolymerElements/paper-material#latest",
+    "paper-tooltip": "PolymerElements/paper-tooltip#latest",
+    "selection-manager": "miztroh/selection-manager#latest",
+    "undo-manager": "miztroh/undo-manager#latest"
+  }
+}

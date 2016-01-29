@@ -1,0 +1,128 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../undo-manager/behavior.html">
+<link rel="import" href="../selection-manager/behavior.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../font-roboto/roboto.html">
+<dom-module id="wysiwyg-editor">
+	<template>
+		<style>
+			:host {
+				display: block;
+				position: relative;
+				overflow-y: auto;
+				font-family: Roboto;
+			}
+
+			#toolbar {
+				height: auto;
+				--paper-toolbar-content: {
+					height: auto!important;
+					padding: 0;
+				};
+				background: #2A9AF2;
+			}
+
+			#toolbarLayout {
+				@apply(--layout-horizontal);
+				@apply(--layout-wrap);
+				padding: 16px;
+			}
+
+			#editable {
+				padding: 20px;
+				outline: none;
+			}
+
+			#editable :first-child {
+				margin-top: 0;
+			}
+
+			#editable :last-child {
+				margin-bottom: 0;
+			}
+
+			#editable ol,
+			#editable ul {
+				padding-left: 22px;
+			}
+
+			#editable a {
+				pointer-events: none;
+			}
+
+			#editable ::selection {
+				color: white;
+				background: #2A9AF2;
+			}
+		</style>
+		<div class="fit vertical layout">
+			<paper-toolbar id="toolbar" on-tap="updateTools">
+				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
+					<content select=".wysiwyg-tool" id="tools"></content>
+				</div>
+			</paper-toolbar>
+			<div id="editable" contenteditable class="flex"></div>
+		</div>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-editor',
+				behaviors: [
+					UndoManagerBehavior,
+					SelectionManagerBehavior
+				],
+				listeners: {
+					'restore-selection': 'restoreSelection',
+				},
+				observers: [
+					'updateTools(range0, selectedLink, canRedo, canUndo, value, commonAncestorPath)'
+				],
+				properties: {
+					target: {
+						type: Object,
+						value: function () {
+							return this.$.editable;
+						},
+						observer: '_targetChanged'
+					}
+				},
+				ready: function () {
+					//Disable this until https://github.com/Polymer/polymer/issues/3336 is resolved
+					//this.scopeSubtree(this.$.editable, true);
+
+					Polymer.dom(this.$.tools).observeNodes(
+						function () {
+							this.updateTools();
+						}.bind(this)
+					);
+				},
+				disconnect: function () {
+					UndoManagerBehavior.disconnect.apply(this, arguments);
+					SelectionManagerBehavior.disconnect.apply(this, arguments);
+				},
+				observe: function () {
+					UndoManagerBehavior.observe.apply(this, arguments);
+					SelectionManagerBehavior.observe.apply(this, arguments);
+				},
+				updateTools: function (range0, selectedLink, canRedo, canUndo, value, commonAncestorPath) {
+					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
+
+					for (var i = 0; i < tools.length; i += 1) {
+						tools[i]._setRange0(this.range0);
+						tools[i]._setSelectedLink(this.selectedLink);
+						tools[i]._setCanRedo(this.canRedo);
+						tools[i]._setCanUndo(this.canUndo);
+						tools[i]._setValue(this.value);
+						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
+						tools[i]._setKeysTarget(this.$.editable);
+					}
+				},
+				_targetChanged: function () {
+					UndoManagerBehavior._targetChanged.apply(this, arguments);
+					SelectionManagerBehavior._targetChanged.apply(this, arguments);
+				}
+			}
+		);
+	</script>
+</dom-module>
