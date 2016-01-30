@@ -98,12 +98,12 @@
 					);
 				},
 				disconnect: function () {
-					UndoManagerBehavior.disconnect.apply(this, arguments);
-					SelectionManagerBehavior.disconnect.apply(this, arguments);
+					UndoMgrBehavior.disconnect.apply(this, arguments);
+					SelectionMgrBehavior.disconnect.apply(this, arguments);
 				},
 				observe: function () {
-					UndoManagerBehavior.observe.apply(this, arguments);
-					SelectionManagerBehavior.observe.apply(this, arguments);
+					UndoMgrBehavior.observe.apply(this, arguments);
+					SelectionMgrBehavior.observe.apply(this, arguments);
 				},
 				updateTools: function (range0, selectedLink, canRedo, canUndo, value, commonAncestorPath) {
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
@@ -119,8 +119,8 @@
 					}
 				},
 				_targetChanged: function () {
-					UndoManagerBehavior._targetChanged.apply(this, arguments);
-					SelectionManagerBehavior._targetChanged.apply(this, arguments);
+					UndoMgrBehavior._targetChanged.apply(this, arguments);
+					SelectionMgrBehavior._targetChanged.apply(this, arguments);
 				}
 			}
 		);
