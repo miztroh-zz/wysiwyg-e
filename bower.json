@@ -1,11 +1,11 @@
 {
-  "name": "wysiwyg-editor",
-  "homepage": "https://github.com/miztroh/wysiwyg-editor",
+  "name": "wysiwyg-e",
+  "homepage": "https://github.com/miztroh/wysiwyg-e",
   "authors": [
     "Jonathan Cox <miztroh@gmail.com>"
   ],
   "description": "A what-you-see-is-what-you-get editor created with Polymer",
-  "main": "wysiwyg-editor.html",
+  "main": "wysiwyg-e.html",
   "moduleType": [],
   "keywords": [
     "polymer",
@@ -33,7 +33,7 @@
     "paper-input": "PolymerElements/paper-input#latest",
     "paper-material": "PolymerElements/paper-material#latest",
     "paper-tooltip": "PolymerElements/paper-tooltip#latest",
-    "selection-manager": "miztroh/selection-manager#latest",
-    "undo-manager": "miztroh/undo-manager#latest"
+    "selection-mgr": "miztroh/selection-mgr#latest",
+    "undo-mgr": "miztroh/undo-mgr#latest"
   }
 }
