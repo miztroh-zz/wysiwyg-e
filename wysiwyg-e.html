@@ -1,9 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../undo-manager/behavior.html">
-<link rel="import" href="../selection-manager/behavior.html">
+<link rel="import" href="../undo-mgr/behavior.html">
+<link rel="import" href="../selection-mgr/behavior.html">
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../font-roboto/roboto.html">
-<dom-module id="wysiwyg-editor">
+<dom-module id="wysiwyg-e">
 	<template>
 		<style>
 			:host {
@@ -67,10 +67,10 @@
 	<script>
 		Polymer(
 			{
-				is: 'wysiwyg-editor',
+				is: 'wysiwyg-e',
 				behaviors: [
-					UndoManagerBehavior,
-					SelectionManagerBehavior
+					UndoMgrBehavior,
+					SelectionMgrBehavior
 				],
 				listeners: {
 					'restore-selection': 'restoreSelection',
