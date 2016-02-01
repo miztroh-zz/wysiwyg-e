@@ -1,0 +1,78 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../web-component-tester/browser.js"></script>
+		<link rel="import" href="../wysiwyg-e.html">
+		<link rel="import" href="../tools/bold.html">
+	</head>
+	<body>
+		<test-fixture id="wysiwyg-e-fixture">
+			<template>
+				<wysiwyg-e value="<p>Hello, world!</p>">
+					<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+				</wysiwyg-e>
+			</template>
+		</test-fixture>
+		<script>
+			suite(
+				'bold',
+				function () {
+					var wysiwygE, tool;
+
+					setup(
+						function() {
+							wysiwygE = fixture('wysiwyg-e-fixture');
+							tool = Polymer.dom(wysiwygE).querySelector('wysiwyg-tool-bold');
+						}
+					);
+
+					test(
+						'execCommand',
+						function (done) {
+						  wysiwygE.selectAll();
+
+              wysiwygE.async(
+                function () {
+    						  tool.execCommand();
+    
+    						  wysiwygE.async(
+    						    function () {
+    						      assert.equal(wysiwygE.value.replace(' class="style-scope wysiwyg-e"', ''), '<p><b>Hello, world!</b></p>');
+    						      done();
+    						    },
+    						    100
+    						  );
+                },
+                100
+              );
+						}
+					);
+
+					test(
+						'click event',
+						function (done) {
+						  wysiwygE.selectAll();
+
+              wysiwygE.async(
+                function () {
+    						  tool.dispatchEvent(new Event('click'));
+    
+    						  wysiwygE.async(
+    						    function () {
+    						      assert.equal(wysiwygE.value.replace(' class="style-scope wysiwyg-e"', ''), '<p><b>Hello, world!</b></p>');
+    						      done();
+    						    },
+    						    1000
+    						  );
+                },
+                100
+              );
+						}
+					);
+				}
+			);
+		</script>
+	</body>
+</html>

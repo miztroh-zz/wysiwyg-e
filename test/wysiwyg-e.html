@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../web-component-tester/browser.js"></script>
+		<link rel="import" href="../wysiwyg-e.html">
+	</head>
+	<body>
+		<test-fixture id="wysiwyg-e-fixture">
+			<template>
+				<wysiwyg-e value="<p>Hello, world!</p>"></wysiwyg-e>
+			</template>
+		</test-fixture>
+		<script>
+			suite(
+				'wysiwyg-e',
+				function () {
+					var wysiwygE;
+
+					setup(
+						function() {
+							wysiwygE = fixture('wysiwyg-e-fixture');
+						}
+					);
+
+					test(
+						'initial content',
+						function (done) {
+						  wysiwygE.async(
+						    function () {
+						      assert.equal(wysiwygE.value.replace(' class="style-scope wysiwyg-e"', ''), '<p>Hello, world!</p>');
+						      done();
+						    },
+						    100
+						  );
+						}
+					);
+				}
+			);
+		</script>
+	</body>
+</html>
