@@ -105,7 +105,7 @@
 					UndoMgrBehavior.observe.apply(this, arguments);
 					SelectionMgrBehavior.observe.apply(this, arguments);
 				},
-				updateTools: function (range0, selectedLink, canRedo, canUndo, value, commonAncestorPath) {
+				updateTools: function () {
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
 
 					for (var i = 0; i < tools.length; i += 1) {
