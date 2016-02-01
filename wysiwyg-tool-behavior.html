@@ -40,7 +40,9 @@
 			},
 			keysTarget: {
 				type: Object,
-				value: null,
+				value: function () {
+				  return this;
+				},
 				readOnly: true,
 				observer: '_keysTargetChanged'
 			},
@@ -79,7 +81,12 @@
 		},
 		queryCommandState: function () {
 			if (!this.range0) return false;
-			return document.queryCommandState(this.command);
+
+			try {
+			  return document.queryCommandState(this.command);
+			} catch (ignore) {
+			  return false;
+			}
 		},
 		_activeChanged: function () {},
 		_canRedoChanged: function () {},
