@@ -3,7 +3,7 @@
 
 	WYSIWYG.ToolBehavior = {
 		listeners: {
-			click: 'execCommand'
+			click: '_click'
 		},
 		properties: {
 			active: {
@@ -91,6 +91,10 @@
 		_activeChanged: function () {},
 		_canRedoChanged: function () {},
 		_canUndoChanged: function () {},
+		_click: function () {
+		  this.fire('restore-selection');
+		  this.async(this.execCommand, 10);
+		},
 		_commandChanged: function () {},
 		_commonAncestorPathChanged: function () {},
 		_computeDisabled: function () {
