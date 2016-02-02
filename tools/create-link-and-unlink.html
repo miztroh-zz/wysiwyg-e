@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../../paper-material/paper-material.html">
@@ -17,12 +18,16 @@
 				color: inherit;
 			}
 
-			paper-button {
-				color: #2A9AF2;
+      #close {
+        color: rgba(0, 0, 0, 0.5)!important;
+      }
+
+			#updateInsert {
+				color: #2A9AF2!important;
 			}
 
 			#remove {
-				color: #d23f31;
+				color: #d23f31!important;
 			}
 
 			paper-input {
@@ -33,16 +38,16 @@
 		<paper-icon-button icon="editor:insert-link" disabled="[[disabled]]" id="button"></paper-icon-button>
 		<paper-tooltip id="tooltip" for="button">Ctrl + K</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+k" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<iron-a11y-keys id="a11y2" target="[[keysTarget]]" keys="esc" on-keys-pressed="_close"></iron-a11y-keys>
 		<iron-dropdown id="dropdown" on-iron-overlay-closed="_ironOverlayClosed" horizontal-align="right">
 			<paper-material class="dropdown-content" style="padding: 8px 16px 18px 16px; background: white;">
 				<paper-input label="URL" always-float-label value="{{url}}"></paper-input>
 				<div class="horizontal layout">
-					<paper-button hidden$="[[!selectedLink]]" id="remove">Remove</paper-button>
+					<paper-icon-button id="close" icon="close"></paper-icon-button>
 					<div class="flex"></div>
-					<paper-button id="updateInsert">
-						<span hidden$="[[!selectedLink]]">Update</span>
-						<span hidden$="[[selectedLink]]">Insert</span>
-					</paper-button>
+					<paper-icon-button hidden$="[[!selectedLink]]" id="remove" icon="delete"></paper-icon-button>
+					<div class="flex"></div>
+					<paper-icon-button id="updateInsert" icon="check"></paper-icon-button>
 				</div>
 			</paper-material>
 		</iron-dropdown>
@@ -82,8 +87,10 @@
 							},
 							10
 						);
-					} else {
-						this.$.dropdown.opened = true;
+					} else if (this.$.close.contains(target)) {
+					  this.$.dropdown.opened = false;
+					} else if (!this.$.dropdown.contains(target)) {
+						this.$.dropdown.toggle();
 					}
 				},
 				ready: function () {
@@ -100,6 +107,9 @@
 				_ironOverlayClosed: function (event) {
 					this.url = '';
 					this.fire('restore-selection');
+				},
+				_close: function () {
+				  this.$.dropdown.opened = false;
 				},
 				_selectedLinkChanged: function () {
 					WYSIWYG.ToolBehavior._selectedLinkChanged.apply(this, arguments);
