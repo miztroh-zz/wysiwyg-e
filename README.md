@@ -27,7 +27,7 @@ Usage:
 ```
 
 Demo:
-http://miztroh.github.io/bower_components/wysiwyg-e/demo/
+https://miztroh.github.io/bower_components/wysiwyg-e/demo/
 
 Installation:
 ``bower install wysiwyg-e``
