@@ -3,6 +3,7 @@
 <link rel="import" href="../selection-mgr/behavior.html">
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <dom-module id="wysiwyg-e">
 	<template>
 		<style>
@@ -57,12 +58,14 @@
 			}
 		</style>
 		<div class="fit vertical layout">
-			<paper-toolbar id="toolbar" on-tap="updateTools">
-				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
-					<content select=".wysiwyg-tool" id="tools"></content>
-				</div>
-			</paper-toolbar>
-			<div id="editable" contenteditable class="flex"></div>
+		  <paper-header-panel class="flex" mode="waterfall">
+  			<paper-toolbar id="toolbar" on-tap="updateTools">
+  				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
+  					<content select=".wysiwyg-tool" id="tools"></content>
+  				</div>
+  			</paper-toolbar>
+			  <div id="editable" contenteditable></div>
+		  </paper-header-panel>
 		</div>
 	</template>
 	<script>
