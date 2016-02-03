@@ -59,12 +59,12 @@
 		</style>
 		<div class="fit vertical layout">
 		  <paper-header-panel class="flex" mode="waterfall">
-  			<paper-toolbar id="toolbar" on-tap="updateTools">
+  			<paper-toolbar id="toolbar" on-tap="updateTools" hidden$="[[_hideToolbar(readOnly, hideToolbar)]]">
   				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
   					<content select=".wysiwyg-tool" id="tools"></content>
   				</div>
   			</paper-toolbar>
-			  <div id="editable" contenteditable></div>
+			  <div id="editable" contenteditable$="[[!readOnly]]"></div>
 		  </paper-header-panel>
 		</div>
 	</template>
@@ -83,6 +83,14 @@
 					'updateTools(range0, selectedLink, canRedo, canUndo, value, commonAncestorPath)'
 				],
 				properties: {
+				  hideToolbar: {
+				    type: Boolean,
+				    value: false
+				  },
+				  readOnly: {
+				    type: Boolean,
+				    value: false
+				  },
 					target: {
 						type: Object,
 						value: function () {
@@ -92,9 +100,6 @@
 					}
 				},
 				ready: function () {
-					//Disable this until https://github.com/Polymer/polymer/issues/3336 is resolved
-					//this.scopeSubtree(this.$.editable, true);
-
 					Polymer.dom(this.$.tools).observeNodes(
 						function () {
 							this.updateTools();
@@ -109,6 +114,14 @@
 					UndoMgrBehavior.observe.apply(this, arguments);
 					SelectionMgrBehavior.observe.apply(this, arguments);
 				},
+    		redo: function () {
+    		  if (this.readOnly) return false;
+    		  return UndoMgrBehavior.redo.apply(this, arguments);
+    		},
+    		undo: function () {
+    		  if (this.readOnly) return false;
+    		  return UndoMgrBehavior.undo.apply(this, arguments);
+    		},
 				updateTools: function () {
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
 
@@ -121,6 +134,9 @@
 						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
 						tools[i]._setKeysTarget(this.$.editable);
 					}
+				},
+				_hideToolbar: function () {
+				  return this.hideToolbar || this.readOnly;
 				},
 				_targetChanged: function () {
 					UndoMgrBehavior._targetChanged.apply(this, arguments);
