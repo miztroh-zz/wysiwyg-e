@@ -58,7 +58,7 @@
 			}
 		</style>
 		<div class="fit vertical layout">
-		  <paper-header-panel class="flex" mode="waterfall">
+		  <paper-header-panel class="flex" mode="[[_panelMode(readOnly, hideToolbar)]]">
   			<paper-toolbar id="toolbar" on-tap="updateTools" hidden$="[[_hideToolbar(readOnly, hideToolbar)]]">
   				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
   					<content select=".wysiwyg-tool" id="tools"></content>
@@ -137,6 +137,10 @@
 				},
 				_hideToolbar: function () {
 				  return this.hideToolbar || this.readOnly;
+				},
+				_panelMode: function () {
+				  if (this.hideToolbar || this.readOnly) return 'seamed';
+				  return 'waterfall';
 				},
 				_targetChanged: function () {
 					UndoMgrBehavior._targetChanged.apply(this, arguments);
