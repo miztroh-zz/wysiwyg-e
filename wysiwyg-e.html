@@ -118,6 +118,35 @@
     		  if (this.readOnly) return false;
     		  return UndoMgrBehavior.redo.apply(this, arguments);
     		},
+    		sanitize: function (html) {
+    		  html = UndoMgrBehavior.sanitize.apply(this, arguments);
+    		  var div = document.createElement('div'), i;
+    		  div.innerHTML = html;
+
+          //Strip classes
+          //Pending https://github.com/Polymer/polymer/issues/3357
+          /*var classes = div.querySelectorAll('[class]');
+
+          for (i = 0; i < classes.length; i += 1) {
+            classes[i].removeAttribute('class');
+          }*/
+
+          //Replace strong with b
+          var strong = div.querySelectorAll('strong');
+
+          for (i = 0; i < strong.length; i += 1) {
+            strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
+          }
+
+          //Replace em with i
+          var em = div.querySelectorAll('em');
+
+          for (i = 0; i < em.length; i += 1) {
+            em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
+          }
+
+    		  return div.innerHTML;
+    		},
     		undo: function () {
     		  if (this.readOnly) return false;
     		  return UndoMgrBehavior.undo.apply(this, arguments);
