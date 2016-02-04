@@ -91,9 +91,15 @@
 		_activeChanged: function () {},
 		_canRedoChanged: function () {},
 		_canUndoChanged: function () {},
-		_click: function () {
+		_click: function (event) {
 		  this.fire('restore-selection');
-		  this.async(this.execCommand, 10);
+
+		  this.async(
+		    function () {
+		      this.execCommand(event);
+		    },
+		    10
+		  );
 		},
 		_commandChanged: function () {},
 		_commonAncestorPathChanged: function () {},

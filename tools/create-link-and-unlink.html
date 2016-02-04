@@ -41,7 +41,7 @@
 		<iron-a11y-keys id="a11y2" target="[[keysTarget]]" keys="esc" on-keys-pressed="_close"></iron-a11y-keys>
 		<iron-dropdown id="dropdown" on-iron-overlay-closed="_ironOverlayClosed" horizontal-align="right">
 			<paper-material class="dropdown-content" style="padding: 8px 16px 18px 16px; background: white;">
-				<paper-input label="URL" always-float-label value="{{url}}"></paper-input>
+				<paper-input label="URL" always-float-label value="{{url}}" id="url" error-message="Invalid format"></paper-input>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="close"></paper-icon-button>
 					<div class="flex"></div>
@@ -70,14 +70,39 @@
 
 					if (this.$.updateInsert.contains(target)) {
 						var url = this.url;
-						this.$.dropdown.opened = false;
 
-						this.async(
-							function () {
-								document.execCommand('createLink', false, url);
-							},
-							10
-						);
+            var protocols = [
+              //http(s)
+              /^https?\:\/\//,
+              //mailto:
+              /^mailto\:[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+              //tel:
+              /^tel\:/,
+              //#hash
+              /^#/
+            ];
+
+            var valid = false;
+
+            for (var i = 0; i < protocols.length; i += 1) {
+              if (protocols[i].test(url)) {
+                valid = true;
+                break;
+              }
+            }
+
+            this.$.url.invalid = !valid;
+
+            if (valid) {
+  						this.$.dropdown.opened = false;
+  
+  						this.async(
+  							function () {
+  								document.execCommand('createLink', false, url);
+  							},
+  							10
+  						);
+            }
 					} else if (this.$.remove.contains(target)) {
 						this.$.dropdown.opened = false;
 
@@ -107,6 +132,9 @@
 				_ironOverlayClosed: function (event) {
 					this.url = '';
 					this.fire('restore-selection');
+				},
+				_click: function (event) {
+				  this.execCommand(event);
 				},
 				_close: function () {
 				  this.$.dropdown.opened = false;
