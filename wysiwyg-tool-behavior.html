@@ -1,4 +1,3 @@
-<script src="../bowser/bowser.js"></script>
 <script>
 	WYSIWYG = window.WYSIWYG || {};
 
@@ -50,9 +49,11 @@
 			modifier: {
         type: Object,
         value: function () {
+          var isMac = navigator.platform.indexOf('Mac') >= 0;
+
           return {
-            key: bowser.mac ? 'meta' : 'ctrl',
-            tooltip: bowser.mac ? '⌘' : 'Ctrl'
+            key: isMac ? 'meta' : 'ctrl',
+            tooltip: isMac ? '⌘' : 'Ctrl'
           };
         },
         observer: '_modifierChanged'

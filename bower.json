@@ -38,7 +38,6 @@
     "paper-material": "PolymerElements/paper-material#latest",
     "paper-tooltip": "PolymerElements/paper-tooltip#latest",
     "selection-mgr": "miztroh/selection-mgr#latest",
-    "undo-mgr": "miztroh/undo-mgr#latest",
-    "bowser": "ded/bowser#latest"
+    "undo-mgr": "miztroh/undo-mgr#latest"
   }
 }
