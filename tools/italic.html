@@ -12,14 +12,10 @@
 			paper-icon-button[disabled] {
 				color: inherit;
 			}
-
-			paper-tooltip[disabled] {
-				visibility: hidden;
-			}
 		</style>
 		<paper-icon-button icon="editor:format-italic" disabled="[[disabled]]"></paper-icon-button>
-		<paper-tooltip id="tooltip" disabled$="[[disabled]]">Ctrl + I</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+i" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" disabled$="[[disabled]]">[[modifier.tooltip]] + I</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="[[modifier.key]]+i" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(

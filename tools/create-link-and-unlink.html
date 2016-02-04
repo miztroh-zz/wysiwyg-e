@@ -40,8 +40,8 @@
 			}
 		</style>
 		<paper-icon-button icon="editor:insert-link" disabled="[[disabled]]" id="button"></paper-icon-button>
-		<paper-tooltip id="tooltip" for="button">Ctrl + K</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+k" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button">[[modifier.tooltip]] + K</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="[[modifier.key]]+k" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<iron-a11y-keys id="a11y2" target="[[keysTarget]]" keys="esc" on-keys-pressed="_close"></iron-a11y-keys>
 		<iron-dropdown id="dropdown" on-iron-overlay-closed="_ironOverlayClosed" horizontal-align="right">
 			<paper-material class="dropdown-content" style="padding: 8px 16px 18px 16px; background: white;">

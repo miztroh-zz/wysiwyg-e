@@ -32,8 +32,8 @@
 			}
 		</style>
 		<paper-button disabled="[[disabled]]" id="button">H[[level]]</paper-button>
-		<paper-tooltip id="tooltip" for="button">Ctrl + [[level]]</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="ctrl+[[level]]" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button">[[modifier.tooltip]] + [[level]]</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="[[modifier.key]]+[[level]]" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
