@@ -8,6 +8,9 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../paper-listbox/paper-listbox.html">
+<link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
 <dom-module id="wysiwyg-tool-create-link-and-unlink">
@@ -30,7 +33,8 @@
 				color: #d23f31!important;
 			}
 
-			paper-input {
+			paper-input,
+			paper-dropdown-menu {
 				--paper-input-container-focus-color: #2a9af2;
 				--paper-input-container-invalid-color: #d23f31;
 			}
@@ -41,7 +45,15 @@
 		<iron-a11y-keys id="a11y2" target="[[keysTarget]]" keys="esc" on-keys-pressed="_close"></iron-a11y-keys>
 		<iron-dropdown id="dropdown" on-iron-overlay-closed="_ironOverlayClosed" horizontal-align="right">
 			<paper-material class="dropdown-content" style="padding: 8px 16px 18px 16px; background: white;">
-				<paper-input label="URL" always-float-label value="{{url}}" id="url" error-message="Invalid format"></paper-input>
+				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url" error-message="Invalid format"></paper-input>
+				<paper-dropdown-menu label="Target" always-float-label noink>
+				  <paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
+				    <paper-item target="_blank">_blank</paper-item>
+				    <paper-item target="_self">_self</paper-item>
+				    <paper-item target="_parent">_parent</paper-item>
+				    <paper-item target="_top">_top</paper-item>
+				  </paper-listbox>
+				</paper-dropdown-menu>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="close"></paper-icon-button>
 					<div class="flex"></div>
@@ -60,18 +72,21 @@
 					WYSIWYG.ToolBehavior
 				],
 				properties: {
-					url: {
-						type: String
+				  linkTarget: {
+				    type: String,
+				    value: '_self',
+				  },
+					linkUrl: {
+						type: String,
+						value: ''
 					}
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return;
-					var target = Polymer.dom(event).rootTarget;
+					var linkUrl = this.linkUrl, linkTarget = this.linkTarget, target = Polymer.dom(event).rootTarget;
 
 					if (this.$.updateInsert.contains(target)) {
-						var url = this.url;
-
-            var protocols = [
+						var protocols = [
               //http(s)
               /^https?\:\/\//,
               //mailto:
@@ -85,7 +100,7 @@
             var valid = false;
 
             for (var i = 0; i < protocols.length; i += 1) {
-              if (protocols[i].test(url)) {
+              if (protocols[i].test(linkUrl)) {
                 valid = true;
                 break;
               }
@@ -98,7 +113,14 @@
   
   						this.async(
   							function () {
-  								document.execCommand('createLink', false, url);
+  								document.execCommand('createLink', false, linkUrl);
+
+                  this.async(
+                    function () {
+                      if (this.selectedLink) this.selectedLink.target = linkTarget;
+                    },
+                    10
+                  );
   							},
   							10
   						);
@@ -130,7 +152,9 @@
 					return this.selectedLink.textContent === this.range0.toString();
 				},
 				_ironOverlayClosed: function (event) {
-					this.url = '';
+				  if (event.target !== this.$.dropdown) return;
+					this.linkUrl = '';
+					this.linkTarget = '_self';
 					this.fire('restore-selection');
 				},
 				_click: function (event) {
@@ -143,7 +167,8 @@
 					WYSIWYG.ToolBehavior._selectedLinkChanged.apply(this, arguments);
 
 					if (this.selectedLink) {
-						this.url = this.selectedLink.href;
+						this.linkUrl = this.selectedLink.href;
+						this.linkTarget = this.selectedLink.target || '_self';
 					}
 				}
 			}
