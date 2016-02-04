@@ -1,42 +1,27 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
-<dom-module id="wysiwyg-tool-heading">
+<dom-module id="wysiwyg-tool-blockquote">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
-		<style>
-			:host {
-				font-family: Roboto;
-			}
-
-			paper-button {
-				font-weight: bold;
-				font-size: 18px;
-			}
-		</style>
-		<paper-button disabled="[[disabled]]" id="button">H[[level]]</paper-button>
+		<paper-button disabled="[[disabled]]" id="button">
+		  <iron-icon icon="editor:format-quote"></iron-icon>
+		</paper-button>
 		<paper-tooltip id="tooltip" for="button">[[modifier.tooltip]] + [[level]]</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+[[level]]" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
 			{
-				is: 'wysiwyg-tool-heading',
+				is: 'wysiwyg-tool-blockquote',
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
-				properties: {
-					level: {
-						type: Number,
-						value: 1,
-						observer: '_levelChanged'
-					}
-				},
 				ready: function () {
 					this._setCommand('formatBlock');
 				},
@@ -46,27 +31,27 @@
 					if (!this.active) {
   				  if (this.commonAncestorPath) {
   					  for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-  							if (['H1', 'H2', 'H3', 'H4', 'H4', 'H5', 'H6'].indexOf(this.commonAncestorPath[i].tagName) >= 0) {
-  							  var heading = this.commonAncestorPath[i];
-  							  var parent = heading.parentNode;
-  							  this.range0.selectNodeContents(heading);
-  							  parent.insertBefore(this.range0.extractContents(), heading);
-  							  parent.removeChild(heading);
+  							if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') {
+  							  var blockquote = this.commonAncestorPath[i];
+  							  var parent = blockquote.parentNode;
+  							  this.range0.selectNodeContents(blockquote);
+  							  parent.insertBefore(this.range0.extractContents(), blockquote);
+  							  parent.removeChild(blockquote);
   							  break;
   							}
   						}
   				  }
 
-						document.execCommand('formatBlock', null, 'H' + this.level);
+						document.execCommand('formatBlock', null, 'BLOCKQUOTE');
 					} else {
 					  if (this.commonAncestorPath) {
   					  for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-  							if (this.commonAncestorPath[i].tagName === 'H' + this.level) {
-  							  var heading = this.commonAncestorPath[i];
-  							  var parent = heading.parentNode;
-  							  this.range0.selectNodeContents(heading);
-  							  parent.insertBefore(this.range0.extractContents(), heading);
-  							  parent.removeChild(heading);
+  							if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') {
+  							  var blockquote = this.commonAncestorPath[i];
+  							  var parent = blockquote.parentNode;
+  							  this.range0.selectNodeContents(blockquote);
+  							  parent.insertBefore(this.range0.extractContents(), blockquote);
+  							  parent.removeChild(blockquote);
   							  break;
   							}
   						}
@@ -78,16 +63,11 @@
 				queryCommandState: function () {
 					if (this.range0 && this.commonAncestorPath) {
 					  for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-							if (this.commonAncestorPath[i].tagName === 'H' + this.level) return true;
+							if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') return true;
 						}
 					}
 
 					return false;
-				},
-				_levelChanged: function () {
-					if ([1, 2, 3, 4, 5, 6].indexOf(this.level) === -1) {
-						this.level = 1;
-					}
 				}
 			}
 		);

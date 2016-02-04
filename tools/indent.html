@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
@@ -8,14 +9,11 @@
 <dom-module id="wysiwyg-tool-indent">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
-		<style>
-			paper-icon-button[disabled] {
-				color: inherit;
-			}
-		</style>
-		<paper-icon-button icon="editor:format-indent-increase" disabled="[[disabled]]" id="button"></paper-icon-button>
+		<paper-button disabled="[[disabled]]" id="button">
+		  <iron-icon icon="editor:format-indent-increase"></iron-icon>
+		</paper-button>
 		<paper-tooltip id="tooltip" for="button">Tab</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(

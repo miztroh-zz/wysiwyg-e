@@ -25,8 +25,9 @@
     "polymer": "polymer/polymer#latest",
     "font-roboto": "PolymerElements/font-roboto#latest",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#latest",
-    "iron-dropdown": "PolymerElements/iron-dropdown#latest",
+    "iron-ajax": "PolymerElements/iron-ajax#latest",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#latest",
+    "iron-icon": "PolymerElements/iron-icon#latest",
     "iron-icons": "PolymerElements/iron-icons#latest",
     "paper-button": "PolymerElements/paper-button#latest",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#latest",
@@ -36,7 +37,10 @@
     "paper-item": "PolymerElements/paper-item#latest",
     "paper-listbox": "PolymerElements/paper-listbox#latest",
     "paper-material": "PolymerElements/paper-material#latest",
+    "paper-menu-button": "PolymerElements/paper-menu-button#latest",
     "paper-tooltip": "PolymerElements/paper-tooltip#latest",
+    "prism-element": "PolymerElements/prism-element#latest",
+    "marked-element": "PolymerElements/marked-element#latest",
     "selection-mgr": "miztroh/selection-mgr#latest",
     "undo-mgr": "miztroh/undo-mgr#latest"
   }

@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>wysiwyg-e</title>
+		<title>wysiwyg-e Demo 2</title>
 		<link rel="shortcut icon apple-touch-icon-precomposed" href="/images/icon.png">
 		<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 		<link rel="import" href="../../polymer/polymer.html">
@@ -12,6 +12,8 @@
 		<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
 		<link rel="import" href="../../marked-element/marked-import.html">
 		<link rel="import" href="../../paper-button/paper-button.html">
+		<link rel="import" href="../../paper-material/paper-material.html">
+
 		<link rel="import" href="../wysiwyg-e.html">
 		<link rel="import" href="../tools/bold.html">
 		<link rel="import" href="../tools/italic.html">
@@ -27,27 +29,40 @@
 		<link rel="import" href="../tools/blockquote.html">
 		<link rel="import" href="../tools/undo.html">
 		<link rel="import" href="../tools/redo.html">
+
 	</head>
 	<body style="margin: 0;">
 	  <dom-module id="wysiwyg-demo">
-	    <template>
+		    <template>
 	      <style>
 	        :host {
-	          display: block;
-	          height: 100vh;
 	          font-family: Roboto;
 	        }
 
+					wysiwyg-e {
+            margin: 2px 1px 1px 1px;
+					}
+					
           paper-button {
-            width: 100vw;
+            width: 99.8%;
             border-radius: 0;
-            margin: 0;
+						margin: 2px 1px 1px 1px;
             background: #2A9AF2;
             color: white;
           }
+
+					.container {
+						max-width: 940px;
+						overflow: hidden;
+						margin: 20px auto;
+					}
 	      </style>
-	      <iron-ajax url="../README.md" handle-as="text" last-response="{{readme}}" auto on-response="_readmeOrValue"></iron-ajax>
-	      <div class="fit vertical layout">
+
+	      <iron-ajax url="https://raw.githubusercontent.com/PolymerElements/polymer-starter-kit/master/README.md"
+					handle-as="text" last-response="{{readme}}" auto on-response="_readmeOrValue">
+				</iron-ajax>
+
+				<paper-material elevation="5" class="fit vertical layout container">
   	      <wysiwyg-e class="flex" value="{{value}}" id="wysiwygE">
       			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
       			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
@@ -72,7 +87,7 @@
     		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[urlencode(value)]]" target="_blank">
     		    <paper-button>Shareable Testing Link</paper-button>
     		  </a>
-      	</div>
+      	</paper-material>
 	    </template>
 	    <script>
 	      window.addEventListener(
@@ -115,20 +130,20 @@
     	          _readmeOrValue: function () {
     	            this.$.wysiwygE.clearHistory();
     	            var value, search = document.location.search.substring(1);
-    
+
                   if (search) {
                     var pairs = search.split('&');
-    
+
                     for (var i = 0; i < pairs.length; i += 1) {
                       var pair = pairs[i].split('=');
-    
+
                       if (pair[0] === 'value' && pair.length === 2) {
                         value = this.urldecode(pair[1]);
                         break;
                       }
                     }
                   }
-    
+
                   if (!value) value = this.marked(this.readme);
                   this.value = value;
     	          }

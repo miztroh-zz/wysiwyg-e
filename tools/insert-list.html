@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
@@ -9,12 +10,9 @@
 <dom-module id="wysiwyg-tool-insert-ordered-list">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
-		<style>
-			paper-icon-button[disabled] {
-				color: inherit;
-			}
-		</style>
-		<paper-icon-button icon="editor:format-list-numbered" disabled="[[disabled]]"></paper-icon-button>
+		<paper-button disabled="[[disabled]]" id="button">
+		  <iron-icon icon="editor:format-list-numbered"></iron-icon>
+		</paper-button>
 	</template>
 	<script>
 		Polymer(
@@ -34,11 +32,20 @@
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<style>
-			paper-icon-button[disabled] {
-				color: inherit;
-			}
+		  paper-button {
+		    padding: 0;
+		    margin: 0;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 0px;
+        min-width: 40px;
+        background: transparent;
+        text-transform: none;
+		  }
 		</style>
-		<paper-icon-button icon="editor:format-list-bulleted" disabled="[[disabled]]"></paper-icon-button>
+		<paper-button disabled="[[disabled]]" id="button">
+		  <iron-icon icon="editor:format-list-bulleted"></iron-icon>
+		</paper-button>
 	</template>
 	<script>
 		Polymer(
@@ -69,8 +76,8 @@
 			<wysiwyg-tool-insert-ordered-list id="ordered" disabled="[[disabled]]"></wysiwyg-tool-insert-ordered-list>
 			<wysiwyg-tool-insert-unordered-list id="unordered" disabled="[[disabled]]"></wysiwyg-tool-insert-unordered-list>
 		</div>
-		<paper-tooltip id="tooltip" disabled$="[[disabled]]">[[modifier.tooltip]] + Shift + L</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="[[modifier.key]]+shift+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="layout">[[modifier.tooltip]] + Shift + L</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+shift+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
@@ -106,10 +113,6 @@
 						this.$.ordered.execCommand(event);
 					}
 				},
-				_keysTargetChanged: function () {
-					this.$.ordered._setKeysTarget(this.keysTarget);
-					this.$.unordered._setKeysTarget(this.keysTarget);
-				},
 				_range0Changed: function () {
 					this.$.ordered._setRange0(this.range0);
 					this.$.unordered._setRange0(this.range0);
@@ -117,6 +120,10 @@
 				_selectedLinkChanged: function () {
 					this.$.ordered._setSelectedLink(this.selectedLink);
 					this.$.unordered._setSelectedLink(this.selectedLink);
+				},
+				_targetChanged: function () {
+					this.$.ordered._setTarget(this.target);
+					this.$.unordered._setTarget(this.target);
 				},
 				_valueChanged: function () {
 					this.$.ordered._setValue(this.value);

@@ -4,8 +4,17 @@
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../prism-element/prism-import.html">
+<link rel="import" href="github-styles.html">
 <dom-module id="wysiwyg-e">
 	<template>
+		 <style include="github-styles"></style>
 		<style>
 			:host {
 				display: block;
@@ -22,12 +31,14 @@
 				};
 				background: #2A9AF2;
 				user-select: none;
+		    color: white;
+		    z-index: 1;
 			}
 
 			#toolbarLayout {
 				@apply(--layout-horizontal);
 				@apply(--layout-wrap);
-				padding: 16px;
+				padding: 0;
 			}
 
 			#editable {
@@ -56,15 +67,69 @@
 				color: white;
 				background: #2A9AF2;
 			}
+
+      #html {
+        padding: 0 20px 20px 20px;
+      }
+
+      #html pre {
+        margin: 0;
+      }
+
+      #html code {
+        display: block;
+        word-wrap: break-word;
+      }
+
+		  paper-button {
+		    padding: 0;
+		    margin: 0;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 0px;
+        min-width: 40px;
+        background: transparent;
+        text-transform: none;
+		  }
+
+      paper-menu-button {
+        padding: 0;
+      }
+
+      paper-item:hover {
+        cursor: pointer;
+      }
+
+      :host([mode="read"]) ::content .wysiwyg-tool,
+      :host([mode="html"]) ::content .wysiwyg-tool {
+        visibility: hidden;
+      }
 		</style>
 		<div class="fit vertical layout">
-		  <paper-header-panel class="flex" mode="[[_panelMode(readOnly, hideToolbar)]]">
-  			<paper-toolbar id="toolbar" on-tap="updateTools" hidden$="[[_hideToolbar(readOnly, hideToolbar)]]">
-  				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
+		  <paper-header-panel class="flex" mode="[[_panelMode(mode)]]">
+  			<paper-toolbar id="toolbar" on-tap="updateTools">
+  				<div class="layout horizontal wrap center-justified" id="toolbarLayout" on-undo="undo" on-redo="redo">
+  				  <paper-menu-button>
+    				  <paper-button class="dropdown-trigger">
+    				    <iron-icon icon="settings"></iron-icon>
+    				  </paper-button>
+  				    <paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
+  				      <paper-item mode="edit">Edit</paper-item>
+  				      <paper-item mode="read">Read-only</paper-item>
+  				      <paper-item mode="html">View HTML</paper-item>
+  				    </paper-listbox>
+  				  </paper-menu-button>
   					<content select=".wysiwyg-tool" id="tools"></content>
   				</div>
   			</paper-toolbar>
-			  <div id="editable" contenteditable$="[[!readOnly]]"></div>
+  			<div class="fit vertical layout">
+  			  <div id="editable" class="flex" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
+			    <div id="html" class="flex" hidden$="[[!_html(mode)]]">
+			      <pre>
+			        <code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
+			      </pre>
+          </div>
+  			</div>
 		  </paper-header-panel>
 		</div>
 	</template>
@@ -78,18 +143,17 @@
 				],
 				listeners: {
 					'restore-selection': 'restoreSelection',
+					'select-element': '_selectElement'
 				},
 				observers: [
-					'updateTools(range0, selectedLink, canRedo, canUndo, value, commonAncestorPath)'
+					'updateTools(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath)'
 				],
 				properties: {
-				  hideToolbar: {
-				    type: Boolean,
-				    value: false
-				  },
-				  readOnly: {
-				    type: Boolean,
-				    value: false
+				  mode: {
+				    type: String,
+				    value: 'edit',
+				    observer: '_modeChanged',
+				    reflectToAttribute: true
 				  },
 					target: {
 						type: Object,
@@ -105,6 +169,21 @@
 							this.updateTools();
 						}.bind(this)
 					);
+
+          //Link handler for read-only mode
+          this.target.addEventListener(
+            'click',
+            function (event) {
+              if (this.mode !== 'read') return false;
+
+              this.async(
+                function () {
+                  if (this.selectedLink) window.open(this.selectedLink.href);
+                },
+                100
+              );
+            }.bind(this)
+          );
 				},
 				disconnect: function () {
 					UndoMgrBehavior.disconnect.apply(this, arguments);
@@ -115,7 +194,7 @@
 					SelectionMgrBehavior.observe.apply(this, arguments);
 				},
     		redo: function () {
-    		  if (this.readOnly) return false;
+    		  if (this.mode !== 'edit') return false;
     		  return UndoMgrBehavior.redo.apply(this, arguments);
     		},
     		sanitize: function (html) {
@@ -145,10 +224,17 @@
             em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
           }
 
+          //Replace div with p
+          var divs = div.querySelectorAll('div');
+
+          for (i = 0; i < divs.length; i += 1) {
+            divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
+          }
+
     		  return div.innerHTML;
     		},
     		undo: function () {
-    		  if (this.readOnly) return false;
+    		  if (this.mode !== 'edit') return false;
     		  return UndoMgrBehavior.undo.apply(this, arguments);
     		},
 				updateTools: function () {
@@ -156,20 +242,62 @@
 
 					for (var i = 0; i < tools.length; i += 1) {
 						tools[i]._setRange0(this.range0);
+						tools[i]._setSelectedImage(this.selectedImage);
 						tools[i]._setSelectedLink(this.selectedLink);
 						tools[i]._setCanRedo(this.canRedo);
 						tools[i]._setCanUndo(this.canUndo);
 						tools[i]._setValue(this.value);
 						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
-						tools[i]._setKeysTarget(this.$.editable);
+						tools[i]._setTarget(this.target);
 					}
 				},
-				_hideToolbar: function () {
-				  return this.hideToolbar || this.readOnly;
+				_edit: function (a, b) {
+				  return this.mode === 'edit';
+				},
+				_html: function () {
+				  return this.mode === 'html';
+				},
+				_modeChanged: function () {
+				  if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
+				    this.mode = 'edit';
+				    return;
+				  }
 				},
 				_panelMode: function () {
-				  if (this.hideToolbar || this.readOnly) return 'seamed';
+				  if (this.mode !== 'edit') return 'seamed';
 				  return 'waterfall';
+				},
+				_prismHighlight: function (value) {
+				  // process and format functions from
+				  // http://stackoverflow.com/questions/26360414/javascript-how-to-correct-indentation-in-html-string
+
+				  function process (str) {
+            var div = document.createElement('div');
+            div.innerHTML = str.trim();
+            return format(div, 0).innerHTML;
+          }
+
+          function format (node, level) {
+            var indentBefore = new Array(level++ + 1).join('  '), indentAfter  = new Array(level - 1).join('  '), textNode;
+
+            for (var i = 0; i < node.children.length; i += 1) {
+              textNode = document.createTextNode('\n' + indentBefore);
+              node.insertBefore(textNode, node.children[i]);
+              format(node.children[i], level);
+
+              if (node.lastElementChild == node.children[i]) {
+                textNode = document.createTextNode('\n' + indentAfter);
+                node.appendChild(textNode);
+              }
+            }
+
+            return node;
+          }
+
+					return Prism.highlight(process(value), Prism.languages.markup);
+				},
+				_selectElement: function (event) {
+				  this.selectElement(event.detail.element);
 				},
 				_targetChanged: function () {
 					UndoMgrBehavior._targetChanged.apply(this, arguments);
