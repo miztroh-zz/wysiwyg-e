@@ -29,7 +29,7 @@
 						function (done) {
 						  wysiwygE.async(
 						    function () {
-						      assert.equal(wysiwygE.value.replace(' class="style-scope wysiwyg-e"', ''), '<p>Hello, world!</p>');
+						      assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p>Hello, world!</p>');
 						      done();
 						    },
 						    100

@@ -39,7 +39,7 @@
     
     						  wysiwygE.async(
     						    function () {
-    						      assert.equal(wysiwygE.value.replace(' class="style-scope wysiwyg-e"', ''), '<p><u>Hello, world!</u></p>');
+    						      assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><u>Hello, world!</u></p>');
     						      done();
     						    },
     						    100
@@ -61,7 +61,7 @@
     
     						  wysiwygE.async(
     						    function () {
-    						      assert.equal(wysiwygE.value.replace(' class="style-scope wysiwyg-e"', ''), '<p><u>Hello, world!</u></p>');
+    						      assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><u>Hello, world!</u></p>');
     						      done();
     						    },
     						    1000
