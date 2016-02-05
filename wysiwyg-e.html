@@ -25,9 +25,7 @@
 			}
 
 			#toolbarLayout {
-				@apply(--layout-horizontal);
-				@apply(--layout-wrap);
-				padding: 16px;
+				padding: 0;
 			}
 
 			#editable {
@@ -60,7 +58,7 @@
 		<div class="fit vertical layout">
 		  <paper-header-panel class="flex" mode="[[_panelMode(readOnly, hideToolbar)]]">
   			<paper-toolbar id="toolbar" on-tap="updateTools" hidden$="[[_hideToolbar(readOnly, hideToolbar)]]">
-  				<div class="layout horizontal wrap" id="toolbarLayout" on-undo="undo" on-redo="redo">
+  				<div class="layout horizontal wrap center-justified" id="toolbarLayout" on-undo="undo" on-redo="redo">
   					<content select=".wysiwyg-tool" id="tools"></content>
   				</div>
   			</paper-toolbar>

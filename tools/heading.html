@@ -14,21 +14,21 @@
 				font-family: Roboto;
 			}
 
-			paper-button {
-				color: inherit!important;
+		  paper-button {
+		    padding: 0;
+		    margin: 0;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 0px;
+        min-width: 40px;
+        background: transparent;
+        text-transform: none;
 				font-weight: bold;
-				background: transparent;
-				min-width: 40px;
-				border-radius: 50%;
-				line-height: 24px;
 				font-size: 18px;
-				margin: 0;
-				padding: 8px;
-			}
+		  }
 
 			paper-button[disabled] {
-				color: inherit!important;
-				background: transparent;
+				color: inherit;
 			}
 		</style>
 		<paper-button disabled="[[disabled]]" id="button">H[[level]]</paper-button>
