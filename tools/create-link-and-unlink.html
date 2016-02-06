@@ -4,14 +4,13 @@
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../iron-icons/iron-icons.html">
 <link rel="import" href="../../paper-input/paper-input.html">
-<link rel="import" href="../../iron-dropdown/iron-dropdown.html">
-<link rel="import" href="../../paper-material/paper-material.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../paper-listbox/paper-listbox.html">
 <link rel="import" href="../../paper-item/paper-item.html">
+<link rel="import" href="../../paper-menu-button.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
 <dom-module id="wysiwyg-tool-create-link-and-unlink">
@@ -29,7 +28,8 @@
         text-transform: none;
 		  }
 
-			paper-button[disabled] {
+			paper-button[disabled],
+			paper-menu-button[disabled] {
 				color: inherit;
 			}
 
@@ -50,15 +50,18 @@
 				--paper-input-container-focus-color: #2a9af2;
 				--paper-input-container-invalid-color: #d23f31;
 			}
+
+      #dropdown {
+        padding: 0;
+      }
 		</style>
-		<paper-button disabled="[[disabled]]" id="button">
-		  <iron-icon icon="editor:insert-link"></iron-icon>
-		</paper-button>
 		<paper-tooltip id="tooltip" for="button">[[modifier.tooltip]] + K</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="[[modifier.key]]+k" on-keys-pressed="execCommand"></iron-a11y-keys>
-		<iron-a11y-keys id="a11y2" target="[[keysTarget]]" keys="esc" on-keys-pressed="_close"></iron-a11y-keys>
-		<iron-dropdown id="dropdown" on-iron-overlay-closed="_ironOverlayClosed" horizontal-align="right">
-			<paper-material class="dropdown-content" style="padding: 8px 16px 18px 16px; background: white;">
+		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" horizontal-align="right" id="dropdown" disabled="[[disabled]]">
+  		<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+  		  <iron-icon icon="editor:insert-link"></iron-icon>
+  		</paper-button>
+			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
 				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url" error-message="Invalid format"></paper-input>
 				<paper-dropdown-menu label="Target" always-float-label noink>
 				  <paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
@@ -75,8 +78,8 @@
 					<div class="flex"></div>
 					<paper-icon-button id="updateInsert" icon="check"></paper-icon-button>
 				</div>
-			</paper-material>
-		</iron-dropdown>
+			</div>
+		</paper-menu-button>
 	</template>
 	<script>
 		Polymer(
@@ -123,7 +126,7 @@
             this.$.url.invalid = !valid;
 
             if (valid) {
-  						this.$.dropdown.opened = false;
+  						this.$.dropdown.close();
   
   						this.async(
   							function () {
@@ -140,7 +143,7 @@
   						);
             }
 					} else if (this.$.remove.contains(target)) {
-						this.$.dropdown.opened = false;
+						this.$.dropdown.close();
 
 						this.async(
 							function () {
@@ -149,13 +152,10 @@
 							10
 						);
 					} else if (this.$.close.contains(target)) {
-					  this.$.dropdown.opened = false;
-					} else if (!this.$.dropdown.contains(target)) {
-						this.$.dropdown.toggle();
+					  this.$.dropdown.close();
+					} else {
+					  this.$.dropdown.open();
 					}
-				},
-				ready: function () {
-					this.$.dropdown.positionTarget = this.$.button;
 				},
 				queryCommandEnabled: function () {
 					if (!this.range0) return false;
@@ -165,17 +165,14 @@
 					if (!this.range0 || !this.selectedLink) return false;
 					return this.selectedLink.textContent === this.range0.toString();
 				},
-				_ironOverlayClosed: function (event) {
+				_click: function (event) {
+				  this.execCommand(event);
+				},
+				_paperDropdownClose: function (event) {
 				  if (event.target !== this.$.dropdown) return;
 					this.linkUrl = '';
 					this.linkTarget = '_self';
 					this.fire('restore-selection');
-				},
-				_click: function (event) {
-				  this.execCommand(event);
-				},
-				_close: function () {
-				  this.$.dropdown.opened = false;
 				},
 				_selectedLinkChanged: function () {
 					WYSIWYG.ToolBehavior._selectedLinkChanged.apply(this, arguments);
