@@ -97,7 +97,7 @@
 			<wysiwyg-tool-insert-unordered-list id="unordered" disabled="[[disabled]]"></wysiwyg-tool-insert-unordered-list>
 		</div>
 		<paper-tooltip id="tooltip" for="layout">[[modifier.tooltip]] + Shift + L</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[keysTarget]]" keys="[[modifier.key]]+shift+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+shift+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
@@ -133,10 +133,6 @@
 						this.$.ordered.execCommand(event);
 					}
 				},
-				_keysTargetChanged: function () {
-					this.$.ordered._setKeysTarget(this.keysTarget);
-					this.$.unordered._setKeysTarget(this.keysTarget);
-				},
 				_range0Changed: function () {
 					this.$.ordered._setRange0(this.range0);
 					this.$.unordered._setRange0(this.range0);
@@ -144,6 +140,10 @@
 				_selectedLinkChanged: function () {
 					this.$.ordered._setSelectedLink(this.selectedLink);
 					this.$.unordered._setSelectedLink(this.selectedLink);
+				},
+				_targetChanged: function () {
+					this.$.ordered._setTarget(this.target);
+					this.$.unordered._setTarget(this.target);
 				},
 				_valueChanged: function () {
 					this.$.ordered._setValue(this.value);

@@ -11,6 +11,7 @@
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../prism-element/prism-import.html">
+<link rel="import" href="../paper-radio-group/paper-radio-group.html">
 <dom-module id="wysiwyg-e">
 	<template>
 		<style>
@@ -138,6 +139,7 @@
 				],
 				listeners: {
 					'restore-selection': 'restoreSelection',
+					'select-element': '_selectElement'
 				},
 				observers: [
 					'updateTools(range0, selectedLink, canRedo, canUndo, value, commonAncestorPath)'
@@ -165,7 +167,7 @@
 					);
 
           //Link handler for read-only mode
-          this.$.editable.addEventListener(
+          this.target.addEventListener(
             'click',
             function (event) {
               if (this.mode !== 'read') return false;
@@ -236,12 +238,13 @@
 
 					for (var i = 0; i < tools.length; i += 1) {
 						tools[i]._setRange0(this.range0);
+						tools[i]._setSelectedImage(this.selectedImage);
 						tools[i]._setSelectedLink(this.selectedLink);
 						tools[i]._setCanRedo(this.canRedo);
 						tools[i]._setCanUndo(this.canUndo);
 						tools[i]._setValue(this.value);
 						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
-						tools[i]._setKeysTarget(this.$.editable);
+						tools[i]._setTarget(this.target);
 					}
 				},
 				_edit: function (a, b) {
@@ -259,10 +262,6 @@
 				_panelMode: function () {
 				  if (this.mode !== 'edit') return 'seamed';
 				  return 'waterfall';
-				},
-				_targetChanged: function () {
-					UndoMgrBehavior._targetChanged.apply(this, arguments);
-					SelectionMgrBehavior._targetChanged.apply(this, arguments);
 				},
 				_prismHighlight: function (value) {
 				  // process and format functions from
@@ -283,8 +282,8 @@
               format(node.children[i], level);
 
               if (node.lastElementChild == node.children[i]) {
-                  textNode = document.createTextNode('\n' + indentAfter);
-                  node.appendChild(textNode);
+                textNode = document.createTextNode('\n' + indentAfter);
+                node.appendChild(textNode);
               }
             }
 
@@ -292,6 +291,13 @@
           }
 
 					return Prism.highlight(process(value), Prism.languages.markup);
+				},
+				_selectElement: function (event) {
+				  this.selectElement(event.detail.element);
+				},
+				_targetChanged: function () {
+					UndoMgrBehavior._targetChanged.apply(this, arguments);
+					SelectionMgrBehavior._targetChanged.apply(this, arguments);
 				}
 			}
 		);

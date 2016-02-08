@@ -38,13 +38,13 @@
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
-			keysTarget: {
+			target: {
 				type: Object,
 				value: function () {
 				  return this;
 				},
 				readOnly: true,
-				observer: '_keysTargetChanged'
+				observer: '_targetChanged'
 			},
 			modifier: {
         type: Object,
@@ -63,6 +63,12 @@
 				value: null,
 				readOnly: true,
 				observer: '_range0Changed'
+			},
+			selectedImage: {
+				type: Object,
+				value: null,
+				readOnly: true,
+				observer: '_selectedImageChanged'
 			},
 			selectedLink: {
 				type: Object,
@@ -88,11 +94,11 @@
 			document.execCommand(this.command);
 		},
 		queryCommandEnabled: function () {
-			if (!this.range0) return false;
+			if (!this.range0 || this.selectedImage) return false;
 			return document.queryCommandEnabled(this.command);
 		},
 		queryCommandState: function () {
-			if (!this.range0) return false;
+			if (!this.range0 || this.selectedImage) return false;
 
 			try {
 			  return document.queryCommandState(this.command);
@@ -119,10 +125,11 @@
 			return !this.queryCommandEnabled();
 		},
 		_disabledChanged: function () {},
-		_keysTargetChanged: function () {},
 		_modifierChanged: function () {},
 		_range0Changed: function () {},
+		_selectedImageChanged: function () {},
 		_selectedLinkChanged: function () {},
+		_targetChanged: function () {},
 		_valueChanged: function () {}
 	};
 </script>
