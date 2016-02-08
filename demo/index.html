@@ -6,6 +6,9 @@
 		<title>wysiwyg-e</title>
 		<link rel="shortcut icon apple-touch-icon-precomposed" href="/images/icon.png">
 		<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../iron-ajax/iron-ajax.html">
+		<link rel="import" href="../../marked-element/marked-import.html">
 		<link rel="import" href="../wysiwyg-e.html">
 		<link rel="import" href="../tools/bold.html">
 		<link rel="import" href="../tools/italic.html">
@@ -23,26 +26,53 @@
 		<link rel="import" href="../tools/redo.html">
 	</head>
 	<body style="margin: 0;">
-		<wysiwyg-e value='<p><a href="https://github.com/miztroh/wysiwyg-editor">Hello</a>, World!</p>' style="height: 100vh;">
-			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
-			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
-			<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
-			<wysiwyg-tool-strike-through class="wysiwyg-tool"></wysiwyg-tool-strike-through>
-			<wysiwyg-tool-remove-format class="wysiwyg-tool"></wysiwyg-tool-remove-format>
-			<wysiwyg-tool-create-link-and-unlink class="wysiwyg-tool"></wysiwyg-tool-create-link-and-unlink>
-			<wysiwyg-tool-insert-image class="wysiwyg-tool"></wysiwyg-tool-insert-image>
-			<wysiwyg-tool-insert-list class="wysiwyg-tool"></wysiwyg-tool-insert-list>
-			<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
-			<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
-			<wysiwyg-tool-heading class="wysiwyg-tool" level="1"></wysiwyg-tool-heading>
-			<wysiwyg-tool-heading class="wysiwyg-tool" level="2"></wysiwyg-tool-heading>
-			<wysiwyg-tool-heading class="wysiwyg-tool" level="3"></wysiwyg-tool-heading>
-			<wysiwyg-tool-heading class="wysiwyg-tool" level="4"></wysiwyg-tool-heading>
-			<wysiwyg-tool-heading class="wysiwyg-tool" level="5"></wysiwyg-tool-heading>
-			<wysiwyg-tool-heading class="wysiwyg-tool" level="6"></wysiwyg-tool-heading>
-			<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
-			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
-			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
-		</wysiwyg-e>
+	  <dom-module id="wysiwyg-demo">
+	    <template>
+	      <style>
+	        :host {
+	          display: block;
+	        }
+	      </style>
+	      <iron-ajax url="../README.md" handle-as="text" last-response="{{value}}" auto></iron-ajax>
+	      <wysiwyg-e style="height: 100vh;" value="[[marked(value)]]">
+    			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+    			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+    			<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+    			<wysiwyg-tool-strike-through class="wysiwyg-tool"></wysiwyg-tool-strike-through>
+    			<wysiwyg-tool-remove-format class="wysiwyg-tool"></wysiwyg-tool-remove-format>
+    			<wysiwyg-tool-create-link-and-unlink class="wysiwyg-tool"></wysiwyg-tool-create-link-and-unlink>
+    			<wysiwyg-tool-insert-image class="wysiwyg-tool"></wysiwyg-tool-insert-image>
+    			<wysiwyg-tool-insert-list class="wysiwyg-tool"></wysiwyg-tool-insert-list>
+    			<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
+    			<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
+    			<wysiwyg-tool-heading class="wysiwyg-tool" level="1"></wysiwyg-tool-heading>
+    			<wysiwyg-tool-heading class="wysiwyg-tool" level="2"></wysiwyg-tool-heading>
+    			<wysiwyg-tool-heading class="wysiwyg-tool" level="3"></wysiwyg-tool-heading>
+    			<wysiwyg-tool-heading class="wysiwyg-tool" level="4"></wysiwyg-tool-heading>
+    			<wysiwyg-tool-heading class="wysiwyg-tool" level="5"></wysiwyg-tool-heading>
+    			<wysiwyg-tool-heading class="wysiwyg-tool" level="6"></wysiwyg-tool-heading>
+    			<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
+    			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+    			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+    		</wysiwyg-e>
+	    </template>
+	    <script>
+	      Polymer(
+	        {
+	          is: 'wysiwyg-demo',
+	          properties: {
+	            value: {
+	              type: String,
+	              value: ''
+	            }
+	          },
+	          marked: function (string) {
+	            return marked(string);
+	          }
+	        }
+        );
+	    </script>
+	  </dom-module>
+	  <wysiwyg-demo></wysiwyg-demo>
 	</body>
 </html>
