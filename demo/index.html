@@ -90,6 +90,7 @@
     	              type: String
     	            }
     	          },
+    	          // http://phpjs.org/functions/urldecode/
     	          urldecode: function (string) {
     	            return decodeURIComponent((string + '')
                     .replace(/%(?![\da-f]{2})/gi, function() {
@@ -98,6 +99,7 @@
                     })
                     .replace(/\+/g, '%20'));
     	          },
+    	          // http://phpjs.org/functions/urlencode/
     	          urlencode: function (string) {
     	            return encodeURIComponent(string + '')
                     .replace(/!/g, '%21')
@@ -121,7 +123,7 @@
                       var pair = pairs[i].split('=');
     
                       if (pair[0] === 'value' && pair.length === 2) {
-                        value = urldecode(pair[1]);
+                        value = this.urldecode(pair[1]);
                         break;
                       }
                     }
