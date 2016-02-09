@@ -69,7 +69,7 @@
       			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
       			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
       		</wysiwyg-e>
-    		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[encodeURI(value)]]" target="_blank">
+    		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[urlencode(value)]]" target="_blank">
     		    <paper-button>Shareable Testing Link</paper-button>
     		  </a>
       	</div>
@@ -90,8 +90,22 @@
     	              type: String
     	            }
     	          },
-    	          encodeURI: function (string) {
-    	            return encodeURI(string);
+    	          urldecode: function (string) {
+    	            return decodeURIComponent((string + '')
+                    .replace(/%(?![\da-f]{2})/gi, function() {
+                      // PHP tolerates poorly formed escape sequences
+                      return '%25';
+                    })
+                    .replace(/\+/g, '%20'));
+    	          },
+    	          urlencode: function (string) {
+    	            return encodeURIComponent(string + '')
+                    .replace(/!/g, '%21')
+                    .replace(/'/g, '%27')
+                    .replace(/\(/g, '%28')
+                    .replace(/\)/g, '%29')
+                    .replace(/\*/g, '%2A')
+                    .replace(/%20/g, '+');
     	          },
     	          marked: function (string) {
     	            return marked(string);
@@ -106,8 +120,8 @@
                     for (var i = 0; i < pairs.length; i += 1) {
                       var pair = pairs[i].split('=');
     
-                      if (pair.length >= 2) {
-                        value = decodeURI(pair.slice(1).join('='));
+                      if (pair[0] === 'value' && pair.length === 2) {
+                        value = urldecode(pair[1]);
                         break;
                       }
                     }
