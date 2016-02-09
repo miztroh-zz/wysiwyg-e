@@ -75,44 +75,49 @@
       	</div>
 	    </template>
 	    <script>
-	      Polymer(
-	        {
-	          is: 'wysiwyg-demo',
-	          properties: {
-	            readme: {
-	              type: String,
-	              value: ''
-	            },
-	            value: {
-	              type: String
-	            }
-	          },
-	          encodeURI: function (string) {
-	            return encodeURI(string);
-	          },
-	          marked: function (string) {
-	            return marked(string);
-	          },
-	          _readmeOrValue: function () {
-	            this.$.wysiwygE.clearHistory();
-	            var value, search = document.location.search.substring(1);
-
-              if (search) {
-                var pairs = search.split('&');
-
-                for (var i = 0; i < pairs.length; i += 1) {
-                  var pair = pairs[i].split('=');
-
-                  if (pair.length >= 2) {
-                    value = decodeURI(pair.slice(1).join('='));
-                    break;
+	      window.addEventListener(
+	        'WebComponentsReady',
+	        function () {
+    	      Polymer(
+    	        {
+    	          is: 'wysiwyg-demo',
+    	          properties: {
+    	            readme: {
+    	              type: String,
+    	              value: ''
+    	            },
+    	            value: {
+    	              type: String
+    	            }
+    	          },
+    	          encodeURI: function (string) {
+    	            return encodeURI(string);
+    	          },
+    	          marked: function (string) {
+    	            return marked(string);
+    	          },
+    	          _readmeOrValue: function () {
+    	            this.$.wysiwygE.clearHistory();
+    	            var value, search = document.location.search.substring(1);
+    
+                  if (search) {
+                    var pairs = search.split('&');
+    
+                    for (var i = 0; i < pairs.length; i += 1) {
+                      var pair = pairs[i].split('=');
+    
+                      if (pair.length >= 2) {
+                        value = decodeURI(pair.slice(1).join('='));
+                        break;
+                      }
+                    }
                   }
-                }
-              }
-
-              if (!value) value = this.marked(this.readme);
-              this.value = value;
-	          }
+    
+                  if (!value) value = this.marked(this.readme);
+                  this.value = value;
+    	          }
+    	        }
+            );
 	        }
         );
 	    </script>
