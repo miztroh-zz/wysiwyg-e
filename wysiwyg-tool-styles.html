@@ -6,21 +6,40 @@
 		}
 
 		:host > paper-button,
+		:host > paper-menu-button paper-button.dropdown-trigger {
+      padding: 0;
+      margin: 0;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 0px;
+      min-width: 40px;
+      background: transparent;
+      text-transform: none;
+		}
+
+		:host > paper-menu-button {
+		  padding: 0;
+		}
+
+		:host > paper-button,
 		:host > paper-menu-button,
-		:host > paper-menu-button .dropdown-trigger {
+		:host > paper-menu-button paper-button.dropdown-trigger {
 			color: white;
+			background: transparent;
 		}
 
 		:host([active]) > paper-button,
 		:host([active]) > paper-menu-button,
-		:host([active]) > paper-menu-button .dropdown-trigger {
+		:host([active]) > paper-menu-button paper-button.dropdown-trigger {
 			color: rgba(0, 0, 0, 0.5);
+			background: transparent;
 		}
 
 		:host([disabled]) > paper-button,
 		:host([disabled]) > paper-menu-button,
-		:host([disabled]) > paper-menu-button .dropdown-trigger {
+		:host([disabled]) > paper-menu-button paper-button.dropdown-trigger {
 			color: rgba(255, 255, 255, 0.5);
+			background: transparent;
 		}
 	</style>
 </dom-module>

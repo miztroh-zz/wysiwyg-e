@@ -17,18 +17,7 @@
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<style>
-		  paper-button {
-		    padding: 0;
-		    margin: 0;
-        height: 40px;
-        line-height: 40px;
-        border-radius: 0px;
-        min-width: 40px;
-        background: transparent;
-        text-transform: none;
-		  }
-
-      #close {
+		  #close {
         color: rgba(0, 0, 0, 0.5)!important;
       }
 
@@ -45,10 +34,6 @@
 				--paper-input-container-focus-color: #2a9af2;
 				--paper-input-container-invalid-color: #d23f31;
 			}
-
-      #dropdown {
-        padding: 0;
-      }
 		</style>
 		<paper-tooltip id="tooltip" for="button">[[modifier.tooltip]] + M</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+m" on-keys-pressed="execCommand"></iron-a11y-keys>
