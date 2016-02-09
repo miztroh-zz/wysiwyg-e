@@ -28,11 +28,6 @@
         text-transform: none;
 		  }
 
-			paper-button[disabled],
-			paper-menu-button[disabled] {
-				color: inherit;
-			}
-
       #close {
         color: rgba(0, 0, 0, 0.5)!important;
       }
@@ -121,7 +116,7 @@
 
             if (valid) {
   						this.$.dropdown.close();
-  
+
   						this.async(
   							function () {
   							  var before = {
@@ -141,7 +136,7 @@
       							    images: this.target.querySelectorAll('img'),
                         indexes: []
                       };
-    
+
                       for (var i = 0; i < after.images.length; i += 1) {
                         after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
                       }

@@ -28,11 +28,6 @@
         text-transform: none;
 		  }
 
-			paper-button[disabled],
-			paper-menu-button[disabled] {
-				color: inherit;
-			}
-
       #close {
         color: rgba(0, 0, 0, 0.5)!important;
       }
@@ -128,7 +123,7 @@
 
             if (valid) {
   						this.$.dropdown.close();
-  
+
   						this.async(
   							function () {
   								document.execCommand('createLink', false, linkUrl);

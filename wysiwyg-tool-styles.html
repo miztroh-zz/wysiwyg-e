@@ -3,14 +3,23 @@
 	<style>
 		:host {
 			display: block;
+		}
+
+		:host > paper-button,
+		:host > paper-menu-button,
+		:host > paper-menu-button .dropdown-trigger {
 			color: white;
 		}
 
-		:host([active]) {
+		:host([active]) > paper-button,
+		:host([active]) > paper-menu-button,
+		:host([active]) > paper-menu-button .dropdown-trigger {
 			color: rgba(0, 0, 0, 0.5);
 		}
 
-		:host([disabled]) {
+		:host([disabled]) > paper-button,
+		:host([disabled]) > paper-menu-button,
+		:host([disabled]) > paper-menu-button .dropdown-trigger {
 			color: rgba(255, 255, 255, 0.5);
 		}
 	</style>
