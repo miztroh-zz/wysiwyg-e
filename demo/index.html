@@ -46,9 +46,9 @@
             color: white;
           }
 	      </style>
-	      <iron-ajax url="../README.md" handle-as="text" last-response="{{readme}}" auto></iron-ajax>
+	      <iron-ajax url="../README.md" handle-as="text" last-response="{{readme}}" auto on-response="_readmeOrValue"></iron-ajax>
 	      <div class="fit vertical layout">
-  	      <wysiwyg-e class="flex" value="[[value]]" id="wysiwygE">
+  	      <wysiwyg-e class="flex" value="{{value}}" id="wysiwygE">
       			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
       			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
       			<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
@@ -84,14 +84,13 @@
 	              value: ''
 	            },
 	            value: {
-	              type: String,
-	              computed: '_computeValue(readme)'
+	              type: String
 	            }
 	          },
 	          marked: function (string) {
 	            return marked(string);
 	          },
-	          _computeValue: function (readme) {
+	          _readmeOrValue: function () {
 	            this.$.wysiwygE.clearHistory();
 	            var value, search = document.location.search.substring(1);
 
@@ -107,8 +106,8 @@
                 }
               }
 
-              if (!value) value = this.marked(readme);
-              return value;
+              if (!value) value = this.marked(this.readme);
+              this.value = value;
 	          }
 	        }
         );
