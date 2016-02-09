@@ -160,11 +160,10 @@
 				},
 				queryCommandEnabled: function () {
 					if (!this.range0) return false;
-					return !!this.range0.toString().length;
+					return this.range0.endOffset > this.range0.startOffset;
 				},
 				queryCommandState: function () {
-					if (!this.range0 || !this.selectedLink) return false;
-					return this.selectedLink.textContent === this.range0.toString();
+					return this.range0 && this.selectedLink;
 				},
 				_click: function (event) {
 				  this.execCommand(event);
