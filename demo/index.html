@@ -7,8 +7,11 @@
 		<link rel="shortcut icon apple-touch-icon-precomposed" href="/images/icon.png">
 		<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../font-roboto/roboto.html">
 		<link rel="import" href="../../iron-ajax/iron-ajax.html">
+		<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
 		<link rel="import" href="../../marked-element/marked-import.html">
+		<link rel="import" href="../../paper-button/paper-button.html">
 		<link rel="import" href="../wysiwyg-e.html">
 		<link rel="import" href="../tools/bold.html">
 		<link rel="import" href="../tools/italic.html">
@@ -31,30 +34,45 @@
 	      <style>
 	        :host {
 	          display: block;
+	          height: 100vh;
+	          font-family: Roboto;
 	        }
+
+          paper-button {
+            width: 100vw;
+            border-radius: 0;
+            margin: 0;
+            background: #2A9AF2;
+            color: white;
+          }
 	      </style>
 	      <iron-ajax url="../README.md" handle-as="text" last-response="{{readme}}" auto></iron-ajax>
-	      <wysiwyg-e style="height: 100vh;" value="[[value]]" id="wysiwygE">
-    			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
-    			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
-    			<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
-    			<wysiwyg-tool-strike-through class="wysiwyg-tool"></wysiwyg-tool-strike-through>
-    			<wysiwyg-tool-remove-format class="wysiwyg-tool"></wysiwyg-tool-remove-format>
-    			<wysiwyg-tool-create-link-and-unlink class="wysiwyg-tool"></wysiwyg-tool-create-link-and-unlink>
-    			<wysiwyg-tool-insert-image class="wysiwyg-tool"></wysiwyg-tool-insert-image>
-    			<wysiwyg-tool-insert-list class="wysiwyg-tool"></wysiwyg-tool-insert-list>
-    			<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
-    			<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
-    			<wysiwyg-tool-heading class="wysiwyg-tool" level="1"></wysiwyg-tool-heading>
-    			<wysiwyg-tool-heading class="wysiwyg-tool" level="2"></wysiwyg-tool-heading>
-    			<wysiwyg-tool-heading class="wysiwyg-tool" level="3"></wysiwyg-tool-heading>
-    			<wysiwyg-tool-heading class="wysiwyg-tool" level="4"></wysiwyg-tool-heading>
-    			<wysiwyg-tool-heading class="wysiwyg-tool" level="5"></wysiwyg-tool-heading>
-    			<wysiwyg-tool-heading class="wysiwyg-tool" level="6"></wysiwyg-tool-heading>
-    			<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
-    			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
-    			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
-    		</wysiwyg-e>
+	      <div class="fit vertical layout">
+  	      <wysiwyg-e class="flex" value="[[value]]" id="wysiwygE">
+      			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+      			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+      			<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+      			<wysiwyg-tool-strike-through class="wysiwyg-tool"></wysiwyg-tool-strike-through>
+      			<wysiwyg-tool-remove-format class="wysiwyg-tool"></wysiwyg-tool-remove-format>
+      			<wysiwyg-tool-create-link-and-unlink class="wysiwyg-tool"></wysiwyg-tool-create-link-and-unlink>
+      			<wysiwyg-tool-insert-image class="wysiwyg-tool"></wysiwyg-tool-insert-image>
+      			<wysiwyg-tool-insert-list class="wysiwyg-tool"></wysiwyg-tool-insert-list>
+      			<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
+      			<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="1"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="2"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="3"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="4"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="5"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="6"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
+      			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+      			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+      		</wysiwyg-e>
+    		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[value]]" target="_blank">
+    		    <paper-button>Shareable Testing Link</paper-button>
+    		  </a>
+      	</div>
 	    </template>
 	    <script>
 	      Polymer(
@@ -67,15 +85,30 @@
 	            },
 	            value: {
 	              type: String,
-	              computed: 'marked(readme)',
-	              observer: '_valueChanged'
+	              computed: '_computeValue(readme)'
 	            }
 	          },
 	          marked: function (string) {
 	            return marked(string);
 	          },
-	          _valueChanged: function () {
+	          _computeValue: function (readme) {
 	            this.$.wysiwygE.clearHistory();
+	            var value, search = document.location.search.substring(1);
+
+              if (search) {
+                var pairs = search.split('&');
+
+                for (var i = 0; i < pairs.length; i += 1) {
+                  var pair = pairs[i].split('=');
+                  if (pair.length === 2 && pair[0] === 'value' && pair[1].length > 0) {
+                    value = decodeURI(pair[1]);
+                    break;
+                  }
+                }
+              }
+
+              if (!value) value = this.marked(readme);
+              return value;
 	          }
 	        }
         );
