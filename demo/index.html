@@ -102,8 +102,9 @@
 
                 for (var i = 0; i < pairs.length; i += 1) {
                   var pair = pairs[i].split('=');
-                  if (pair.length === 2 && pair[0] === 'value' && pair[1].length > 0) {
-                    value = decodeURI(pair[1]);
+
+                  if (pair.length >= 2) {
+                    value = decodeURI(pair.slice(1).join('='));
                     break;
                   }
                 }
