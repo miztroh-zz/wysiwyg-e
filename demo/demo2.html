@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>wysiwyg-e Demo 2</title>
+		<link rel="shortcut icon apple-touch-icon-precomposed" href="/images/icon.png">
+		<script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../font-roboto/roboto.html">
+		<link rel="import" href="../../iron-ajax/iron-ajax.html">
+		<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+		<link rel="import" href="../../marked-element/marked-import.html">
+		<link rel="import" href="../../paper-button/paper-button.html">
+		<link rel="import" href="../../paper-material/paper-material.html">
+
+		<link rel="import" href="../wysiwyg-e.html">
+		<link rel="import" href="../tools/bold.html">
+		<link rel="import" href="../tools/italic.html">
+		<link rel="import" href="../tools/underline.html">
+		<link rel="import" href="../tools/strike-through.html">
+		<link rel="import" href="../tools/remove-format.html">
+		<link rel="import" href="../tools/create-link-and-unlink.html">
+		<link rel="import" href="../tools/insert-image.html">
+		<link rel="import" href="../tools/insert-list.html">
+		<link rel="import" href="../tools/indent.html">
+		<link rel="import" href="../tools/outdent.html">
+		<link rel="import" href="../tools/heading.html">
+		<link rel="import" href="../tools/blockquote.html">
+		<link rel="import" href="../tools/undo.html">
+		<link rel="import" href="../tools/redo.html">
+
+	</head>
+	<body style="margin: 0;">
+	  <dom-module id="wysiwyg-demo">
+		    <template>
+	      <style>
+	        :host {
+	          font-family: Roboto;
+	        }
+
+					wysiwyg-e {
+            margin: 2px 1px 1px 1px;
+					}
+					
+          paper-button {
+            width: 99.8%;
+            border-radius: 0;
+						margin: 2px 1px 1px 1px;
+            background: #2A9AF2;
+            color: white;
+          }
+
+					.container {
+						max-width: 940px;
+						overflow: hidden;
+						margin: 20px auto;
+					}
+	      </style>
+
+	      <iron-ajax url="https://raw.githubusercontent.com/PolymerElements/polymer-starter-kit/master/README.md"
+					handle-as="text" last-response="{{readme}}" auto on-response="_readmeOrValue">
+				</iron-ajax>
+
+				<paper-material elevation="5" class="fit vertical layout container">
+  	      <wysiwyg-e class="flex" value="{{value}}" id="wysiwygE">
+      			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+      			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+      			<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+      			<wysiwyg-tool-strike-through class="wysiwyg-tool"></wysiwyg-tool-strike-through>
+      			<wysiwyg-tool-remove-format class="wysiwyg-tool"></wysiwyg-tool-remove-format>
+      			<wysiwyg-tool-create-link-and-unlink class="wysiwyg-tool"></wysiwyg-tool-create-link-and-unlink>
+      			<wysiwyg-tool-insert-image class="wysiwyg-tool"></wysiwyg-tool-insert-image>
+      			<wysiwyg-tool-insert-list class="wysiwyg-tool"></wysiwyg-tool-insert-list>
+      			<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
+      			<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="1"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="2"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="3"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="4"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="5"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-heading class="wysiwyg-tool" level="6"></wysiwyg-tool-heading>
+      			<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
+      			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+      			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+      		</wysiwyg-e>
+    		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[urlencode(value)]]" target="_blank">
+    		    <paper-button>Shareable Testing Link</paper-button>
+    		  </a>
+      	</paper-material>
+	    </template>
+	    <script>
+	      window.addEventListener(
+	        'WebComponentsReady',
+	        function () {
+    	      Polymer(
+    	        {
+    	          is: 'wysiwyg-demo',
+    	          properties: {
+    	            readme: {
+    	              type: String,
+    	              value: ''
+    	            },
+    	            value: {
+    	              type: String
+    	            }
+    	          },
+    	          // http://phpjs.org/functions/urldecode/
+    	          urldecode: function (string) {
+    	            return decodeURIComponent((string + '')
+                    .replace(/%(?![\da-f]{2})/gi, function() {
+                      // PHP tolerates poorly formed escape sequences
+                      return '%25';
+                    })
+                    .replace(/\+/g, '%20'));
+    	          },
+    	          // http://phpjs.org/functions/urlencode/
+    	          urlencode: function (string) {
+    	            return encodeURIComponent(string + '')
+                    .replace(/!/g, '%21')
+                    .replace(/'/g, '%27')
+                    .replace(/\(/g, '%28')
+                    .replace(/\)/g, '%29')
+                    .replace(/\*/g, '%2A')
+                    .replace(/%20/g, '+');
+    	          },
+    	          marked: function (string) {
+    	            return marked(string);
+    	          },
+    	          _readmeOrValue: function () {
+    	            this.$.wysiwygE.clearHistory();
+    	            var value, search = document.location.search.substring(1);
+
+                  if (search) {
+                    var pairs = search.split('&');
+
+                    for (var i = 0; i < pairs.length; i += 1) {
+                      var pair = pairs[i].split('=');
+
+                      if (pair[0] === 'value' && pair.length === 2) {
+                        value = this.urldecode(pair[1]);
+                        break;
+                      }
+                    }
+                  }
+
+                  if (!value) value = this.marked(this.readme);
+                  this.value = value;
+    	          }
+    	        }
+            );
+	        }
+        );
+	    </script>
+	  </dom-module>
+	  <wysiwyg-demo></wysiwyg-demo>
+	</body>
+</html>

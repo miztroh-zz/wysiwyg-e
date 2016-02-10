@@ -3,7 +3,7 @@
 
 A what-you-see-is-what-you-get editor created with Polymer.  Under the hood, it provides undo / redo history management, selection management, and a toolbar that accepts child elements to provide editing capabilities.  All the included tools (see below for list) are accessible via both the toolbar buttons and keyboard shortcuts.
 
-Usage:
+## Usage:
 ```
 <wysiwyg-e>
   <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
@@ -28,8 +28,9 @@ Usage:
 </wysiwyg-e>
 ```
 
-Demo:
-https://miztroh.github.io/bower_components/wysiwyg-e/demo/
+## Demos:
+- [Basic Demo](https://miztroh.github.io/bower_components/wysiwyg-e/demo/)
+- [PSK Readme.md file Demo](https://miztroh.github.io/bower_components/wysiwyg-e/demo/demo2.html)
 
-Installation:
+## Installation:
 ``bower install wysiwyg-e``
