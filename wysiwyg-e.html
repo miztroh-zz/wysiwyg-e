@@ -38,6 +38,7 @@
 				padding: 20px;
 				outline: none;
 				@apply(--wysiwyg-editable);
+				@apply(--layout-flex);
 			}
 
 			#editable :first-child {
@@ -142,6 +143,7 @@
       #html {
         padding: 0 20px 20px 20px;
         @apply(--wysiwyg-html);
+        @apply(--layout-flex);
       }
 
       #html pre {
@@ -204,6 +206,8 @@
 
       #content {
         overflow-y: auto;
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
       }
 		</style>
 		<div class="fit" id="layout">
@@ -222,9 +226,9 @@
 					<content select=".wysiwyg-tool" id="tools"></content>
 				</div>
 			</paper-toolbar>
-			<div class="flex" id="content">
-			  <div id="editable" class="flex" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
-		    <div id="html" class="flex" hidden$="[[!_html(mode)]]">
+			<div id="content">
+			  <div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
+		    <div id="html" hidden$="[[!_html(mode)]]">
 		      <pre>
 		        <code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
 		      </pre>
