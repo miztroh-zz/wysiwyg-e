@@ -12,8 +12,8 @@
 		<paper-button disabled="[[disabled]]" id="button">
 		  <iron-icon icon="editor:format-quote"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button">[[modifier.tooltip]] + [[level]]</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+[[level]]" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button">Blockquote ([[modifier.tooltip]] + Q)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+q" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(

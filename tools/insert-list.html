@@ -76,8 +76,8 @@
 			<wysiwyg-tool-insert-ordered-list id="ordered" disabled="[[disabled]]"></wysiwyg-tool-insert-ordered-list>
 			<wysiwyg-tool-insert-unordered-list id="unordered" disabled="[[disabled]]"></wysiwyg-tool-insert-unordered-list>
 		</div>
-		<paper-tooltip id="tooltip" for="layout">[[modifier.tooltip]] + Shift + L</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+shift+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="layout">List ([[modifier.tooltip]] + L)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
