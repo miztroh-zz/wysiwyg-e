@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../undo-mgr/behavior.html">
 <link rel="import" href="../selection-mgr/behavior.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
@@ -30,7 +31,6 @@
 				background: var(--wysiwyg-toolbar-background, #2A9AF2);
 				user-select: none;
 		    color: var(--wysiwyg-toolbar-color, white);
-		    z-index: 1;
 		    @apply(--wysiwyg-toolbar);
 			}
 
@@ -178,33 +178,58 @@
       :host([mode="html"]) ::content .wysiwyg-tool {
         visibility: hidden;
       }
+
+      @media (min-width: 768px) {
+        #layout {
+          @apply(--layout-vertical);
+        }
+
+        #toolbarLayout {
+          @apply(--layout-horizontal);
+          @apply(--layout-wrap);
+          @apply(--layout-center-justified);
+        }
+      }
+
+      @media (max-width: 767px) {
+        #layout {
+          @apply(--layout-horizontal);
+        }
+
+        #toolbarLayout {
+          @apply(--layout-vertical);
+          width: 40px;
+        }
+      }
+
+      #content {
+        overflow-y: auto;
+      }
 		</style>
-		<div class="fit vertical layout">
-		  <paper-header-panel class="flex" mode="[[_panelMode(mode)]]">
-  			<paper-toolbar id="toolbar" on-tap="updateTools">
-  				<div class="layout horizontal wrap center-justified" id="toolbarLayout" on-undo="undo" on-redo="redo">
-  				  <paper-menu-button>
-    				  <paper-button class="dropdown-trigger">
-    				    <iron-icon icon="settings"></iron-icon>
-    				  </paper-button>
-  				    <paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
-  				      <paper-item mode="edit">Edit</paper-item>
-  				      <paper-item mode="read">Read-only</paper-item>
-  				      <paper-item mode="html">View HTML</paper-item>
-  				    </paper-listbox>
-  				  </paper-menu-button>
-  					<content select=".wysiwyg-tool" id="tools"></content>
-  				</div>
-  			</paper-toolbar>
-  			<div class="fit vertical layout">
-  			  <div id="editable" class="flex" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
-			    <div id="html" class="flex" hidden$="[[!_html(mode)]]">
-			      <pre>
-			        <code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
-			      </pre>
-          </div>
-  			</div>
-		  </paper-header-panel>
+		<div class="fit" id="layout">
+			<paper-toolbar id="toolbar" on-tap="updateTools">
+				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
+				  <paper-menu-button>
+  				  <paper-button class="dropdown-trigger">
+  				    <iron-icon icon="settings"></iron-icon>
+  				  </paper-button>
+				    <paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
+				      <paper-item mode="edit">Edit</paper-item>
+				      <paper-item mode="read">Read-only</paper-item>
+				      <paper-item mode="html">View HTML</paper-item>
+				    </paper-listbox>
+				  </paper-menu-button>
+					<content select=".wysiwyg-tool" id="tools"></content>
+				</div>
+			</paper-toolbar>
+			<div class="flex" id="content">
+			  <div id="editable" class="flex" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
+		    <div id="html" class="flex" hidden$="[[!_html(mode)]]">
+		      <pre>
+		        <code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
+		      </pre>
+        </div>
+			</div>
 		</div>
 	</template>
 	<script>
