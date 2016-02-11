@@ -10,8 +10,10 @@
 		<link rel="import" href="../../font-roboto/roboto.html">
 		<link rel="import" href="../../iron-ajax/iron-ajax.html">
 		<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+		<link rel="import" href="../../iron-overlay-behavior/iron-overlay-behavior.html">
 		<link rel="import" href="../../marked-element/marked-import.html">
 		<link rel="import" href="../../paper-button/paper-button.html">
+		<link rel="import" href="../../paper-material/paper-material.html">
 		<link rel="import" href="../wysiwyg-e.html">
 		<link rel="import" href="../tools/bold.html">
 		<link rel="import" href="../tools/italic.html">
@@ -34,20 +36,25 @@
 	      <style>
 	        :host {
 	          display: block;
-	          height: 100vh;
+	          width: calc(100vw - 100px);
+	          height: calc(100vh - 100px);
 	          font-family: Roboto;
 	        }
 
           paper-button {
-            width: 100vw;
+            width: 100%;
             border-radius: 0;
             margin: 0;
             background: #2A9AF2;
             color: white;
           }
+
+          paper-material {
+            background: white;
+          }
 	      </style>
 	      <iron-ajax url="../README.md" handle-as="text" last-response="{{readme}}" auto on-response="_readmeOrValue"></iron-ajax>
-	      <div class="fit vertical layout">
+	      <paper-material class="fit vertical layout" elevation="5">
   	      <wysiwyg-e class="flex" value="{{value}}" id="wysiwygE">
       			<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
       			<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
@@ -69,10 +76,12 @@
       			<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
       			<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
       		</wysiwyg-e>
-    		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[urlencode(value)]]" target="_blank">
-    		    <paper-button>Shareable Testing Link</paper-button>
-    		  </a>
-      	</div>
+      		<div class="horizontal layout">
+      		  <a href="https://miztroh.github.io/bower_components/wysiwyg-e/demo/?value=[[urlencode(value)]]" target="_blank" class="flex">
+      		    <paper-button>Shareable Testing Link</paper-button>
+      		  </a>
+      		</div>
+      	</paper-material>
 	    </template>
 	    <script>
 	      window.addEventListener(
@@ -81,6 +90,15 @@
     	      Polymer(
     	        {
     	          is: 'wysiwyg-demo',
+    	          behaviors: [
+    	            Polymer.IronOverlayBehavior
+    	          ],
+    	          hostAttributes: {
+    	            opened: true,
+    	            'with-backdrop': '',
+        					'no-cancel-on-outside-click': '',
+        					'no-cancel-on-esc-key': ''
+    	          },
     	          properties: {
     	            readme: {
     	              type: String,
