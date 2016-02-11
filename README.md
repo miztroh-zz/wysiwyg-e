@@ -1,7 +1,22 @@
 # wysiwyg-e [![Build Status](https://travis-ci.org/miztroh/wysiwyg-e.svg?branch=master)](https://travis-ci.org/miztroh/wysiwyg-e)
-/wɪziwɪɡi/
 
-A what-you-see-is-what-you-get editor created with Polymer.  Under the hood, it provides undo / redo history management, selection management, and a toolbar that accepts child elements to provide editing capabilities.  All the included tools (see below for list) are accessible via both the toolbar buttons and keyboard shortcuts.
+> /wɪziwɪɡi/
+
+> A what-you-see-is-what-you-get editor created with Polymer.  Under the hood, it provides undo / redo history management, selection management, and a toolbar that accepts child elements to provide editing capabilities.  All the included tools (see below for list) are accessible via both the toolbar buttons and keyboard shortcuts.
+
+##Included Tools (opt-in)
+* Bold
+* Italic
+* Underline
+* Strikethrough
+* Remove Format
+* Link
+* Image
+* List (numbered / bulleted)
+* Indent / Outdent
+* Heading (H1 - H6)
+* Blockquote
+* Undo / Redo
 
 ##Usage
 ```
