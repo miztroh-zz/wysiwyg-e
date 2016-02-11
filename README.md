@@ -31,12 +31,7 @@
   <wysiwyg-tool-insert-list class="wysiwyg-tool"></wysiwyg-tool-insert-list>
   <wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
   <wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
-  <wysiwyg-tool-heading class="wysiwyg-tool" level="1"></wysiwyg-tool-heading>
-  <wysiwyg-tool-heading class="wysiwyg-tool" level="2"></wysiwyg-tool-heading>
-  <wysiwyg-tool-heading class="wysiwyg-tool" level="3"></wysiwyg-tool-heading>
-  <wysiwyg-tool-heading class="wysiwyg-tool" level="4"></wysiwyg-tool-heading>
-  <wysiwyg-tool-heading class="wysiwyg-tool" level="5"></wysiwyg-tool-heading>
-  <wysiwyg-tool-heading class="wysiwyg-tool" level="6"></wysiwyg-tool-heading>
+  <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
   <wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
   <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
   <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
