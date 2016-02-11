@@ -4,6 +4,7 @@
 <link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
@@ -72,11 +73,12 @@
 			  pointer-events: none;
 			}
 		</style>
+		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="layout horizontal wrap" disabled="[[disabled]]" id="layout">
 			<wysiwyg-tool-insert-ordered-list id="ordered" disabled="[[disabled]]"></wysiwyg-tool-insert-ordered-list>
 			<wysiwyg-tool-insert-unordered-list id="unordered" disabled="[[disabled]]"></wysiwyg-tool-insert-unordered-list>
 		</div>
-		<paper-tooltip id="tooltip" for="layout">List ([[modifier.tooltip]] + L)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="layout" position="[[tooltipPosition]]">List ([[modifier.tooltip]] + L)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+l" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
@@ -86,6 +88,15 @@
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
+				properties: {
+				  minWidth768px: {
+				    type: Boolean
+				  },
+				  tooltipPosition: {
+				    type: String,
+				    computed: '_computeTooltipPosition(minWidth768px)'
+				  }
+				},
 				execCommand: function () {},
 				_canRedoChanged: function () {
 					this.$.ordered._setCanRedo(this.canRedo);
@@ -103,6 +114,10 @@
 				_computeDisabled: function () {
 					if (!this.range0) return true;
 					return !document.queryCommandEnabled('insertOrderedList');
+				},
+				_computeTooltipPosition: function (minWidth768px) {
+				  if (minWidth768px) return 'bottom';
+				  return 'right';
 				},
 				_keysPressed: function (event, detail) {
 					if (this.$.ordered.queryCommandState()) {

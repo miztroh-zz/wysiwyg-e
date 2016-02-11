@@ -7,6 +7,7 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../paper-listbox/paper-listbox.html">
 <link rel="import" href="../../paper-item/paper-item.html">
@@ -35,9 +36,10 @@
 				--paper-input-container-invalid-color: #d23f31;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button">Image ([[modifier.tooltip]] + M)</paper-tooltip>
+		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Image ([[modifier.tooltip]] + M)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+m" on-keys-pressed="execCommand"></iron-a11y-keys>
-		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" horizontal-align="right" id="dropdown" disabled="[[disabled]]">
+		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
   		<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
   		  <iron-icon icon="editor:insert-photo"></iron-icon>
   		</paper-button>
@@ -76,7 +78,14 @@
 					imageUrl: {
 						type: String,
 						value: ''
-					}
+					},
+				  minWidth768px: {
+				    type: Boolean
+				  },
+				  tooltipPosition: {
+				    type: String,
+				    computed: '_computeTooltipPosition(minWidth768px)'
+				  }
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return;
@@ -167,6 +176,10 @@
 				},
 				_click: function (event) {
 				  this.execCommand(event);
+				},
+				_computeTooltipPosition: function (minWidth768px) {
+				  if (minWidth768px) return 'bottom';
+				  return 'right';
 				},
 				_imageFloatChanged: function () {
 				  if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
