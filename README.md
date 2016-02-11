@@ -4,7 +4,7 @@
 
 > A what-you-see-is-what-you-get editor created with Polymer.  Under the hood, it provides undo / redo history management, selection management, and a toolbar that accepts child elements to provide editing capabilities.  All the included tools (see below for list) are accessible via both the toolbar buttons and keyboard shortcuts.
 
-##Included Tools (opt-in)
+## Included Tools (opt-in)
 * Bold
 * Italic
 * Underline
@@ -18,7 +18,7 @@
 * Blockquote
 * Undo / Redo
 
-##Usage
+## Usage
 ```
 <wysiwyg-e>
   <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
@@ -43,8 +43,8 @@
 </wysiwyg-e>
 ```
 
-##Demo
+## Demo
 https://miztroh.github.io/bower_components/wysiwyg-e/demo/
 
-##Installation
+## Installation
 ``bower install wysiwyg-e``
