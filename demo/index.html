@@ -150,7 +150,7 @@
                   }
     
                   if (!value) value = this.marked(this.readme);
-                  this.value = value;
+                  this.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
     	          }
     	        }
             );
