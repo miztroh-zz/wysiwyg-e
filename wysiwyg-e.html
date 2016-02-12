@@ -76,7 +76,15 @@ Custom property           | Description | Default
 `--wysiwyg-editable-strike`            | Mixen applied to `<strike>`            | `{}`
 `--wysiwyg-editable-first-child`       | Mixin applied to editable first child  | `{}`
 `--wysiwyg-editable-last-child`        | Mixin applied to editable last child   | `{}`
-`--wysiwyg-editable-selection`         | Editable selection                     | `color: white; background: #2A9AF2;`
+`--wysiwyg-editable-selection`         | Editable selection                     | `{color: white; background: #2A9AF2;}`
+`--wysiwyg-html`                       | Mixin applied to the wysiwyg-e html content | `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`                   | Html content `<pre>`                   | `{margin: 0;}`
+`--wysiwyg-html-code`                  | Html content `<code>`                  | `{display: block; display: block;}`
+
+#### HTML View
+
+Custom property | Description | Default
+----------------|-------------|----------
 `--wysiwyg-html`                       | Mixin applied to the wysiwyg-e html content | `{padding: 0 20px 20px 20px;}`
 `--wysiwyg-html-pre`                   | Html content `<pre>`                   | `{margin: 0;}`
 `--wysiwyg-html-code`                  | Html content `<code>`                  | `{display: block; display: block;}`
@@ -367,10 +375,10 @@ Command         | Shortcut Mac | Shortcut Windows
 				    observer: '_modeChanged',
 				    reflectToAttribute: true
 				  },
+					/**
+					 * Link handler for read-only mode.
+					*/
 					target: {
-						/**
-					   * Link handler for read-only mode.
-					  */
 						type: Object,
 						value: function () {
 							return this.$.editable;
