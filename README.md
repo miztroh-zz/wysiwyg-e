@@ -40,10 +40,9 @@
 </wysiwyg-e>
 ```
 
-## Usage and API
+## Demo and API docs
 
-[Usage and API](https://miztroh.github.io/bower_components/wysiwyg-e/)<br>
-[Demo](https://miztroh.github.io/bower_components/wysiwyg-e/demo/)
+[Demo and API docs](https://miztroh.github.io/bower_components/wysiwyg-e/)
 
 ## Installation
 
