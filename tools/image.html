@@ -2,7 +2,7 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
@@ -14,11 +14,11 @@
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
-<dom-module id="wysiwyg-tool-create-link-and-unlink">
+<dom-module id="wysiwyg-tool-image">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<style>
-      #close {
+		  #close {
         color: rgba(0, 0, 0, 0.5)!important;
       }
 
@@ -37,26 +37,25 @@
 			}
 		</style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Link ([[modifier.tooltip]] + K)</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+k" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Image ([[modifier.tooltip]] + M)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+m" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
   		<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
-  		  <iron-icon icon="editor:insert-link"></iron-icon>
+  		  <iron-icon icon="editor:insert-photo"></iron-icon>
   		</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url" error-message="Invalid format"></paper-input>
-				<paper-dropdown-menu label="Target" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-				  <paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
-				    <paper-item target="_blank">_blank</paper-item>
-				    <paper-item target="_self">_self</paper-item>
-				    <paper-item target="_parent">_parent</paper-item>
-				    <paper-item target="_top">_top</paper-item>
+				<paper-input label="URL" always-float-label value="{{imageUrl}}" id="url" error-message="Invalid format"></paper-input>
+				<paper-dropdown-menu label="Float" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
+				  <paper-listbox class="dropdown-content" selected="{{imageFloat}}" attr-for-selected="float">
+				    <paper-item float="none">none</paper-item>
+				    <paper-item float="left">left</paper-item>
+				    <paper-item float="right">right</paper-item>
 				  </paper-listbox>
 				</paper-dropdown-menu>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="close"></paper-icon-button>
 					<div class="flex"></div>
-					<paper-icon-button hidden$="[[!selectedLink]]" id="remove" icon="delete"></paper-icon-button>
+					<paper-icon-button hidden$="[[!selectedImage]]" id="remove" icon="delete"></paper-icon-button>
 					<div class="flex"></div>
 					<paper-icon-button id="updateInsert" icon="check"></paper-icon-button>
 				</div>
@@ -66,17 +65,17 @@
 	<script>
 		Polymer(
 			{
-				is: 'wysiwyg-tool-create-link-and-unlink',
+				is: 'wysiwyg-tool-image',
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
 				properties: {
-				  linkTarget: {
+				  imageFloat: {
 				    type: String,
-				    value: '_self',
-				    observer: '_linkTargetChanged'
+				    value: 'none',
+				    observer: '_imageFloatChanged'
 				  },
-					linkUrl: {
+					imageUrl: {
 						type: String,
 						value: ''
 					},
@@ -90,24 +89,18 @@
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return;
-					var linkUrl = this.linkUrl, linkTarget = this.linkTarget, target = Polymer.dom(event).rootTarget;
+					var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = Polymer.dom(event).rootTarget;
 
 					if (this.$.updateInsert.contains(target)) {
 						var protocols = [
               //http(s)
-              /^https?\:\/\//,
-              //mailto:
-              /^mailto\:[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-              //tel:
-              /^tel\:/,
-              //#hash
-              /^#/
+              /^https?\:\/\//
             ];
 
             var valid = false;
 
             for (var i = 0; i < protocols.length; i += 1) {
-              if (protocols[i].test(linkUrl)) {
+              if (protocols[i].test(imageUrl)) {
                 valid = true;
                 break;
               }
@@ -120,11 +113,44 @@
 
   						this.async(
   							function () {
-  								document.execCommand('createLink', false, linkUrl);
+  							  var before = {
+  							    images: this.target.querySelectorAll('img'),
+                    indexes: []
+                  };
+
+                  for (var i = 0; i < before.images.length; i += 1) {
+                    before.indexes.push(this.value.indexOf(before.images[i].outerHTML));
+                  }
+
+  							  document.execCommand('insertImage', false, imageUrl);
 
                   this.async(
                     function () {
-                      if (this.selectedLink) this.selectedLink.target = linkTarget;
+                      var after = {
+      							    images: this.target.querySelectorAll('img'),
+                        indexes: []
+                      };
+
+                      for (var i = 0; i < after.images.length; i += 1) {
+                        after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
+                      }
+
+                      var image;
+
+                      if (before.images.length === 0) {
+                        image = after.images[0];
+                      } else {
+                        for (i = 0; i < after.images.length; i += 1) {
+                          if (i === after.images.length -1 || i >= before.images.length || after.indexes[i] !== before.indexes[i]) {
+                            image = after.images[i];
+                            break;
+                          }
+                        }
+                      }
+
+                      if (!image) return;
+                      image.style.float = imageFloat;
+                      this.fire('select-element', {element: image});
                     },
                     10
                   );
@@ -133,26 +159,20 @@
   						);
             }
 					} else if (this.$.remove.contains(target)) {
+					  if (this.selectedImage) this.selectedImage.parentNode.removeChild(this.selectedImage);
 						this.$.dropdown.close();
-
-						this.async(
-							function () {
-								document.execCommand('unlink');
-							},
-							10
-						);
 					} else if (this.$.close.contains(target)) {
 					  this.$.dropdown.close();
 					} else {
+					  this._selectedImageChanged();
 					  this.$.dropdown.open();
 					}
 				},
 				queryCommandEnabled: function () {
-					if (!this.range0) return false;
-					return this.range0.endOffset > this.range0.startOffset;
+					return this.range0;
 				},
 				queryCommandState: function () {
-					return this.range0 && this.selectedLink;
+					return this.selectedImage;
 				},
 				_click: function (event) {
 				  this.execCommand(event);
@@ -161,27 +181,27 @@
 				  if (minWidth768px) return 'bottom';
 				  return 'right';
 				},
-				_linkTargetChanged: function () {
-				  if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
-				    this.linkTarget = '_self';
+				_imageFloatChanged: function () {
+				  if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
+				    this.imageFloat = 'none';
 				    return;
 				  }
 				},
 				_paperDropdownClose: function (event) {
 				  if (event.target !== this.$.dropdown) return;
-					this.linkUrl = '';
-					this.linkTarget = '_self';
+					this.imageUrl = '';
+					this.imageFloat = 'none';
 					this.fire('restore-selection');
 				},
-				_selectedLinkChanged: function () {
-					WYSIWYG.ToolBehavior._selectedLinkChanged.apply(this, arguments);
+				_selectedImageChanged: function () {
+					WYSIWYG.ToolBehavior._selectedImageChanged.apply(this, arguments);
 
-					if (this.selectedLink) {
-						this.linkUrl = this.selectedLink.href;
-						this.linkTarget = this.selectedLink.target || '_self';
+					if (this.selectedImage) {
+						this.imageUrl = this.selectedImage.src;
+						this.imageFloat = this.selectedImage.style.float || 'none';
 					} else {
-					  this.linkUrl = '';
-					  this.linkTarget = '_self';
+					  this.imageUrl = '';
+					  this.imageFloat = 'none';
 					}
 				},
 				_stopPropagation: function (event) {

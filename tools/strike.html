@@ -7,20 +7,20 @@
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
-<dom-module id="wysiwyg-tool-remove-format">
+<dom-module id="wysiwyg-tool-strike">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<paper-button disabled="[[disabled]]" id="button">
-		  <iron-icon icon="editor:format-clear"></iron-icon>
-		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Remove Format ([[modifier.tooltip]] + Space)</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+space" on-keys-pressed="execCommand"></iron-a11y-keys>
+		  <iron-icon icon="editor:format-strikethrough"></iron-icon>
+		</paper-icon-button>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Strikethrough ([[modifier.tooltip]] + S)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+s" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
 			{
-				is: 'wysiwyg-tool-remove-format',
+				is: 'wysiwyg-tool-strike',
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
@@ -34,7 +34,7 @@
 				  }
 				},
 				ready: function () {
-					this._setCommand('removeFormat');
+					this._setCommand('strikeThrough');
 				},
 				_computeTooltipPosition: function (minWidth768px) {
 				  if (minWidth768px) return 'bottom';
