@@ -10,7 +10,7 @@
 * Italic
 * Underline
 * Strikethrough
-* Remove Format
+* Clear Formatting
 * Link
 * Image
 * List (numbered / bulleted)
