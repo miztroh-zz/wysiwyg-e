@@ -430,6 +430,37 @@ Command         | Shortcut Mac | Shortcut Windows
     		  var div = document.createElement('div'), i;
     		  div.innerHTML = html;
 
+          //Move non-code nodes outside of pre nodes
+          var invalidPreChildren = div.querySelectorAll('pre > :not(code), code > p');
+
+          for (i = 0; i < invalidPreChildren.length; i += 1) {
+            invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
+          }
+
+          var pre = div.querySelectorAll('pre');
+
+          for (i = 0; i < pre.length; i += 1) {
+            var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
+
+            for (var j = 0; j < childNodes.length; j += 1) {
+              if (childNodes[j].tagName !== 'CODE') {
+                pre[i].parentNode.insertBefore(childNodes[j], insertBefore);
+                continue;
+              }
+
+              codes += 1;
+
+              if (codes === 1) {
+                insertBefore = pre[i].nextSibling;
+              } else if (codes > 1) {
+                var newPre = document.createElement('pre');
+                newPre.appendChild(childNodes[j]);
+                pre[i].parentNode.insertBefore(newPre, insertBefore);
+                insertBefore = newPre.nextSibling;
+              }
+            }
+          }
+
           //Strip classes
           var classes = div.querySelectorAll('[class]');
 
@@ -453,8 +484,8 @@ Command         | Shortcut Mac | Shortcut Windows
             em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
           }
 
-          //Replace div with p
-          var divs = div.querySelectorAll('div');
+          //Replace div, span with p
+          var divs = div.querySelectorAll('div, span');
 
           for (i = 0; i < divs.length; i += 1) {
             divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
