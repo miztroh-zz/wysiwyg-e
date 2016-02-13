@@ -444,7 +444,10 @@ Command         | Shortcut Mac | Shortcut Windows
 
             for (var j = 0; j < childNodes.length; j += 1) {
               if (childNodes[j].tagName !== 'CODE') {
-                pre[i].parentNode.insertBefore(childNodes[j], insertBefore);
+                var p = document.createElement('p');
+                p.textContent = childNodes[j].textContent;
+                pre[i].removeChild(childNodes[j]);
+                pre[i].parentNode.insertBefore(p, insertBefore);
                 continue;
               }
 
@@ -458,6 +461,18 @@ Command         | Shortcut Mac | Shortcut Windows
                 pre[i].parentNode.insertBefore(newPre, insertBefore);
                 insertBefore = newPre.nextSibling;
               }
+            }
+          }
+
+          var pre = div.querySelectorAll('pre');
+
+          for (i = 0; i < pre.length; i += 1) {
+            if (pre[i].textContent.trim().length === 0) {
+              var p = document.createElement('p');
+              p.innerHTML = '&nbsp;';
+              pre[i].parentNode.insertBefore(p, pre[i]);
+              pre[i].parentNode.removeChild(pre[i]);
+              this.selectElement(p);
             }
           }
 
@@ -490,6 +505,18 @@ Command         | Shortcut Mac | Shortcut Windows
           for (i = 0; i < divs.length; i += 1) {
             divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
           }
+
+          this.async(
+            function () {
+              var Ps = this.target.querySelectorAll('p');
+
+              for (var i = 0; i < Ps.length; i += 1) {
+                if (Ps[i].innerHTML === '&nbsp;') {
+                  this.selectElement(Ps[i]);
+                }
+              }
+            }
+          );
 
     		  return div.innerHTML;
     		},
