@@ -329,7 +329,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 		<div class="fit" id="layout">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
-					<paper-menu-button>
+					<paper-menu-button hidden$="[[hideSettings]]">
 						<paper-button class="dropdown-trigger">
 							<iron-icon icon="settings"></iron-icon>
 						</paper-button>
@@ -373,7 +373,14 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 
 				properties: {
 					/**
-					 * Set view mode to edit, read, html. Default edit.
+					 * Option to hide the built-in settings tool.  Defaults to false.
+					*/
+				  hideSettings: {
+				    type: Boolean,
+				    value: false
+				  },
+					/**
+					 * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
 					*/
 					mode: {
 						type: String,
@@ -382,7 +389,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						reflectToAttribute: true
 					},
 					/**
-					 * Link handler for read-only mode.
+					 * Target for use with selection-mgr and undo-mgr behaviors
 					*/
 					target: {
 						type: Object,
