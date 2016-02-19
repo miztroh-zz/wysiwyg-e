@@ -18,9 +18,9 @@
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<style>
-		  #close {
-        color: rgba(0, 0, 0, 0.5)!important;
-      }
+			#close {
+				color: rgba(0, 0, 0, 0.5)!important;
+			}
 
 			#updateInsert {
 				color: #2A9AF2!important;
@@ -39,20 +39,20 @@
 			}
 		</style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Image ([[modifier.tooltip]] + M)</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+m" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Image (Shift + Alt + M)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+m" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
-  		<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
-  		  <iron-icon icon="editor:insert-photo"></iron-icon>
-  		</paper-button>
+			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+				<iron-icon icon="editor:insert-photo"></iron-icon>
+			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
 				<paper-input label="URL" always-float-label value="{{imageUrl}}" id="url" error-message="Invalid format"></paper-input>
 				<paper-dropdown-menu label="Float" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-				  <paper-listbox class="dropdown-content" selected="{{imageFloat}}" attr-for-selected="float">
-				    <paper-item float="none">none</paper-item>
-				    <paper-item float="left">left</paper-item>
-				    <paper-item float="right">right</paper-item>
-				  </paper-listbox>
+					<paper-listbox class="dropdown-content" selected="{{imageFloat}}" attr-for-selected="float">
+						<paper-item float="none">none</paper-item>
+						<paper-item float="left">left</paper-item>
+						<paper-item float="right">right</paper-item>
+					</paper-listbox>
 				</paper-dropdown-menu>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="close"></paper-icon-button>
@@ -72,22 +72,22 @@
 					WYSIWYG.ToolBehavior
 				],
 				properties: {
-				  imageFloat: {
-				    type: String,
-				    value: 'none',
-				    observer: '_imageFloatChanged'
-				  },
+					imageFloat: {
+						type: String,
+						value: 'none',
+						observer: '_imageFloatChanged'
+					},
 					imageUrl: {
 						type: String,
 						value: ''
 					},
-				  minWidth768px: {
-				    type: Boolean
-				  },
-				  tooltipPosition: {
-				    type: String,
-				    computed: '_computeTooltipPosition(minWidth768px)'
-				  }
+					minWidth768px: {
+						type: Boolean
+					},
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px)'
+					}
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return;
@@ -95,79 +95,79 @@
 
 					if (this.$.updateInsert.contains(target)) {
 						var protocols = [
-              //http(s)
-              /^https?\:\/\//
-            ];
+							//http(s)
+							/^https?\:\/\//
+						];
 
-            var valid = false;
+						var valid = false;
 
-            for (var i = 0; i < protocols.length; i += 1) {
-              if (protocols[i].test(imageUrl)) {
-                valid = true;
-                break;
-              }
-            }
+						for (var i = 0; i < protocols.length; i += 1) {
+							if (protocols[i].test(imageUrl)) {
+								valid = true;
+								break;
+							}
+						}
 
-            this.$.url.invalid = !valid;
+						this.$.url.invalid = !valid;
 
-            if (valid) {
-  						this.$.dropdown.close();
+						if (valid) {
+							this.$.dropdown.close();
 
-  						this.async(
-  							function () {
-  							  var before = {
-  							    images: this.target.querySelectorAll('img'),
-                    indexes: []
-                  };
+							this.async(
+								function () {
+									var before = {
+										images: this.target.querySelectorAll('img'),
+										indexes: []
+									};
 
-                  for (var i = 0; i < before.images.length; i += 1) {
-                    before.indexes.push(this.value.indexOf(before.images[i].outerHTML));
-                  }
+									for (var i = 0; i < before.images.length; i += 1) {
+										before.indexes.push(this.value.indexOf(before.images[i].outerHTML));
+									}
 
-  							  document.execCommand('insertImage', false, imageUrl);
+									document.execCommand('insertImage', false, imageUrl);
 
-                  this.async(
-                    function () {
-                      var after = {
-      							    images: this.target.querySelectorAll('img'),
-                        indexes: []
-                      };
+									this.async(
+										function () {
+											var after = {
+												images: this.target.querySelectorAll('img'),
+												indexes: []
+											};
 
-                      for (var i = 0; i < after.images.length; i += 1) {
-                        after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
-                      }
+											for (var i = 0; i < after.images.length; i += 1) {
+												after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
+											}
 
-                      var image;
+											var image;
 
-                      if (before.images.length === 0) {
-                        image = after.images[0];
-                      } else {
-                        for (i = 0; i < after.images.length; i += 1) {
-                          if (i === after.images.length -1 || i >= before.images.length || after.indexes[i] !== before.indexes[i]) {
-                            image = after.images[i];
-                            break;
-                          }
-                        }
-                      }
+											if (before.images.length === 0) {
+												image = after.images[0];
+											} else {
+												for (i = 0; i < after.images.length; i += 1) {
+													if (i === after.images.length -1 || i >= before.images.length || after.indexes[i] !== before.indexes[i]) {
+														image = after.images[i];
+														break;
+													}
+												}
+											}
 
-                      if (!image) return;
-                      image.style.float = imageFloat;
-                      this.fire('select-element', {element: image});
-                    },
-                    10
-                  );
-  							},
-  							10
-  						);
-            }
+											if (!image) return;
+											image.style.float = imageFloat;
+											this.fire('select-element', {element: image});
+										},
+										10
+									);
+								},
+								10
+							);
+						}
 					} else if (this.$.remove.contains(target)) {
-					  if (this.selectedImage) this.selectedImage.parentNode.removeChild(this.selectedImage);
+						if (this.selectedImage) this.selectedImage.parentNode.removeChild(this.selectedImage);
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
-					  this.$.dropdown.close();
+						this.$.dropdown.close();
 					} else {
-					  this._selectedImageChanged();
-					  this.$.dropdown.open();
+						this._selectedImageChanged();
+						this.$.dropdown.open();
 					}
 				},
 				queryCommandEnabled: function () {
@@ -177,20 +177,20 @@
 					return this.selectedImage;
 				},
 				_click: function (event) {
-				  this.execCommand(event);
+					this.execCommand(event);
 				},
 				_computeTooltipPosition: function (minWidth768px) {
-				  if (minWidth768px) return 'bottom';
-				  return 'right';
+					if (minWidth768px) return 'bottom';
+					return 'right';
 				},
 				_imageFloatChanged: function () {
-				  if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
-				    this.imageFloat = 'none';
-				    return;
-				  }
+					if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
+						this.imageFloat = 'none';
+						return;
+					}
 				},
 				_paperDropdownClose: function (event) {
-				  if (event.target !== this.$.dropdown) return;
+					if (event.target !== this.$.dropdown) return;
 					this.imageUrl = '';
 					this.imageFloat = 'none';
 					this.fire('restore-selection');
@@ -202,12 +202,12 @@
 						this.imageUrl = this.selectedImage.src;
 						this.imageFloat = this.selectedImage.style.float || 'none';
 					} else {
-					  this.imageUrl = '';
-					  this.imageFloat = 'none';
+						this.imageUrl = '';
+						this.imageFloat = 'none';
 					}
 				},
 				_stopPropagation: function (event) {
-				  event.stopPropagation();
+					event.stopPropagation();
 				}
 			}
 		);

@@ -1,0 +1,189 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../iron-media-query/iron-media-query.html">
+<link rel="import" href="../../font-roboto/roboto.html">
+<link rel="import" href="../../paper-item/paper-item.html">
+<link rel="import" href="../wysiwyg-tool-behavior.html">
+<link rel="import" href="../wysiwyg-tool-styles.html">
+<dom-module id="wysiwyg-tool-justify">
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<style>
+			:host {
+				font-family: Roboto;
+			}
+
+			paper-button {
+				font-weight: bold;
+				font-size: 18px;
+			}
+
+			paper-item {
+				color: black;
+			}
+
+			paper-item:hover {
+				cursor: pointer;
+			}
+
+			paper-item[active] {
+				font-weight: bold;
+				background: #e4e4e4;
+			}
+		</style>
+		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Justify</paper-tooltip>
+		<paper-tooltip for="left" position="[[tooltipPosition]]">Left (Shift + Alt + L)</paper-tooltip>
+		<paper-tooltip for="right" position="[[tooltipPosition]]">Right (Shift + Alt + R)</paper-tooltip>
+		<paper-tooltip for="center" position="[[tooltipPosition]]">Center (Shift + Alt + E)</paper-tooltip>
+		<paper-tooltip for="full" position="[[tooltipPosition]]">Full (Shift + Alt + J)</paper-tooltip>
+		<iron-a11y-keys target="[[target]]" keys="shift+alt+l" on-keys-pressed="_left"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="shift+alt+r" on-keys-pressed="_right"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="shift+alt+c" on-keys-pressed="_center"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="shift+alt+j" on-keys-pressed="_full"></iron-a11y-keys>
+		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
+			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+				<iron-icon id="icon" icon="editor:format-align-left"></iron-icon>
+			</paper-button>
+			<div class="dropdown-content">
+				<paper-item id="left">Left</paper-item>
+				<paper-item id="right" hidden$="{{!right}}">Right</paper-item>
+				<paper-item id="center" hidden$="{{!center}}">Center</paper-item>
+				<paper-item id="full" hidden$="{{!full}}">Full</paper-item>
+			</div>
+		</paper-menu-button>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-justify',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				properties: {
+					right: {
+						type: Boolean,
+						value: false
+					},
+					center: {
+						type: Boolean,
+						value: false
+					},
+					full: {
+						type: Boolean,
+						value: false
+					},
+					minWidth768px: {
+						type: Boolean
+					},
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px)'
+					}
+				},
+				ready: function () {
+					this._setCommand('formatBlock');
+				},
+				execCommand: function (event) {
+					if (this.disabled || !this.range0) return false;
+
+					var target = Polymer.dom(event).rootTarget;
+
+					if (this.$.left.contains(target)) {
+						this._left();
+					} else if (this.$.right.contains(target)) {
+						this._right();
+					} else if (this.$.center.contains(target)) {
+						this._center();
+					} else if (this.$.full.contains(target)) {
+						this._full();
+					}
+				},
+				queryCommandState: function () {
+					if (this.range0) {
+						var left = document.queryCommandState('justifyLeft');
+
+						if (left) {
+							this.$.left.setAttribute('active', '');
+							this.$.icon.icon = 'editor:format-align-left';
+						} else {
+							this.$.left.removeAttribute('active');
+						}
+
+						var right = document.queryCommandState('justifyRight');
+
+						if (right) {
+							this.$.right.setAttribute('active', '');
+							this.$.icon.icon = 'editor:format-align-right';
+						} else {
+							this.$.right.removeAttribute('active');
+						}
+
+						var center = document.queryCommandState('justifyCenter');
+
+						if (center) {
+							this.$.center.setAttribute('active', '');
+							this.$.icon.icon = 'editor:format-align-center';
+						} else {
+							this.$.center.removeAttribute('active');
+						}
+
+						var full = document.queryCommandState('justifyFull');
+
+						if (full) {
+							this.$.full.setAttribute('active', '');
+							this.$.icon.icon = 'editor:format-align-justify';
+						} else {
+							this.$.full.removeAttribute('active');
+						}
+
+						if (right || center || full) return true;
+					}
+
+					return false;
+				},
+				_computeTooltipPosition: function (minWidth768px) {
+					if (minWidth768px) return 'bottom';
+					return 'right';
+				},
+				_justify: function (justification) {
+					if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
+
+					this.$.dropdown.close();
+
+					this.async(
+						function () {
+							var command = 'justify' + justification.charAt(0).toUpperCase() + justification.slice(1);
+
+							if (document.queryCommandState(command)) {
+								document.execCommand('justifyLeft');
+							} else {
+								document.execCommand(command);
+							}
+						},
+						10
+					);
+				},
+				_left: function () {
+					this._justify('left');
+				},
+				_right: function () {
+					this._justify('right');
+				},
+				_center: function () {
+					this._justify('center');
+				},
+				_full: function () {
+					this._justify('full');
+				},
+				_paperDropdownClose: function (event) {
+					if (event.target !== this.$.dropdown) return;
+					this.fire('restore-selection');
+				}
+			}
+		);
+	</script>
+</dom-module>

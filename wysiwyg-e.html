@@ -29,10 +29,12 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 	<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
 	<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
 	<wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
-	<wysiwyg-tool-list class="wysiwyg-tool"></wysiwyg-tool-list>
+	<wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
+	<wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
 	<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
 	<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
-  <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+	<wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
+	<wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
 	<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
 	<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
 	<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
@@ -45,76 +47,80 @@ The following custom properties and mixins are available for styling:
 
 #### Toolbar
 
-Custom property | Description | Default
-----------------|-------------|----------
-`--wysiwyg-toolbar-background-color`   | Toolbar background color               | `#2A9AF2`
-`--wysiwyg-toolbar-color`              | Toolbar foreground color               | `white`
-`--wysiwyg-toolbar`                    | Mixin applied to the wysiwyg-e toolbar | `{}`
+Custom property												| Description															| Default
+--------------------------------------|-----------------------------------------|----------
+`--wysiwyg-toolbar-background-color` 	| Toolbar background color							 	| `#2A9AF2`
+`--wysiwyg-toolbar-color`							| Toolbar foreground color							 	| `white`
+`--wysiwyg-toolbar`										| Mixin applied to the wysiwyg-e toolbar 	| `{}`
 
 #### Editable Content
 
-Custom property           | Description | Default
-------------------------- |-------------|----------
-`--wysiwyg-editable`                   | Mixin applied to the wysiwyg-e content | `{}`
-`--wysiwyg-editable-blockquote`        | Mixen applied to Blockquote `<blockquote>` | `{}`
-`--wysiwyg-editable-pre`               | Mixen applied to code `<code>`         | `{}`
-`--wysiwyg-editable-p`                 | Mixen applied to paragraph `<p>`       | `{}`
-`--wysiwyg-editable-h1`                | Mixen applied to H1 `<h1>`             | `{}`
-`--wysiwyg-editable-h2`                | Mixen applied to H2 `<h2>`             | `{}`
-`--wysiwyg-editable-h3`                | Mixen applied to H3 `<h3>`             | `{}`
-`--wysiwyg-editable-h4`                | Mixen applied to H4 `<h4>`             | `{}`
-`--wysiwyg-editable-h5`                | Mixen applied to H5 `<h5>`             | `{}`
-`--wysiwyg-editable-h6`                | Mixen applied to H6 `<h7>`             | `{}`
-`--wysiwyg-editable-ol`                | Ordered List `<ol>`                    | `{padding-left: 30px;}`
-`--wysiwyg-editable-ul`                | Unordered List  `<ul>`                 | `{padding-left: 30px;}`
-`--wysiwyg-editable-li`                | Mixen applied to `<li>`                | `{}`
-`--wysiwyg-editable-a`                 | Link  `<a>`                            | `{color: #2A9AF2;}`
-`--wysiwyg-editable-img`               | Mixen applied to `<img>`               | `{}`
-`--wysiwyg-editable-b`                 | Mixen applied to `<b>`                 | `{}`
-`--wysiwyg-editable-u`                 | Mixen applied to `<u>`                 | `{}`
-`--wysiwyg-editable-i`                 | Mixen applied to `<i>`                 | `{}`
-`--wysiwyg-editable-strike`            | Mixen applied to `<strike>`            | `{}`
-`--wysiwyg-editable-first-child`       | Mixin applied to editable first child  | `{}`
-`--wysiwyg-editable-last-child`        | Mixin applied to editable last child   | `{}`
-`--wysiwyg-editable-selection`         | Editable selection                     | `{color: white; background: #2A9AF2;}`
-`--wysiwyg-html`                       | Mixin applied to the wysiwyg-e html content | `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`                   | Html content `<pre>`                   | `{margin: 0;}`
-`--wysiwyg-html-code`                  | Html content `<code>`                  | `{display: block; display: block;}`
+Custom property									| Description																	| Default
+--------------------------------|---------------------------------------------|----------
+`--wysiwyg-editable`						| Mixin applied to the wysiwyg-e content			| `{}`
+`--wysiwyg-editable-blockquote`	| Mixen applied to Blockquote `<blockquote>`	| `{}`
+`--wysiwyg-editable-pre`				| Mixen applied to code `<code>`							| `{}`
+`--wysiwyg-editable-p`					| Mixen applied to paragraph `<p>`						| `{}`
+`--wysiwyg-editable-h1`					| Mixen applied to H1 `<h1>`									| `{}`
+`--wysiwyg-editable-h2`					| Mixen applied to H2 `<h2>`									| `{}`
+`--wysiwyg-editable-h3`					| Mixen applied to H3 `<h3>`									| `{}`
+`--wysiwyg-editable-h4`					| Mixen applied to H4 `<h4>`									| `{}`
+`--wysiwyg-editable-h5`					| Mixen applied to H5 `<h5>`									| `{}`
+`--wysiwyg-editable-h6`					| Mixen applied to H6 `<h7>`									| `{}`
+`--wysiwyg-editable-ol`					| Ordered List `<ol>`													| `{padding-left: 30px;}`
+`--wysiwyg-editable-ul`					| Unordered List	`<ul>`											| `{padding-left: 30px;}`
+`--wysiwyg-editable-li`					| Mixen applied to `<li>`											| `{}`
+`--wysiwyg-editable-a`					| Link	`<a>`																	| `{color: #2A9AF2;}`
+`--wysiwyg-editable-img`				| Mixen applied to `<img>`										| `{}`
+`--wysiwyg-editable-b`					| Mixen applied to `<b>`											| `{}`
+`--wysiwyg-editable-u`					| Mixen applied to `<u>`											| `{}`
+`--wysiwyg-editable-i`					| Mixen applied to `<i>`											| `{}`
+`--wysiwyg-editable-strike`			| Mixen applied to `<strike>`									| `{}`
+`--wysiwyg-editable-first-child`| Mixin applied to editable first child				| `{}`
+`--wysiwyg-editable-last-child`	| Mixin applied to editable last child				| `{}`
+`--wysiwyg-editable-selection`	| Editable selection													| `{color: white; background: #2A9AF2;}`
+`--wysiwyg-html`								| Mixin applied to the wysiwyg-e html content | `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`						| Html content `<pre>`												| `{margin: 0;}`
+`--wysiwyg-html-code`						| Html content `<code>`												| `{display: block; display: block;}`
 
 #### HTML View
 
-Custom property | Description | Default
-----------------|-------------|----------
-`--wysiwyg-html`                       | Mixin applied to the wysiwyg-e html content | `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`                   | Html content `<pre>`                   | `{margin: 0;}`
-`--wysiwyg-html-code`                  | Html content `<code>`                  | `{display: block; display: block;}`
+Custom property			 	| Description																 	| Default
+----------------------|---------------------------------------------|----------
+`--wysiwyg-html`			| Mixin applied to the wysiwyg-e html content | `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`	| Html content `<pre>`												| `{margin: 0;}`
+`--wysiwyg-html-code` | Html content `<code>`											 	| `{display: block; display: block;}`
 
 ### Accessibility / Shortcut Keys
 `<wysiwyg-e>` implements key bindings to access commands.
 
-Command         | Shortcut Mac | Shortcut Windows
-----------------|--------------|-------------------
-`Bold`          | Cmd + B      | Ctrl + B
-`Italc`         | Cmd + I      | Ctrl + I
-`Underline`     | Cmd + U      | Ctrl + U
-`Strikethrough` | Cmd + S      | Ctrl + S
-`Remove Format` | Cmd + Space  | Ctrl + Space
-`Link`          | Cmd + L      | Ctrl + L
-`Image`         | Cmd + M      | Ctrl + M
-`Ordered List`  | Cmd + L      | Ctrl + L
-`Bullet List`   | Cmd + L      | Ctrl + L
-`Indent`        | Tab          | Tab
-`Outdent`       | Shift + Tab  | Shift + Tab
-`Headings`      | Cmd + #      | Ctrl + #
-`H1`            | Cmd + 1      | Ctrl + 1
-`H2`            | Cmd + 2      | Ctrl + 2
-`H3`            | Cmd + 3      | Ctrl + 2
-`H4`            | Cmd + 4      | Ctrl + 3
-`H5`            | Cmd + 5      | Ctrl + 3
-`H6`            | Cmd + 6      | Ctrl + 6
-`Quote`         | Cmd + Q      | Ctrl + Q
-`Undo`          | Cmd + Z      | Ctrl + Z
-`Redo`          | Cmd + Y      | Ctrl + Y
+Command				 	| Shortcut Mac		| Shortcut Windows
+----------------|-----------------|-------------------
+`Bold`					| Cmd + B					| Ctrl + B
+`Italc`					| Cmd + I					| Ctrl + I
+`Underline`			| Cmd + U					| Ctrl + U
+`Strikethrough` | Shift + Alt + D | Shift + Alt + D
+`Remove Format` | Cmd + Space			| Ctrl + Space
+`Link`					| Shift + Alt + A | Shift + Alt + A
+`Image`					| Shift + Alt + M | Shift + Alt + M
+`Ordered List`	| Shift + Alt + O | Shift + Alt + O
+`Bullet List`		| Shift + Alt + U | Shift + Alt + U
+`Indent`				| Tab							| Tab
+`Outdent`				| Shift + Tab			| Shift + Tab
+`Align Left`		| Shift + Alt + L | Shift + Alt + L
+`Align Right`		| Shift + Alt + R | Shift + Alt + R
+`Align Center`	| Shift + Alt + C | Shift + Alt + C
+`Justify`				| Shift + Alt + J | Shift + Alt + J
+`Paragraph`			| Shift + Alt + 0 | Shift + Alt + 0
+`H1`						| Shift + Alt + 1 | Shift + Alt + 1
+`H2`						| Shift + Alt + 2 | Shift + Alt + 2
+`H3`						| Shift + Alt + 3 | Shift + Alt + 2
+`H4`						| Shift + Alt + 4 | Shift + Alt + 3
+`H5`						| Shift + Alt + 5 | Shift + Alt + 3
+`H6`						| Shift + Alt + 6 | Shift + Alt + 6
+`Blockquote`		| Shift + Alt + Q | Shift + Alt + Q
+`Undo`					| Cmd + Z					| Ctrl + Z
+`Redo`					| Cmd + Y				 	| Ctrl + Y
 
 @element wysiwyg-e
 @demo demo/index.html
@@ -139,8 +145,8 @@ Command         | Shortcut Mac | Shortcut Windows
 				};
 				background: var(--wysiwyg-toolbar-background, #2A9AF2);
 				user-select: none;
-		    color: var(--wysiwyg-toolbar-color, white);
-		    @apply(--wysiwyg-toolbar);
+				color: var(--wysiwyg-toolbar-color, white);
+				@apply(--wysiwyg-toolbar);
 			}
 
 			#editable {
@@ -167,8 +173,8 @@ Command         | Shortcut Mac | Shortcut Windows
 			}
 
 			#editable ol {
-			  padding-left: 30px;
-			  @apply(--wysiwyg-editable-ol);
+				padding-left: 30px;
+				@apply(--wysiwyg-editable-ol);
 			}
 
 			#editable ul {
@@ -185,164 +191,164 @@ Command         | Shortcut Mac | Shortcut Windows
 				@apply(--wysiwyg-editable-a);
 			}
 
-      #editable img {
-        @apply(--wysiwyg-editable-img);
-      }
+			#editable img {
+				@apply(--wysiwyg-editable-img);
+			}
 
-      #editable blockquote {
-        padding: 15px;
-        margin: 0;
-        border-left: 5px solid #eee;
-        @apply(--wysiwyg-editable-blockquote);
-      }
+			#editable blockquote {
+				padding: 15px;
+				margin: 0;
+				border-left: 5px solid #eee;
+				@apply(--wysiwyg-editable-blockquote);
+			}
 
-      #editable code {
-        display: block;
-        padding: 16px;
-        line-height: 1.5;
-        background-color: #f7f7f7;
-        border-radius: 3px;
-        @apply(--wysiwyg-editable-pre);
-      }
+			#editable code {
+				display: block;
+				padding: 16px;
+				line-height: 1.5;
+				background-color: #f7f7f7;
+				border-radius: 3px;
+				@apply(--wysiwyg-editable-pre);
+			}
 
-      #editable p {
-        @apply(--wysiwyg-editable-p);
-      }
+			#editable p {
+				@apply(--wysiwyg-editable-p);
+			}
 
-      #editable h1 {
-        @apply(--wysiwyg-editable-h1);
-      }
+			#editable h1 {
+				@apply(--wysiwyg-editable-h1);
+			}
 
-      #editable h2{
-        @apply(--wysiwyg-editable-h2);
-      }
+			#editable h2{
+				@apply(--wysiwyg-editable-h2);
+			}
 
-      #editable h3 {
-        @apply(--wysiwyg-editable-h3);
-      }
+			#editable h3 {
+				@apply(--wysiwyg-editable-h3);
+			}
 
-      #editable h4 {
-        @apply(--wysiwyg-editable-h4);
-      }
+			#editable h4 {
+				@apply(--wysiwyg-editable-h4);
+			}
 
-      #editable h5 {
-        @apply(--wysiwyg-editable-h5);
-      }
+			#editable h5 {
+				@apply(--wysiwyg-editable-h5);
+			}
 
-      #editable h6 {
-        @apply(--wysiwyg-editable-h6);
-      }
+			#editable h6 {
+				@apply(--wysiwyg-editable-h6);
+			}
 
-      #editable b {
-        @apply(--wysiwyg-editable-b);
-      }
+			#editable b {
+				@apply(--wysiwyg-editable-b);
+			}
 
-      #editable u {
-        @apply(--wysiwyg-editable-u);
-      }
+			#editable u {
+				@apply(--wysiwyg-editable-u);
+			}
 
-      #editable i {
-        @apply(--wysiwyg-editable-i);
-      }
+			#editable i {
+				@apply(--wysiwyg-editable-i);
+			}
 
-      #editable strike {
-        @apply(--wysiwyg-editable-strike);
-      }
+			#editable strike {
+				@apply(--wysiwyg-editable-strike);
+			}
 
-      #html {
-        padding: 0 20px 20px 20px;
-        @apply(--wysiwyg-html);
-        @apply(--layout-flex);
-      }
+			#html {
+				padding: 0 20px 20px 20px;
+				@apply(--wysiwyg-html);
+				@apply(--layout-flex);
+			}
 
-      #html pre {
-        margin: 0;
-        @apply(--wysiwyg-html-pre);
-      }
+			#html pre {
+				margin: 0;
+				@apply(--wysiwyg-html-pre);
+			}
 
-      #html code {
-        display: block;
-        word-wrap: break-word;
-        @apply(--wysiwyg-html-code);
-      }
+			#html code {
+				display: block;
+				word-wrap: break-word;
+				@apply(--wysiwyg-html-code);
+			}
 
-		  paper-button {
-		    padding: 0;
-		    margin: 0;
-        height: 40px;
-        line-height: 40px;
-        border-radius: 0px;
-        min-width: 40px;
-        background: transparent;
-        text-transform: none;
-		  }
+			paper-button {
+				padding: 0;
+				margin: 0;
+				height: 40px;
+				line-height: 40px;
+				border-radius: 0px;
+				min-width: 40px;
+				background: transparent;
+				text-transform: none;
+			}
 
-      paper-menu-button {
-        padding: 0;
-      }
+			paper-menu-button {
+				padding: 0;
+			}
 
-      paper-item:hover {
-        cursor: pointer;
-      }
+			paper-item:hover {
+				cursor: pointer;
+			}
 
-      :host([mode="read"]) ::content .wysiwyg-tool,
-      :host([mode="html"]) ::content .wysiwyg-tool {
-        visibility: hidden;
-      }
+			:host([mode="read"]) ::content .wysiwyg-tool,
+			:host([mode="html"]) ::content .wysiwyg-tool {
+				visibility: hidden;
+			}
 
-      @media (min-width: 768px) {
-        #layout {
-          @apply(--layout-vertical);
-        }
+			@media (min-width: 768px) {
+				#layout {
+					@apply(--layout-vertical);
+				}
 
-        #toolbarLayout {
-          @apply(--layout-horizontal);
-          @apply(--layout-wrap);
-          @apply(--layout-center-justified);
-        }
-      }
+				#toolbarLayout {
+					@apply(--layout-horizontal);
+					@apply(--layout-wrap);
+					@apply(--layout-center-justified);
+				}
+			}
 
-      @media (max-width: 767px) {
-        #layout {
-          @apply(--layout-horizontal);
-        }
+			@media (max-width: 767px) {
+				#layout {
+					@apply(--layout-horizontal);
+				}
 
-        #toolbarLayout {
-          @apply(--layout-vertical);
-          width: 40px;
-        }
-      }
+				#toolbarLayout {
+					@apply(--layout-vertical);
+					width: 40px;
+				}
+			}
 
-      #content {
-        overflow-y: auto;
-        @apply(--layout-flex);
-        @apply(--layout-vertical);
-      }
+			#content {
+				overflow-y: auto;
+				@apply(--layout-flex);
+				@apply(--layout-vertical);
+			}
 		</style>
 
 		<div class="fit" id="layout">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
-				  <paper-menu-button>
-  				  <paper-button class="dropdown-trigger">
-  				    <iron-icon icon="settings"></iron-icon>
-  				  </paper-button>
-				    <paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
-				      <paper-item mode="edit">Edit</paper-item>
-				      <paper-item mode="read">Read-only</paper-item>
-				      <paper-item mode="html">View HTML</paper-item>
-				    </paper-listbox>
-				  </paper-menu-button>
+					<paper-menu-button>
+						<paper-button class="dropdown-trigger">
+							<iron-icon icon="settings"></iron-icon>
+						</paper-button>
+						<paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
+							<paper-item mode="edit">Edit</paper-item>
+							<paper-item mode="read">Read-only</paper-item>
+							<paper-item mode="html">View HTML</paper-item>
+						</paper-listbox>
+					</paper-menu-button>
 					<content select=".wysiwyg-tool" id="tools"></content>
 				</div>
 			</paper-toolbar>
 			<div id="content">
-			  <div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
-		    <div id="html" hidden$="[[!_html(mode)]]">
-		      <pre>
-		        <code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
-		      </pre>
-        </div>
+				<div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
+				<div id="html" hidden$="[[!_html(mode)]]">
+					<pre>
+						<code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
+					</pre>
+				</div>
 			</div>
 		</div>
 	</template>
@@ -369,12 +375,12 @@ Command         | Shortcut Mac | Shortcut Windows
 					/**
 					 * Set view mode to edit, read, html. Default edit.
 					*/
-				  mode: {
-				    type: String,
-				    value: 'edit',
-				    observer: '_modeChanged',
-				    reflectToAttribute: true
-				  },
+					mode: {
+						type: String,
+						value: 'edit',
+						observer: '_modeChanged',
+						reflectToAttribute: true
+					},
 					/**
 					 * Link handler for read-only mode.
 					*/
@@ -394,20 +400,20 @@ Command         | Shortcut Mac | Shortcut Windows
 						}.bind(this)
 					);
 
-          //Link handler for read-only mode
-          this.target.addEventListener(
-            'click',
-            function (event) {
-              if (this.mode !== 'read') return false;
+					//Link handler for read-only mode
+					this.target.addEventListener(
+						'click',
+						function (event) {
+							if (this.mode !== 'read') return false;
 
-              this.async(
-                function () {
-                  if (this.selectedLink) window.open(this.selectedLink.href);
-                },
-                100
-              );
-            }.bind(this)
-          );
+							this.async(
+								function () {
+									if (this.selectedLink) window.open(this.selectedLink.href);
+								},
+								100
+							);
+						}.bind(this)
+					);
 				},
 
 				disconnect: function () {
@@ -420,111 +426,111 @@ Command         | Shortcut Mac | Shortcut Windows
 					SelectionMgrBehavior.observe.apply(this, arguments);
 				},
 
-    		redo: function () {
-    		  if (this.mode !== 'edit') return false;
-    		  return UndoMgrBehavior.redo.apply(this, arguments);
-    		},
+				redo: function () {
+					if (this.mode !== 'edit') return false;
+					return UndoMgrBehavior.redo.apply(this, arguments);
+				},
 
-    		sanitize: function (html) {
-    		  html = UndoMgrBehavior.sanitize.apply(this, arguments);
-    		  var div = document.createElement('div'), i;
-    		  div.innerHTML = html;
+				sanitize: function (html) {
+					html = UndoMgrBehavior.sanitize.apply(this, arguments);
+					var div = document.createElement('div'), i;
+					div.innerHTML = html;
 
-          //Move non-code nodes outside of pre nodes
-          var invalidPreChildren = div.querySelectorAll('pre > :not(code), code > p');
+					//Move non-code nodes outside of pre nodes
+					var invalidPreChildren = div.querySelectorAll('pre > :not(code), code > p');
 
-          for (i = 0; i < invalidPreChildren.length; i += 1) {
-            invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
-          }
+					for (i = 0; i < invalidPreChildren.length; i += 1) {
+						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
+					}
 
-          var pre = div.querySelectorAll('pre');
+					var pre = div.querySelectorAll('pre');
 
-          for (i = 0; i < pre.length; i += 1) {
-            var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
+					for (i = 0; i < pre.length; i += 1) {
+						var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
 
-            for (var j = 0; j < childNodes.length; j += 1) {
-              if (childNodes[j].tagName !== 'CODE') {
-                var p = document.createElement('p');
-                p.textContent = childNodes[j].textContent;
-                pre[i].removeChild(childNodes[j]);
-                pre[i].parentNode.insertBefore(p, insertBefore);
-                continue;
-              }
+						for (var j = 0; j < childNodes.length; j += 1) {
+							if (childNodes[j].tagName !== 'CODE') {
+								var p = document.createElement('p');
+								p.textContent = childNodes[j].textContent;
+								pre[i].removeChild(childNodes[j]);
+								pre[i].parentNode.insertBefore(p, insertBefore);
+								continue;
+							}
 
-              codes += 1;
+							codes += 1;
 
-              if (codes === 1) {
-                insertBefore = pre[i].nextSibling;
-              } else if (codes > 1) {
-                var newPre = document.createElement('pre');
-                newPre.appendChild(childNodes[j]);
-                pre[i].parentNode.insertBefore(newPre, insertBefore);
-                insertBefore = newPre.nextSibling;
-              }
-            }
-          }
+							if (codes === 1) {
+								insertBefore = pre[i].nextSibling;
+							} else if (codes > 1) {
+								var newPre = document.createElement('pre');
+								newPre.appendChild(childNodes[j]);
+								pre[i].parentNode.insertBefore(newPre, insertBefore);
+								insertBefore = newPre.nextSibling;
+							}
+						}
+					}
 
-          var pre = div.querySelectorAll('pre');
+					var pre = div.querySelectorAll('pre');
 
-          for (i = 0; i < pre.length; i += 1) {
-            if (pre[i].textContent.trim().length === 0) {
-              var p = document.createElement('p');
-              p.innerHTML = '&nbsp;';
-              pre[i].parentNode.insertBefore(p, pre[i]);
-              pre[i].parentNode.removeChild(pre[i]);
-              this.selectElement(p);
-            }
-          }
+					for (i = 0; i < pre.length; i += 1) {
+						if (pre[i].textContent.trim().length === 0) {
+							var p = document.createElement('p');
+							p.innerHTML = '&nbsp;';
+							pre[i].parentNode.insertBefore(p, pre[i]);
+							pre[i].parentNode.removeChild(pre[i]);
+							this.selectElement(p);
+						}
+					}
 
-          //Strip classes
-          var classes = div.querySelectorAll('[class]');
+					//Strip classes
+					var classes = div.querySelectorAll('[class]');
 
-          for (i = 0; i < classes.length; i += 1) {
-            classes[i].removeAttribute('class');
-            classes[i].classList.add('style-scope');
-            classes[i].classList.add('wysiwyg-e');
-          }
+					for (i = 0; i < classes.length; i += 1) {
+						classes[i].removeAttribute('class');
+						classes[i].classList.add('style-scope');
+						classes[i].classList.add('wysiwyg-e');
+					}
 
-          //Replace strong with b
-          var strong = div.querySelectorAll('strong');
+					//Replace strong with b
+					var strong = div.querySelectorAll('strong');
 
-          for (i = 0; i < strong.length; i += 1) {
-            strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
-          }
+					for (i = 0; i < strong.length; i += 1) {
+						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
+					}
 
-          //Replace em with i
-          var em = div.querySelectorAll('em');
+					//Replace em with i
+					var em = div.querySelectorAll('em');
 
-          for (i = 0; i < em.length; i += 1) {
-            em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
-          }
+					for (i = 0; i < em.length; i += 1) {
+						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
+					}
 
-          //Replace div, span with p
-          var divs = div.querySelectorAll('div, span');
+					//Replace div, span with p
+					var divs = div.querySelectorAll('div, span');
 
-          for (i = 0; i < divs.length; i += 1) {
-            divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
-          }
+					for (i = 0; i < divs.length; i += 1) {
+						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
+					}
 
-          this.async(
-            function () {
-              var Ps = this.target.querySelectorAll('p');
+					this.async(
+						function () {
+							var Ps = this.target.querySelectorAll('p');
 
-              for (var i = 0; i < Ps.length; i += 1) {
-                if (Ps[i].innerHTML === '&nbsp;') {
-                  this.selectElement(Ps[i]);
-                }
-              }
-            }
-          );
+							for (var i = 0; i < Ps.length; i += 1) {
+								if (Ps[i].innerHTML === '&nbsp;') {
+									this.selectElement(Ps[i]);
+								}
+							}
+						}
+					);
 
-    		  return div.innerHTML;
-    		},
+					return div.innerHTML;
+				},
 
-    		undo: function () {
-    		  if (this.mode !== 'edit') return false;
-    		  return UndoMgrBehavior.undo.apply(this, arguments);
-    		},
+				undo: function () {
+					if (this.mode !== 'edit') return false;
+					return UndoMgrBehavior.undo.apply(this, arguments);
+				},
 
 				updateTools: function () {
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
@@ -542,57 +548,57 @@ Command         | Shortcut Mac | Shortcut Windows
 				},
 
 				_edit: function (a, b) {
-				  return this.mode === 'edit';
+					return this.mode === 'edit';
 				},
 
 				_html: function () {
-				  return this.mode === 'html';
+					return this.mode === 'html';
 				},
 
 				_modeChanged: function () {
-				  if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
-				    this.mode = 'edit';
-				    return;
-				  }
+					if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
+						this.mode = 'edit';
+						return;
+					}
 				},
 
 				_panelMode: function () {
-				  if (this.mode !== 'edit') return 'seamed';
-				  return 'waterfall';
+					if (this.mode !== 'edit') return 'seamed';
+					return 'waterfall';
 				},
 
 				_prismHighlight: function (value) {
-				  // process and format functions from
-				  // http://stackoverflow.com/questions/26360414/javascript-how-to-correct-indentation-in-html-string
+					// process and format functions from
+					// http://stackoverflow.com/questions/26360414/javascript-how-to-correct-indentation-in-html-string
 
-				  function process (str) {
-            var div = document.createElement('div');
-            div.innerHTML = str.trim();
-            return format(div, 0).innerHTML;
-          }
+					function process (str) {
+						var div = document.createElement('div');
+						div.innerHTML = str.trim();
+						return format(div, 0).innerHTML;
+					}
 
-          function format (node, level) {
-            var indentBefore = new Array(level++ + 1).join('  '), indentAfter  = new Array(level - 1).join('  '), textNode;
+					function format (node, level) {
+						var indentBefore = new Array(level++ + 1).join('	'), indentAfter	= new Array(level - 1).join('	'), textNode;
 
-            for (var i = 0; i < node.children.length; i += 1) {
-              textNode = document.createTextNode('\n' + indentBefore);
-              node.insertBefore(textNode, node.children[i]);
-              format(node.children[i], level);
+						for (var i = 0; i < node.children.length; i += 1) {
+							textNode = document.createTextNode('\n' + indentBefore);
+							node.insertBefore(textNode, node.children[i]);
+							format(node.children[i], level);
 
-              if (node.lastElementChild == node.children[i]) {
-                textNode = document.createTextNode('\n' + indentAfter);
-                node.appendChild(textNode);
-              }
-            }
+							if (node.lastElementChild == node.children[i]) {
+								textNode = document.createTextNode('\n' + indentAfter);
+								node.appendChild(textNode);
+							}
+						}
 
-            return node;
-          }
+						return node;
+					}
 
 					return Prism.highlight(process(value), Prism.languages.markup);
 				},
 
 				_selectElement: function (event) {
-				  this.selectElement(event.detail.element);
+					this.selectElement(event.detail.element);
 				},
 
 				_targetChanged: function () {

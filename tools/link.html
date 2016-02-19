@@ -18,9 +18,9 @@
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<style>
-      #close {
-        color: rgba(0, 0, 0, 0.5)!important;
-      }
+			#close {
+				color: rgba(0, 0, 0, 0.5)!important;
+			}
 
 			#updateInsert {
 				color: #2A9AF2!important;
@@ -39,21 +39,21 @@
 			}
 		</style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Link ([[modifier.tooltip]] + K)</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+k" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Link (Shift + Alt + A)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
-  		<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
-  		  <iron-icon icon="editor:insert-link"></iron-icon>
-  		</paper-button>
+			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+				<iron-icon icon="editor:insert-link"></iron-icon>
+			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
 				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url" error-message="Invalid format"></paper-input>
 				<paper-dropdown-menu label="Target" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-				  <paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
-				    <paper-item target="_blank">_blank</paper-item>
-				    <paper-item target="_self">_self</paper-item>
-				    <paper-item target="_parent">_parent</paper-item>
-				    <paper-item target="_top">_top</paper-item>
-				  </paper-listbox>
+					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
+						<paper-item target="_blank">_blank</paper-item>
+						<paper-item target="_self">_self</paper-item>
+						<paper-item target="_parent">_parent</paper-item>
+						<paper-item target="_top">_top</paper-item>
+					</paper-listbox>
 				</paper-dropdown-menu>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="close"></paper-icon-button>
@@ -73,22 +73,22 @@
 					WYSIWYG.ToolBehavior
 				],
 				properties: {
-				  linkTarget: {
-				    type: String,
-				    value: '_self',
-				    observer: '_linkTargetChanged'
-				  },
+					linkTarget: {
+						type: String,
+						value: '_self',
+						observer: '_linkTargetChanged'
+					},
 					linkUrl: {
 						type: String,
 						value: ''
 					},
-				  minWidth768px: {
-				    type: Boolean
-				  },
-				  tooltipPosition: {
-				    type: String,
-				    computed: '_computeTooltipPosition(minWidth768px)'
-				  }
+					minWidth768px: {
+						type: Boolean
+					},
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px)'
+					}
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return;
@@ -96,44 +96,44 @@
 
 					if (this.$.updateInsert.contains(target)) {
 						var protocols = [
-              //http(s)
-              /^https?\:\/\//,
-              //mailto:
-              /^mailto\:[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-              //tel:
-              /^tel\:/,
-              //#hash
-              /^#/
-            ];
+							//http(s)
+							/^https?\:\/\//,
+							//mailto:
+							/^mailto\:[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+							//tel:
+							/^tel\:/,
+							//#hash
+							/^#/
+						];
 
-            var valid = false;
+						var valid = false;
 
-            for (var i = 0; i < protocols.length; i += 1) {
-              if (protocols[i].test(linkUrl)) {
-                valid = true;
-                break;
-              }
-            }
+						for (var i = 0; i < protocols.length; i += 1) {
+							if (protocols[i].test(linkUrl)) {
+								valid = true;
+								break;
+							}
+						}
 
-            this.$.url.invalid = !valid;
+						this.$.url.invalid = !valid;
 
-            if (valid) {
-  						this.$.dropdown.close();
+						if (valid) {
+							this.$.dropdown.close();
 
-  						this.async(
-  							function () {
-  								document.execCommand('createLink', false, linkUrl);
+							this.async(
+								function () {
+									document.execCommand('createLink', false, linkUrl);
 
-                  this.async(
-                    function () {
-                      if (this.selectedLink) this.selectedLink.target = linkTarget;
-                    },
-                    10
-                  );
-  							},
-  							10
-  						);
-            }
+									this.async(
+										function () {
+											if (this.selectedLink) this.selectedLink.target = linkTarget;
+										},
+										10
+									);
+								},
+								10
+							);
+						}
 					} else if (this.$.remove.contains(target)) {
 						this.$.dropdown.close();
 
@@ -144,9 +144,9 @@
 							10
 						);
 					} else if (this.$.close.contains(target)) {
-					  this.$.dropdown.close();
+						this.$.dropdown.close();
 					} else {
-					  this.$.dropdown.open();
+						this.$.dropdown.open();
 					}
 				},
 				queryCommandEnabled: function () {
@@ -157,20 +157,20 @@
 					return this.range0 && this.selectedLink;
 				},
 				_click: function (event) {
-				  this.execCommand(event);
+					this.execCommand(event);
 				},
 				_computeTooltipPosition: function (minWidth768px) {
-				  if (minWidth768px) return 'bottom';
-				  return 'right';
+					if (minWidth768px) return 'bottom';
+					return 'right';
 				},
 				_linkTargetChanged: function () {
-				  if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
-				    this.linkTarget = '_self';
-				    return;
-				  }
+					if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
+						this.linkTarget = '_self';
+						return;
+					}
 				},
 				_paperDropdownClose: function (event) {
-				  if (event.target !== this.$.dropdown) return;
+					if (event.target !== this.$.dropdown) return;
 					this.linkUrl = '';
 					this.linkTarget = '_self';
 					this.fire('restore-selection');
@@ -182,12 +182,12 @@
 						this.linkUrl = this.selectedLink.href;
 						this.linkTarget = this.selectedLink.target || '_self';
 					} else {
-					  this.linkUrl = '';
-					  this.linkTarget = '_self';
+						this.linkUrl = '';
+						this.linkTarget = '_self';
 					}
 				},
 				_stopPropagation: function (event) {
-				  event.stopPropagation();
+					event.stopPropagation();
 				}
 			}
 		);

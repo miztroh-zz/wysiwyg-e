@@ -12,7 +12,7 @@
 		<style include="wysiwyg-tool-styles"></style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<paper-button disabled="[[disabled]]" id="button">
-		  <iron-icon icon="redo"></iron-icon>
+			<iron-icon icon="redo"></iron-icon>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Redo ([[modifier.tooltip]] + Y)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+y" on-keys-pressed="execCommand"></iron-a11y-keys>
@@ -25,13 +25,13 @@
 					WYSIWYG.ToolBehavior
 				],
 				properties: {
-				  minWidth768px: {
-				    type: Boolean
-				  },
-				  tooltipPosition: {
-				    type: String,
-				    computed: '_computeTooltipPosition(minWidth768px)'
-				  }
+					minWidth768px: {
+						type: Boolean
+					},
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px)'
+					}
 				},
 				execCommand: function () {
 					if (this.disabled) return;
@@ -41,8 +41,8 @@
 					return !this.canRedo;
 				},
 				_computeTooltipPosition: function (minWidth768px) {
-				  if (minWidth768px) return 'bottom';
-				  return 'right';
+					if (minWidth768px) return 'bottom';
+					return 'right';
 				}
 			}
 		);

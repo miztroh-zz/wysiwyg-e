@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -31,44 +32,44 @@
 					test(
 						'execCommand',
 						function (done) {
-						  wysiwygE.selectAll();
+							wysiwygE.selectAll();
 
-              wysiwygE.async(
-                function () {
-    						  tool.execCommand();
-    
-    						  wysiwygE.async(
-    						    function () {
-    						      assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><b>Hello, world!</b></p>');
-    						      done();
-    						    },
-    						    100
-    						  );
-                },
-                100
-              );
+							wysiwygE.async(
+								function () {
+									tool.execCommand();
+
+									wysiwygE.async(
+										function () {
+											assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><b>Hello, world!</b></p>');
+											done();
+										},
+										100
+									);
+								},
+								100
+							);
 						}
 					);
 
 					test(
 						'click event',
 						function (done) {
-						  wysiwygE.selectAll();
+							wysiwygE.selectAll();
 
-              wysiwygE.async(
-                function () {
-    						  tool.dispatchEvent(new Event('click'));
-    
-    						  wysiwygE.async(
-    						    function () {
-    						      assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><b>Hello, world!</b></p>');
-    						      done();
-    						    },
-    						    1000
-    						  );
-                },
-                100
-              );
+							wysiwygE.async(
+								function () {
+									tool.dispatchEvent(new Event('click'));
+
+									wysiwygE.async(
+										function () {
+											assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><b>Hello, world!</b></p>');
+											done();
+										},
+										1000
+									);
+								},
+								100
+							);
 						}
 					);
 				}

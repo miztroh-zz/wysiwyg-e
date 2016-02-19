@@ -41,22 +41,22 @@
 			target: {
 				type: Object,
 				value: function () {
-				  return this;
+					return this;
 				},
 				readOnly: true,
 				observer: '_targetChanged'
 			},
 			modifier: {
-        type: Object,
-        value: function () {
-          var isMac = navigator.platform.indexOf('Mac') >= 0;
+				type: Object,
+				value: function () {
+					var isMac = navigator.platform.indexOf('Mac') >= 0;
 
-          return {
-            key: isMac ? 'meta' : 'ctrl',
-            tooltip: isMac ? '⌘' : 'Ctrl'
-          };
-        },
-        observer: '_modifierChanged'
+					return {
+						key: isMac ? 'meta' : 'ctrl',
+						tooltip: isMac ? '⌘' : 'Ctrl'
+					};
+				},
+				observer: '_modifierChanged'
 			},
 			range0: {
 				type: Object,
@@ -101,23 +101,23 @@
 			if (!this.range0 || this.selectedImage) return false;
 
 			try {
-			  return document.queryCommandState(this.command);
+				return document.queryCommandState(this.command);
 			} catch (ignore) {
-			  return false;
+				return false;
 			}
 		},
 		_activeChanged: function () {},
 		_canRedoChanged: function () {},
 		_canUndoChanged: function () {},
 		_click: function (event) {
-		  this.fire('restore-selection');
+			this.fire('restore-selection');
 
-		  this.async(
-		    function () {
-		      this.execCommand(event);
-		    },
-		    10
-		  );
+			this.async(
+				function () {
+					this.execCommand(event);
+				},
+				10
+			);
 		},
 		_commandChanged: function () {},
 		_commonAncestorPathChanged: function () {},

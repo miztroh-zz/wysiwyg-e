@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -27,13 +28,13 @@
 					test(
 						'initial content',
 						function (done) {
-						  wysiwygE.async(
-						    function () {
-						      assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p>Hello, world!</p>');
-						      done();
-						    },
-						    100
-						  );
+							wysiwygE.async(
+								function () {
+									assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p>Hello, world!</p>');
+									done();
+								},
+								100
+							);
 						}
 					);
 				}

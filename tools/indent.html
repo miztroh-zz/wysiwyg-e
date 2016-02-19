@@ -12,7 +12,7 @@
 		<style include="wysiwyg-tool-styles"></style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<paper-button disabled="[[disabled]]" id="button">
-		  <iron-icon icon="editor:format-indent-increase"></iron-icon>
+			<iron-icon icon="editor:format-indent-increase"></iron-icon>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Indent (Tab)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
@@ -25,20 +25,20 @@
 					WYSIWYG.ToolBehavior
 				],
 				properties: {
-				  minWidth768px: {
-				    type: Boolean
-				  },
-				  tooltipPosition: {
-				    type: String,
-				    computed: '_computeTooltipPosition(minWidth768px)'
-				  }
+					minWidth768px: {
+						type: Boolean
+					},
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px)'
+					}
 				},
 				ready: function () {
 					this._setCommand('indent');
 				},
 				_computeTooltipPosition: function (minWidth768px) {
-				  if (minWidth768px) return 'bottom';
-				  return 'right';
+					if (minWidth768px) return 'bottom';
+					return 'right';
 				},
 				_keysPressed: function (event, detail) {
 					if (detail.keyboardEvent.shiftKey) return;

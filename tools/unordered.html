@@ -7,20 +7,20 @@
 <link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
-<dom-module id="wysiwyg-tool-strike">
+<dom-module id="wysiwyg-tool-unordered">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<paper-button disabled="[[disabled]]" id="button">
-			<iron-icon icon="editor:format-strikethrough"></iron-icon>
+			<iron-icon icon="editor:format-list-numbered"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Strikethrough (Shift + Alt + D)</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+d" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Unordered List ([[Shift + Alt + U)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+u" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		Polymer(
 			{
-				is: 'wysiwyg-tool-strike',
+				is: 'wysiwyg-tool-unordered',
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
@@ -34,7 +34,7 @@
 					}
 				},
 				ready: function () {
-					this._setCommand('strikeThrough');
+					this._setCommand('insertUnorderedList');
 				},
 				_computeTooltipPosition: function (minWidth768px) {
 					if (minWidth768px) return 'bottom';

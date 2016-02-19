@@ -2,7 +2,7 @@
 
 > /wɪziwɪɡi/
 
-> A what-you-see-is-what-you-get editor created with Polymer.  Under the hood, it provides undo / redo history management, selection management, and a toolbar that accepts child elements to provide editing capabilities.  All the included tools (see below for list) are accessible via both the toolbar buttons and keyboard shortcuts.
+> A what-you-see-is-what-you-get editor created with Polymer.	Under the hood, it provides undo / redo history management, selection management, and a toolbar that accepts child elements to provide editing capabilities.	All the included tools (see below for list) are accessible via both the toolbar buttons and keyboard shortcuts.
 
 ## Included Tools (opt-in)
 
@@ -23,20 +23,22 @@
 
 ```
 <wysiwyg-e>
-  <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
-  <wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
-  <wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
-  <wysiwyg-tool-strike class="wysiwyg-tool"></wysiwyg-tool-strike>
-  <wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
-  <wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
-  <wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
-  <wysiwyg-tool-list class="wysiwyg-tool"></wysiwyg-tool-list>
-  <wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
-  <wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
-  <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-  <wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
-  <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
-  <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+	<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+	<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+	<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+	<wysiwyg-tool-strike class="wysiwyg-tool"></wysiwyg-tool-strike>
+	<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
+	<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
+	<wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
+	<wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
+	<wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
+	<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
+	<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
+	<wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
+	<wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+	<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
+	<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+	<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
 </wysiwyg-e>
 ```
 
