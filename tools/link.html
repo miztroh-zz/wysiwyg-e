@@ -135,14 +135,8 @@
 							);
 						}
 					} else if (this.$.remove.contains(target)) {
+					  if (this.selectedLink) this.selectedLink.outerHTML = this.selectedLink.innerHTML;
 						this.$.dropdown.close();
-
-						this.async(
-							function () {
-								document.execCommand('unlink');
-							},
-							10
-						);
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
 					} else {
@@ -150,11 +144,12 @@
 					}
 				},
 				queryCommandEnabled: function () {
+				  if (this.selectedLink) return true;
 					if (!this.range0) return false;
 					return this.range0.endOffset > this.range0.startOffset;
 				},
 				queryCommandState: function () {
-					return this.range0 && this.selectedLink;
+					return this.selectedLink;
 				},
 				_click: function (event) {
 					this.execCommand(event);

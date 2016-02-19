@@ -9,7 +9,7 @@
 			active: {
 				type: Boolean,
 				value: false,
-				computed: 'queryCommandState(range0.*, value, commonAncestorPath)',
+				computed: 'queryCommandState(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath)',
 				reflectToAttribute: true,
 				observer: '_activeChanged'
 			},
@@ -34,7 +34,7 @@
 			disabled: {
 				type: Boolean,
 				value: true,
-				computed: '_computeDisabled(range0.*, value, commonAncestorPath)',
+				computed: '_computeDisabled(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath)',
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
