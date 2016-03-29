@@ -39,7 +39,7 @@
 			}
 		</style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Link (Shift + Alt + A)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Link (Shift + Alt + A)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">

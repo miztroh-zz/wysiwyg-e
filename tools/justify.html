@@ -35,11 +35,11 @@
 			}
 		</style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Justify</paper-tooltip>
-		<paper-tooltip for="left" position="[[tooltipPosition]]">Left (Shift + Alt + L)</paper-tooltip>
-		<paper-tooltip for="right" position="[[tooltipPosition]]">Right (Shift + Alt + R)</paper-tooltip>
-		<paper-tooltip for="center" position="[[tooltipPosition]]">Center (Shift + Alt + E)</paper-tooltip>
-		<paper-tooltip for="full" position="[[tooltipPosition]]">Full (Shift + Alt + J)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Justify</paper-tooltip>
+		<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">Left (Shift + Alt + L)</paper-tooltip>
+		<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">Right (Shift + Alt + R)</paper-tooltip>
+		<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">Center (Shift + Alt + E)</paper-tooltip>
+		<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">Full (Shift + Alt + J)</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+l" on-keys-pressed="_left"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+r" on-keys-pressed="_right"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+c" on-keys-pressed="_center"></iron-a11y-keys>

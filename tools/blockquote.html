@@ -14,7 +14,7 @@
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="editor:format-quote"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Blockquote (Shift + Alt + Q)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Blockquote (Shift + Alt + Q)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+q" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>

@@ -1,4 +1,4 @@
-<link rel="import" href="../../polymer/polymer.html">
+ offset="5"<link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-icons/editor-icons.html">
@@ -14,7 +14,7 @@
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="editor:format-bold"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Bold ([[modifier.tooltip]] + B)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Bold ([[modifier.tooltip]] + B)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+b" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>

@@ -35,14 +35,14 @@
 			}
 		</style>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]">Headings</paper-tooltip>
-		<paper-tooltip for="p" position="[[tooltipPosition]]">Paragraph (Shift + Alt + 0)</paper-tooltip>
-		<paper-tooltip for="h1" position="[[tooltipPosition]]">Heading 1 (Shift + Alt + 1)</paper-tooltip>
-		<paper-tooltip for="h2" position="[[tooltipPosition]]">Heading 2 (Shift + Alt + 2)</paper-tooltip>
-		<paper-tooltip for="h3" position="[[tooltipPosition]]">Heading 3 (Shift + Alt + 3)</paper-tooltip>
-		<paper-tooltip for="h4" position="[[tooltipPosition]]">Heading 4 (Shift + Alt + 4)</paper-tooltip>
-		<paper-tooltip for="h5" position="[[tooltipPosition]]">Heading 5 (Shift + Alt + 5)</paper-tooltip>
-		<paper-tooltip for="h6" position="[[tooltipPosition]]">Heading 6 (Shift + Alt + 6)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Headings</paper-tooltip>
+		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">Paragraph (Shift + Alt + 0)</paper-tooltip>
+		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">Heading 1 (Shift + Alt + 1)</paper-tooltip>
+		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">Heading 2 (Shift + Alt + 2)</paper-tooltip>
+		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">Heading 3 (Shift + Alt + 3)</paper-tooltip>
+		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">Heading 4 (Shift + Alt + 4)</paper-tooltip>
+		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">Heading 5 (Shift + Alt + 5)</paper-tooltip>
+		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">Heading 6 (Shift + Alt + 6)</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+0" on-keys-pressed="_p"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+1" on-keys-pressed="_h1"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+2" on-keys-pressed="_h2"></iron-a11y-keys>
