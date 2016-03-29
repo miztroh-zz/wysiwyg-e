@@ -31,6 +31,12 @@
 				readOnly: true,
 				observer: '_commandChanged'
 			},
+			commonAncestorPath: {
+				type: Array,
+				value: null,
+				readOnly: true,
+				observer: '_commonAncestorPathChanged'
+			},
 			disabled: {
 				type: Boolean,
 				value: true,
@@ -38,13 +44,11 @@
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
-			target: {
-				type: Object,
-				value: function () {
-					return this;
-				},
-				readOnly: true,
-				observer: '_targetChanged'
+			minWidth768px: {
+			  type: Boolean,
+			  value: true,
+			  readOnly: true,
+			  observer: '_minWidth768pxChanged'
 			},
 			modifier: {
 				type: Object,
@@ -76,17 +80,25 @@
 				readOnly: true,
 				observer: '_selectedLinkChanged'
 			},
+			target: {
+				type: Object,
+				value: function () {
+					return this;
+				},
+				readOnly: true,
+				observer: '_targetChanged'
+			},
+			tooltipPosition: {
+				type: String,
+				value: 'bottom',
+				readOnly: true,
+				observer: '_tooltipPositionChanged'
+			},
 			value: {
 				type: String,
 				value: '',
 				readOnly: true,
 				observer: '_valueChanged'
-			},
-			commonAncestorPath: {
-				type: Array,
-				value: null,
-				readOnly: true,
-				observer: '_commonAncestorPathChanged'
 			}
 		},
 		execCommand: function (event) {
@@ -125,11 +137,13 @@
 			return !this.queryCommandEnabled();
 		},
 		_disabledChanged: function () {},
+		_minWidth768pxChanged: function () {},
 		_modifierChanged: function () {},
 		_range0Changed: function () {},
 		_selectedImageChanged: function () {},
 		_selectedLinkChanged: function () {},
 		_targetChanged: function () {},
+		_tooltipPositionChanged: function () {},
 		_valueChanged: function () {}
 	};
 </script>

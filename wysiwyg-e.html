@@ -1,16 +1,18 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../undo-mgr/behavior.html">
-<link rel="import" href="../selection-mgr/behavior.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../font-roboto/roboto.html">
-<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+<link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../prism-element/prism-import.html">
+<link rel="import" href="../undo-mgr/behavior.html">
+<link rel="import" href="../selection-mgr/behavior.html">
 
 <!--
 `<wysiwyg-e>` A what-you-see-is-what-you-get editor created with Polymer.
@@ -138,16 +140,24 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 			}
 
 			#toolbar {
-				height: auto;
-				--paper-toolbar-content: {
-					height: auto!important;
-					padding: 0 5px;
-				};
+				--paper-toolbar-height: auto;
 				background: var(--wysiwyg-toolbar-background, #2A9AF2);
 				user-select: none;
 				color: var(--wysiwyg-toolbar-color, white);
 				@apply(--wysiwyg-toolbar);
 			}
+
+      @media (min-width: 768px) {
+        #toolbar {
+  				padding: 0 5px;
+        }
+      }
+
+      @media (max-width: 767px) {
+        #toolbar {
+  				padding: 5px 0;
+        }
+      }
 
 			#editable {
 				padding: 20px;
@@ -326,10 +336,11 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 			}
 		</style>
 
+		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="fit" id="layout">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
-					<paper-menu-button hidden$="[[hideSettings]]">
+					<paper-menu-button id="settings" hidden$="[[hideSettings]]">
 						<paper-button class="dropdown-trigger">
 							<iron-icon icon="settings"></iron-icon>
 						</paper-button>
@@ -339,6 +350,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 							<paper-item mode="html">View HTML</paper-item>
 						</paper-listbox>
 					</paper-menu-button>
+					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">Settings</paper-tooltip>
 					<content select=".wysiwyg-tool" id="tools"></content>
 				</div>
 			</paper-toolbar>
@@ -368,7 +380,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				},
 
 				observers: [
-					'updateTools(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath)'
+					'updateTools(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition)'
 				],
 
 				properties: {
@@ -379,6 +391,12 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				    type: Boolean,
 				    value: false
 				  },
+					/**
+					 * Tracks viewport with.  Managed by iron-media-query
+					*/
+					minWidth768px: {
+						type: Boolean
+					},
 					/**
 					 * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
 					*/
@@ -397,6 +415,13 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 							return this.$.editable;
 						},
 						observer: '_targetChanged'
+					},
+					/**
+					 * Computed based on ``minWidth768px``
+					*/
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px)'
 					}
 				},
 
@@ -551,7 +576,13 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						tools[i]._setValue(this.value);
 						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
 						tools[i]._setTarget(this.target);
+						tools[i]._setMinWidth768px(this.minWidth768px);
 					}
+				},
+
+				_computeTooltipPosition: function (minWidth768px) {
+					if (minWidth768px) return 'bottom';
+					return 'right';
 				},
 
 				_edit: function (a, b) {

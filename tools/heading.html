@@ -3,7 +3,6 @@
 <link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
@@ -34,7 +33,6 @@
 				background: #e4e4e4;
 			}
 		</style>
-		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Headings</paper-tooltip>
 		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">Paragraph (Shift + Alt + 0)</paper-tooltip>
 		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">Heading 1 (Shift + Alt + 1)</paper-tooltip>
@@ -96,13 +94,6 @@
 					h6: {
 						type: Boolean,
 						value: false
-					},
-					minWidth768px: {
-						type: Boolean
-					},
-					tooltipPosition: {
-						type: String,
-						computed: '_computeTooltipPosition(minWidth768px)'
 					}
 				},
 				ready: function () {
@@ -193,6 +184,24 @@
 
 					return false;
 				},
+				_h1: function () {
+					this._heading(1);
+				},
+				_h2: function () {
+					this._heading(2);
+				},
+				_h3: function () {
+					this._heading(3);
+				},
+				_h4: function () {
+					this._heading(4);
+				},
+				_h5: function () {
+					this._heading(5);
+				},
+				_h6: function () {
+					this._heading(6);
+				},
 				_heading: function (level) {
 					if (this.disabled || !this.range0 || level !== parseInt(level) || level < 0 || level > 6) return false;
 
@@ -218,30 +227,8 @@
 						10
 					);
 				},
-				_computeTooltipPosition: function (minWidth768px) {
-					if (minWidth768px) return 'bottom';
-					return 'right';
-				},
 				_p: function () {
 					this._heading(0);
-				},
-				_h1: function () {
-					this._heading(1);
-				},
-				_h2: function () {
-					this._heading(2);
-				},
-				_h3: function () {
-					this._heading(3);
-				},
-				_h4: function () {
-					this._heading(4);
-				},
-				_h5: function () {
-					this._heading(5);
-				},
-				_h6: function () {
-					this._heading(6);
 				},
 				_paperDropdownClose: function (event) {
 					if (event.target !== this.$.dropdown) return;

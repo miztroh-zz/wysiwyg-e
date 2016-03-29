@@ -7,7 +7,6 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../iron-media-query/iron-media-query.html">
 <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../paper-listbox/paper-listbox.html">
 <link rel="import" href="../../paper-item/paper-item.html">
@@ -38,7 +37,6 @@
 				max-width: 100%;
 			}
 		</style>
-		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Image (Shift + Alt + M)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+m" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]">
@@ -80,13 +78,6 @@
 					imageUrl: {
 						type: String,
 						value: ''
-					},
-					minWidth768px: {
-						type: Boolean
-					},
-					tooltipPosition: {
-						type: String,
-						computed: '_computeTooltipPosition(minWidth768px)'
 					}
 				},
 				execCommand: function (event) {
@@ -178,10 +169,6 @@
 				},
 				_click: function (event) {
 					this.execCommand(event);
-				},
-				_computeTooltipPosition: function (minWidth768px) {
-					if (minWidth768px) return 'bottom';
-					return 'right';
 				},
 				_imageFloatChanged: function () {
 					if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
