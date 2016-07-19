@@ -478,44 +478,44 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
 					}
 
-					var pre = div.querySelectorAll('pre');
-
-					for (i = 0; i < pre.length; i += 1) {
-						var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
-
-						for (var j = 0; j < childNodes.length; j += 1) {
-							if (childNodes[j].tagName !== 'CODE') {
-								var p = document.createElement('p');
-								p.textContent = childNodes[j].textContent;
-								pre[i].removeChild(childNodes[j]);
-								pre[i].parentNode.insertBefore(p, insertBefore);
-								continue;
-							}
-
-							codes += 1;
-
-							if (codes === 1) {
-								insertBefore = pre[i].nextSibling;
-							} else if (codes > 1) {
-								var newPre = document.createElement('pre');
-								newPre.appendChild(childNodes[j]);
-								pre[i].parentNode.insertBefore(newPre, insertBefore);
-								insertBefore = newPre.nextSibling;
-							}
-						}
-					}
-
-					var pre = div.querySelectorAll('pre');
-
-					for (i = 0; i < pre.length; i += 1) {
-						if (pre[i].textContent.trim().length === 0) {
-							var p = document.createElement('p');
-							p.innerHTML = '&nbsp;';
-							pre[i].parentNode.insertBefore(p, pre[i]);
-							pre[i].parentNode.removeChild(pre[i]);
-							this.selectElement(p);
-						}
-					}
+					// var pre = div.querySelectorAll('pre');
+          //
+					// for (i = 0; i < pre.length; i += 1) {
+					// 	var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
+          //
+					// 	for (var j = 0; j < childNodes.length; j += 1) {
+					// 		if (childNodes[j].tagName !== 'CODE') {
+					// 			var p = document.createElement('p');
+					// 			p.textContent = childNodes[j].textContent;
+					// 			pre[i].removeChild(childNodes[j]);
+					// 			pre[i].parentNode.insertBefore(p, insertBefore);
+					// 			continue;
+					// 		}
+          //
+					// 		codes += 1;
+          //
+					// 		if (codes === 1) {
+					// 			insertBefore = pre[i].nextSibling;
+					// 		} else if (codes > 1) {
+					// 			var newPre = document.createElement('pre');
+					// 			newPre.appendChild(childNodes[j]);
+					// 			pre[i].parentNode.insertBefore(newPre, insertBefore);
+					// 			insertBefore = newPre.nextSibling;
+					// 		}
+					// 	}
+					// }
+          //
+					// var pre = div.querySelectorAll('pre');
+          //
+					// for (i = 0; i < pre.length; i += 1) {
+					// 	if (pre[i].textContent.trim().length === 0) {
+					// 		var p = document.createElement('p');
+					// 		p.innerHTML = '&nbsp;';
+					// 		pre[i].parentNode.insertBefore(p, pre[i]);
+					// 		pre[i].parentNode.removeChild(pre[i]);
+					// 		this.selectElement(p);
+					// 	}
+					// }
 
 					//Strip classes
 					var classes = div.querySelectorAll('[class]');
