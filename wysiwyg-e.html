@@ -28,6 +28,7 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 	<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
 	<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
 	<wysiwyg-tool-strike class="wysiwyg-tool"></wysiwyg-tool-strike>
+  <wysiwyg-tool-code class="wysiwyg-tool"></wysiwyg-tool-code>
 	<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
 	<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
 	<wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
@@ -102,6 +103,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 `Italc`					| Cmd + I					| Ctrl + I
 `Underline`			| Cmd + U					| Ctrl + U
 `Strikethrough` | Shift + Alt + D | Shift + Alt + D
+`Code`          | Cmd + Q         | Ctrl + Q
 `Remove Format` | Cmd + Space			| Ctrl + Space
 `Link`					| Shift + Alt + A | Shift + Alt + A
 `Image`					| Shift + Alt + M | Shift + Alt + M
@@ -476,50 +478,50 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
 					}
 
-					var pre = div.querySelectorAll('pre');
-
-					for (i = 0; i < pre.length; i += 1) {
-						var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
-
-						for (var j = 0; j < childNodes.length; j += 1) {
-							if (childNodes[j].tagName !== 'CODE') {
-								var p = document.createElement('p');
-								p.textContent = childNodes[j].textContent;
-								pre[i].removeChild(childNodes[j]);
-								pre[i].parentNode.insertBefore(p, insertBefore);
-								continue;
-							}
-
-							codes += 1;
-
-							if (codes === 1) {
-								insertBefore = pre[i].nextSibling;
-							} else if (codes > 1) {
-								var newPre = document.createElement('pre');
-								newPre.appendChild(childNodes[j]);
-								pre[i].parentNode.insertBefore(newPre, insertBefore);
-								insertBefore = newPre.nextSibling;
-							}
-						}
-					}
-
-					var pre = div.querySelectorAll('pre');
-
-					for (i = 0; i < pre.length; i += 1) {
-						if (pre[i].textContent.trim().length === 0) {
-							var p = document.createElement('p');
-							p.innerHTML = '&nbsp;';
-							pre[i].parentNode.insertBefore(p, pre[i]);
-							pre[i].parentNode.removeChild(pre[i]);
-							this.selectElement(p);
-						}
-					}
+					// var pre = div.querySelectorAll('pre');
+          //
+					// for (i = 0; i < pre.length; i += 1) {
+					// 	var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
+          //
+					// 	for (var j = 0; j < childNodes.length; j += 1) {
+					// 		if (childNodes[j].tagName !== 'CODE') {
+					// 			var p = document.createElement('p');
+					// 			p.textContent = childNodes[j].textContent;
+					// 			pre[i].removeChild(childNodes[j]);
+					// 			pre[i].parentNode.insertBefore(p, insertBefore);
+					// 			continue;
+					// 		}
+          //
+					// 		codes += 1;
+          //
+					// 		if (codes === 1) {
+					// 			insertBefore = pre[i].nextSibling;
+					// 		} else if (codes > 1) {
+					// 			var newPre = document.createElement('pre');
+					// 			newPre.appendChild(childNodes[j]);
+					// 			pre[i].parentNode.insertBefore(newPre, insertBefore);
+					// 			insertBefore = newPre.nextSibling;
+					// 		}
+					// 	}
+					// }
+          //
+					// var pre = div.querySelectorAll('pre');
+          //
+					// for (i = 0; i < pre.length; i += 1) {
+					// 	if (pre[i].textContent.trim().length === 0) {
+					// 		var p = document.createElement('p');
+					// 		p.innerHTML = '&nbsp;';
+					// 		pre[i].parentNode.insertBefore(p, pre[i]);
+					// 		pre[i].parentNode.removeChild(pre[i]);
+					// 		this.selectElement(p);
+					// 	}
+					// }
 
 					//Strip classes
 					var classes = div.querySelectorAll('[class]');
 
 					for (i = 0; i < classes.length; i += 1) {
-						classes[i].removeAttribute('class');
+						//classes[i].removeAttribute('class');
 						classes[i].classList.add('style-scope');
 						classes[i].classList.add('wysiwyg-e');
 					}
