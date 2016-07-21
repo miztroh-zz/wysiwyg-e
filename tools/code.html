@@ -10,69 +10,73 @@
 @author : Hyyan Abo Fakher <hyyanaf@gmail.com>
 -->
 <dom-module id="wysiwyg-tool-code">
-    <template>
-        <style include="wysiwyg-tool-styles"></style>
-        <paper-button disabled="[[disabled]]" id="button">
-            <iron-icon icon="editor:highlight"></iron-icon>
-        </paper-button>
-        <paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Code ([[modifier.tooltip]] + Q)</paper-tooltip>
-        <iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+q" on-keys-pressed="execCommand"></iron-a11y-keys>
-    </template>
-    <script>
-        Polymer({
-            is: 'wysiwyg-tool-code',
-            behaviors: [
-                WYSIWYG.ToolBehavior
-            ],
-            ready: function() {
-                this._setCommand('formatBlock');
-            },
-            execCommand: function(event) {
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<paper-button disabled="[[disabled]]" id="button">
+			<iron-icon icon="editor:highlight"></iron-icon>
+		</paper-button>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Code ([[modifier.tooltip]] + Q)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+q" on-keys-pressed="execCommand"></iron-a11y-keys>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-code',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				ready: function () {
+					this._setCommand('formatBlock');
+				},
+				execCommand: function (event) {
+					if (this.disabled || !this.range0) return false;
 
-                if (this.disabled || !this.range0) return false;
 
-                if (!this.active) {
-                    var selection = this.magic(this.range0.toString());
-                    document.execCommand(
-                        'insertHTML', null, "<pre class='style-scope wysiwyg-e'><code class='style-scope wysiwyg-e'>" +
-                        selection +
-                        "</code></pre>"
-                    );
-                } else {
-                    if (this.commonAncestorPath) {
-                        for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-                            if (this.commonAncestorPath[i].tagName === 'PRE') {
-                                var code = this.commonAncestorPath[i];
-                                var parent = code.parentNode;
-                                //this.range0.selectNodeContents(code);
-                                parent.insertBefore(this.range0.extractContents(), code);
-                                parent.removeChild(code);
-                                break;
-                            }
-                        }
-                    } else {
-                        document.execCommand('formatBlock', null, 'P');
-                    }
-                }
-            },
-            magic: function(input) {
+					if (!this.active) {
+						if (this.commonAncestorPath) {
+							for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+								if (this.commonAncestorPath[i].tagName === 'CODE') {
+									var code = this.commonAncestorPath[i];
+									var parent = code.parentNode;
+									parent.insertBefore(this.range0.extractContents(), code);
+									parent.removeChild(code);
+									break;
+								}
+							}
+						}
 
-                return input.replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;');
+            var selection = this.range0.toString();
+						document.execCommand(
+              'insertHTML', null, "<code class='style-scope wysiwyg-e'>"+selection+"</code>"
+            );
 
-            },
-            queryCommandState: function() {
-              
-                if (this.range0 && this.commonAncestorPath) {
-                    for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-                        if (this.commonAncestorPath[i].tagName === 'PRE') return true;
-                    }
-                }
+					} else {
+						if (this.commonAncestorPath) {
+							for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+								if (this.commonAncestorPath[i].tagName === 'CODE') {
+									var code = this.commonAncestorPath[i];
+									var parent = code.parentNode;
+									this.range0.selectNodeContents(code);
+									parent.insertBefore(this.range0.extractContents(), code);
+									parent.removeChild(code);
+									break;
+								}
+							}
+						} else {
+							document.execCommand('formatBlock', null, 'P');
+						}
+					}
+				},
+				queryCommandState: function () {
+					if (this.range0 && this.commonAncestorPath) {
+						for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+							if (this.commonAncestorPath[i].tagName === 'CODE') return true;
+						}
+					}
 
-                return false;
-            }
-        });
-    </script>
+					return false;
+				}
+			}
+		);
+	</script>
 </dom-module>
