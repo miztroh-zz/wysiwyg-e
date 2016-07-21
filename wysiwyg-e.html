@@ -317,6 +317,15 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 					@apply(--layout-wrap);
 					@apply(--layout-center-justified);
 				}
+
+				#layout[force-narrow] {
+					@apply(--layout-horizontal);
+				}
+
+				#layout[force-narrow] #toolbarLayout {
+					@apply(--layout-vertical);
+					width: 40px;
+				}
 			}
 
 			@media (max-width: 767px) {
@@ -338,7 +347,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 		</style>
 
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
-		<div class="fit" id="layout">
+		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
 					<paper-menu-button id="settings" hidden$="[[hideSettings]]">
@@ -385,6 +394,13 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				],
 
 				properties: {
+					/**
+					 * If true, force narrow view with vertical toolbar.  Defaults to false.
+					*/
+					forceNarrow: {
+						type: Boolean,
+						value: false
+					},
 					/**
 					 * Option to hide the built-in settings tool.  Defaults to false.
 					*/
