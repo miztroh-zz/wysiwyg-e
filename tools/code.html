@@ -1,0 +1,99 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../wysiwyg-tool-behavior.html">
+<link rel="import" href="../wysiwyg-tool-styles.html">
+<!--
+@author : Hyyan Abo Fakher <hyyanaf@gmail.com>
+-->
+<dom-module id="wysiwyg-tool-code">
+    <template>
+        <style include="wysiwyg-tool-styles"></style>
+        <paper-button disabled="[[disabled]]" id="button">
+            <iron-icon icon="editor:highlight"></iron-icon>
+        </paper-button>
+        <paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Code ([[modifier.tooltip]] + Q)</paper-tooltip>
+        <iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+q" on-keys-pressed="execCommand"></iron-a11y-keys>
+    </template>
+    <script>
+        Polymer({
+            is: 'wysiwyg-tool-code',
+            behaviors: [
+                WYSIWYG.ToolBehavior
+            ],
+            ready: function() {
+                this._setCommand('formatBlock');
+            },
+            execCommand: function(event) {
+                if (this.disabled || !this.range0) return false;
+
+
+                if (!this.active) {
+                    if (this.commonAncestorPath) {
+                        for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+                            if (this.commonAncestorPath[i].tagName === 'P') {
+                                console.log('here');
+                                var code = this.commonAncestorPath[i];
+                                var parent = code.parentNode;
+                                if (this.range0.toString()) {
+                                    var preEl = document.createElement('pre');
+                                    var codeEl = document.createElement('code');
+
+                                    codeEl.innerText = this.range0.toString();
+                                    codeEl.classList.add("style-scope");
+                                    codeEl.classList.add("wysiwyg-e");
+
+                                    preEl.appendChild(codeEl);
+                                    preEl.classList.add("style-scope");
+                                    preEl.classList.add("wysiwyg-e");
+
+                                    parent.insertBefore(preEl, code);
+                                    parent.removeChild(code);
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                } else {
+                    if (this.commonAncestorPath) {
+                        for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+                            if (this.commonAncestorPath[i].tagName === 'PRE') {
+                                var code = this.commonAncestorPath[i];
+                                var parent = code.parentNode;
+                                if (this.range0.toString()) {
+                                    var div = document.createElement("DIV");
+                                    div.innerText = this.range0.toString();
+                                    parent.insertBefore(div, code);
+                                    parent.removeChild(code);
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        document.execCommand('formatBlock', null, 'P');
+                    }
+                }
+            },
+            queryCommandState: function() {
+                if (this.range0 && this.commonAncestorPath) {
+
+                    for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+                        if (this.commonAncestorPath[i].tagName === 'PRE') {
+                            if (this.active) {
+                              return false;
+                            }
+                            return true;
+                        }
+
+                    }
+                }
+
+                return false;
+            }
+        });
+    </script>
+</dom-module>
