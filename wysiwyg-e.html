@@ -482,6 +482,10 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 
 				sanitize: function (html) {
 					html = UndoMgrBehavior.sanitize.apply(this, arguments);
+
+					//Remove non-breaking spaces
+					html = html.replace(new RegExp('&nbsp;', 'g'), '');
+
 					var div = document.createElement('div'), i;
 					div.innerHTML = html;
 
