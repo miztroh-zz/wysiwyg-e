@@ -10,6 +10,7 @@
 * Italic
 * Underline
 * Strikethrough
+* Code
 * Clear Formatting
 * Link
 * Image
@@ -27,6 +28,7 @@
 	<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
 	<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
 	<wysiwyg-tool-strike class="wysiwyg-tool"></wysiwyg-tool-strike>
+	<wysiwyg-tool-code class="wysiwyg-tool"></wysiwyg-tool-code>
 	<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
 	<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
 	<wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
