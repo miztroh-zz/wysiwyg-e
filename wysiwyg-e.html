@@ -13,6 +13,7 @@
 <link rel="import" href="../prism-element/prism-import.html">
 <link rel="import" href="../undo-mgr/behavior.html">
 <link rel="import" href="../selection-mgr/behavior.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
 `<wysiwyg-e>` A what-you-see-is-what-you-get editor created with Polymer.
@@ -129,7 +130,6 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 -->
 
 <dom-module id="wysiwyg-e">
-
 	<template>
 		<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning"></style>
 		<style>
@@ -345,7 +345,8 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				@apply(--layout-vertical);
 			}
 		</style>
-
+		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
@@ -361,6 +362,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						</paper-listbox>
 					</paper-menu-button>
 					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">Settings</paper-tooltip>
+					<wysiwyg-tool-backspace></wysiwyg-tool-backspace>
 					<content select=".wysiwyg-tool" id="tools"></content>
 				</div>
 			</paper-toolbar>
@@ -385,6 +387,7 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				],
 
 				listeners: {
+					keydown: '_keydown',
 					'restore-selection': 'restoreSelection',
 					'select-element': '_selectElement'
 				},
@@ -484,9 +487,9 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 					html = UndoMgrBehavior.sanitize.apply(this, arguments);
 
 					//Remove non-breaking spaces
-					html = html.replace(new RegExp('&nbsp;', 'g'), '');
+					html = html.replace(new RegExp('&nbsp;', 'g'), ' ');
 
-					var div = document.createElement('div'), i;
+					var div = document.createElement('div'), i, p, pre;
 					div.innerHTML = html;
 
 					//Move non-code nodes outside of pre nodes
@@ -496,14 +499,14 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
 					}
 
-					var pre = div.querySelectorAll('pre');
+					pre = div.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
 						var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
 
 						for (var j = 0; j < childNodes.length; j += 1) {
 							if (childNodes[j].tagName !== 'CODE') {
-								var p = document.createElement('p');
+								p = document.createElement('p');
 								p.textContent = childNodes[j].textContent;
 								pre[i].removeChild(childNodes[j]);
 								pre[i].parentNode.insertBefore(p, insertBefore);
@@ -523,25 +526,16 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						}
 					}
 
-					var pre = div.querySelectorAll('pre');
+					pre = div.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
 						if (pre[i].textContent.trim().length === 0) {
-							var p = document.createElement('p');
-							p.innerHTML = '&nbsp;';
+							p = document.createElement('p');
+							p.textContent = ' ';
 							pre[i].parentNode.insertBefore(p, pre[i]);
 							pre[i].parentNode.removeChild(pre[i]);
 							this.selectElement(p);
 						}
-					}
-
-					//Strip classes
-					var classes = div.querySelectorAll('[class]');
-
-					for (i = 0; i < classes.length; i += 1) {
-						classes[i].removeAttribute('class');
-						classes[i].classList.add('style-scope');
-						classes[i].classList.add('wysiwyg-e');
 					}
 
 					//Replace strong with b
@@ -565,17 +559,14 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
 					}
 
-					this.async(
-						function () {
-							var Ps = this.target.querySelectorAll('p');
+					//Strip classes
+					var classes = div.querySelectorAll('*');
 
-							for (var i = 0; i < Ps.length; i += 1) {
-								if (Ps[i].innerHTML === '&nbsp;') {
-									this.selectElement(Ps[i]);
-								}
-							}
-						}
-					);
+					for (i = 0; i < classes.length; i += 1) {
+						classes[i].removeAttribute('class');
+						classes[i].classList.add('style-scope');
+						classes[i].classList.add('wysiwyg-e');
+					}
 
 					return div.innerHTML;
 				},
@@ -601,9 +592,25 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 					}
 				},
 
+				_backspace: function () {
+					if (this.target.children.length > 1) {
+						document.execCommand('delete');
+					} else if (this.target.children.length === 1) {
+						if (this.target.children[0].textContent.length) {
+							document.execCommand('delete');
+						} else {
+							document.execCommand('formatBlock', null, 'P');
+						}
+					}
+				},
+
 				_computeTooltipPosition: function (minWidth768px) {
 					if (minWidth768px) return 'bottom';
 					return 'right';
+				},
+
+				_delete: function () {
+					document.execCommand('forwardDelete');
 				},
 
 				_edit: function (a, b) {
@@ -612,6 +619,18 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 
 				_html: function () {
 					return this.mode === 'html';
+				},
+
+				_keydown: function (event) {
+					//Prevent default delete behavior
+					if (event.key === 'Delete') event.preventDefault();
+					//Prevent default backspace behavior
+					if (event.key === 'Backspace') event.preventDefault();
+					//Allow input without alt, ctrl, or meta
+					if (!event.altKey && !event.ctrlKey && !event.metaKey) return;
+					//Allow select all, refresh, print, paste, copy, cut
+					if (!event.altKey && !event.shiftKey && ['a', 'r', 'p', 'v', 'c', 'x'].indexOf(event.key) >= 0 && (event.ctrlKey || event.metaKey)) return;
+					event.preventDefault();
 				},
 
 				_modeChanged: function () {
@@ -664,6 +683,10 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				_targetChanged: function () {
 					UndoMgrBehavior._targetChanged.apply(this, arguments);
 					SelectionMgrBehavior._targetChanged.apply(this, arguments);
+				},
+
+				_valueChanged: function () {
+					UndoMgrBehavior._valueChanged.apply(this, arguments);
 				}
 			}
 		);
