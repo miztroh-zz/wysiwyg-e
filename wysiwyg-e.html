@@ -483,33 +483,29 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 					return UndoMgrBehavior.redo.apply(this, arguments);
 				},
 
-				sanitize: function (html) {
-					html = UndoMgrBehavior.sanitize.apply(this, arguments);
-
-					//Remove non-breaking spaces
-					html = html.replace(new RegExp('&nbsp;', 'g'), ' ');
-
-					var div = document.createElement('div'), i, p, pre;
-					div.innerHTML = html;
+				sanitize: function () {
+					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = true;
 
 					//Move non-code nodes outside of pre nodes
-					var invalidPreChildren = div.querySelectorAll('pre > :not(code), code > p');
+					var invalidPreChildren = target.querySelectorAll('pre > :not(code), code > p');
 
 					for (i = 0; i < invalidPreChildren.length; i += 1) {
 						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
+						sanitized = false;
 					}
 
-					pre = div.querySelectorAll('pre');
+					pre = target.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
 						var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
 
-						for (var j = 0; j < childNodes.length; j += 1) {
+						for (j = 0; j < childNodes.length; j += 1) {
 							if (childNodes[j].tagName !== 'CODE') {
 								p = document.createElement('p');
 								p.textContent = childNodes[j].textContent;
 								pre[i].removeChild(childNodes[j]);
 								pre[i].parentNode.insertBefore(p, insertBefore);
+								sanitized = false;
 								continue;
 							}
 
@@ -522,11 +518,12 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 								newPre.appendChild(childNodes[j]);
 								pre[i].parentNode.insertBefore(newPre, insertBefore);
 								insertBefore = newPre.nextSibling;
+								sanitized = false;
 							}
 						}
 					}
 
-					pre = div.querySelectorAll('pre');
+					pre = target.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
 						if (pre[i].textContent.trim().length === 0) {
@@ -535,40 +532,74 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 							pre[i].parentNode.insertBefore(p, pre[i]);
 							pre[i].parentNode.removeChild(pre[i]);
 							this.selectElement(p);
+							sanitized = false;
 						}
 					}
 
 					//Replace strong with b
-					var strong = div.querySelectorAll('strong');
+					var strong = target.querySelectorAll('strong');
 
 					for (i = 0; i < strong.length; i += 1) {
 						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
+						sanitized = false;
 					}
 
 					//Replace em with i
-					var em = div.querySelectorAll('em');
+					var em = target.querySelectorAll('em');
 
 					for (i = 0; i < em.length; i += 1) {
 						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
+						sanitized = false;
 					}
 
-					//Replace div, span with p
-					var divs = div.querySelectorAll('div, span');
+					//Replace DIVs with Ps
+					var divs = target.querySelectorAll('div');
 
 					for (i = 0; i < divs.length; i += 1) {
 						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
+						sanitized = false;
+					}
+
+					//Replace SPANs with Ps
+					var spans = target.querySelectorAll('span');
+
+					for (i = 0; i < spans.length; i += 1) {
+						spans[i].outerHTML = '<p>' + spans[i].innerHTML + '</p>';
+						sanitized = false;
 					}
 
 					//Strip classes
-					var classes = div.querySelectorAll('*');
+					var classes = target.querySelectorAll('*');
 
 					for (i = 0; i < classes.length; i += 1) {
-						classes[i].removeAttribute('class');
-						classes[i].classList.add('style-scope');
-						classes[i].classList.add('wysiwyg-e');
+						var removeClasses = [], hasStyleScope = false, hasWysiwygE = false;
+
+						for (j = 0; j < classes[i].classList.length; j += 1) {
+							if (['style-scope', 'wysiwyg-e'].indexOf(classes[i].classList[j]) === -1) {
+								removeClasses.push(classes[i].classList[j]);
+							} else {
+								if (classes[i].classList[j] === 'style-scope') hasStyleScope = true;
+								if (classes[i].classList[j] === 'wysiwyg-e') hasWysiwygE = true;
+							}
+						}
+
+						for (j = 0; j < removeClasses.length; j += 1) {
+							classes[i].classList.remove(removeClasses[j]);
+							sanitized = false;
+						}
+
+						if (!hasStyleScope) {
+							classes[i].classList.add('style-scope');
+							sanitized = false;
+						}
+
+						if (!hasWysiwygE) {
+							classes[i].classList.add('wysiwyg-e');
+							sanitized = false;
+						}
 					}
 
-					return div.innerHTML;
+					return sanitized;
 				},
 
 				undo: function () {
