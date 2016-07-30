@@ -484,7 +484,16 @@ Command				 	| Shortcut Mac		| Shortcut Windows
 				},
 
 				sanitize: function () {
-					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = true;
+					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
+
+					var textNodeRegExp = new RegExp('\xA0', 'g'), textNode, treeWalker = document.createTreeWalker(this.target, NodeFilter.SHOW_TEXT, null, false);
+
+  				while (textNode = treeWalker.nextNode()) {
+  					if (textNodeRegExp.test(textNode.textContent)) {
+  						textNode.textContent = textNode.textContent.replace(textNodeRegExp, ' ');
+  						sanitized = false;
+  					}
+  				}
 
 					//Move non-code nodes outside of pre nodes
 					var invalidPreChildren = target.querySelectorAll('pre > :not(code), code > p');
