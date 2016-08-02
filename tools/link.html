@@ -92,14 +92,19 @@
 
 						this.async(
 							function () {
-								document.execCommand('createLink', false, linkUrl);
+								if (this.selectedLink) {
+									this.selectedLink.href = linkUrl;
+									this.selectedLink.target = linkTarget;
+								} else {
+									document.execCommand('createLink', false, linkUrl);
 
-								this.async(
-									function () {
-										if (this.selectedLink) this.selectedLink.target = linkTarget;
-									},
-									10
-								);
+									this.async(
+										function () {
+											if (this.selectedLink) this.selectedLink.target = linkTarget;
+										},
+										10
+									);
+								}
 							},
 							10
 						);
