@@ -34,7 +34,6 @@
 			paper-input,
 			paper-dropdown-menu {
 				--paper-input-container-focus-color: #2a9af2;
-				--paper-input-container-invalid-color: #d23f31;
 				width: 400px;
 				max-width: 100%;
 			}
@@ -46,7 +45,7 @@
 				<iron-icon icon="editor:insert-photo"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="URL" always-float-label value="{{imageUrl}}" id="url" error-message="Invalid format"></paper-input>
+				<paper-input label="URL" always-float-label value="{{imageUrl}}" id="url"></paper-input>
 				<paper-dropdown-menu label="Float" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
 					<paper-listbox class="dropdown-content" selected="{{imageFloat}}" attr-for-selected="float">
 						<paper-item float="none">none</paper-item>
@@ -87,80 +86,75 @@
 					var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = Polymer.dom(event).rootTarget;
 
 					if (this.$.updateInsert.contains(target)) {
-						var protocols = [
-							//http(s)
-							/^https?\:\/\//
-						];
+						this.$.dropdown.close();
 
-						var valid = false;
+						this.async(
+							function () {
+								var before = {
+									images: this.target.querySelectorAll('img'),
+									indexes: []
+								};
 
-						for (var i = 0; i < protocols.length; i += 1) {
-							if (protocols[i].test(imageUrl)) {
-								valid = true;
-								break;
-							}
-						}
+								for (var i = 0; i < before.images.length; i += 1) {
+									before.indexes.push(this.value.indexOf(before.images[i].outerHTML));
+								}
 
-						this.$.url.invalid = !valid;
+								document.execCommand('insertImage', false, imageUrl);
 
-						if (valid) {
-							this.$.dropdown.close();
+								this.async(
+									function () {
+										var after = {
+											images: this.target.querySelectorAll('img'),
+											indexes: []
+										};
 
-							this.async(
-								function () {
-									var before = {
-										images: this.target.querySelectorAll('img'),
-										indexes: []
-									};
+										for (var i = 0; i < after.images.length; i += 1) {
+											after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
+										}
 
-									for (var i = 0; i < before.images.length; i += 1) {
-										before.indexes.push(this.value.indexOf(before.images[i].outerHTML));
-									}
+										var image;
 
-									document.execCommand('insertImage', false, imageUrl);
-
-									this.async(
-										function () {
-											var after = {
-												images: this.target.querySelectorAll('img'),
-												indexes: []
-											};
-
-											for (var i = 0; i < after.images.length; i += 1) {
-												after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
-											}
-
-											var image;
-
-											if (before.images.length === 0) {
-												image = after.images[0];
-											} else {
-												for (i = 0; i < after.images.length; i += 1) {
-													if (i === after.images.length -1 || i >= before.images.length || after.indexes[i] !== before.indexes[i]) {
-														image = after.images[i];
-														break;
-													}
+										if (before.images.length === 0) {
+											image = after.images[0];
+										} else {
+											for (i = 0; i < after.images.length; i += 1) {
+												if (i === after.images.length -1 || i >= before.images.length || after.indexes[i] !== before.indexes[i]) {
+													image = after.images[i];
+													break;
 												}
 											}
+										}
 
-											if (!image) return;
-											image.style.float = imageFloat;
-											this.fire('select-element', {element: image});
-										},
-										10
-									);
-								},
-								10
-							);
-						}
+										if (!image) return;
+										image.style.float = imageFloat;
+										this.fire('select-element', {element: image});
+									},
+									10
+								);
+							},
+							10
+						);
 					} else if (this.$.remove.contains(target)) {
 						if (this.selectedImage) this.selectedImage.parentNode.removeChild(this.selectedImage);
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
 					} else {
-						this._selectedImageChanged();
+						if (this.selectedImage) {
+							this.imageUrl = this.selectedImage.src;
+							this.imageFloat = this.selectedImage.style.float || 'none';
+						} else {
+							this.imageUrl = '';
+							this.imageFloat = 'none';
+						}
+
 						this.$.dropdown.open();
+
+						this.async(
+							function () {
+								this.$.url.focus();
+							}
+						);
 					}
 				},
 				queryCommandEnabled: function () {
@@ -183,17 +177,6 @@
 					this.imageUrl = '';
 					this.imageFloat = 'none';
 					this.fire('restore-selection');
-				},
-				_selectedImageChanged: function () {
-					WYSIWYG.ToolBehavior._selectedImageChanged.apply(this, arguments);
-
-					if (this.selectedImage) {
-						this.imageUrl = this.selectedImage.src;
-						this.imageFloat = this.selectedImage.style.float || 'none';
-					} else {
-						this.imageUrl = '';
-						this.imageFloat = 'none';
-					}
 				},
 				_stopPropagation: function (event) {
 					event.stopPropagation();

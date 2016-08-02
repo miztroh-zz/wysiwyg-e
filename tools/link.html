@@ -34,7 +34,6 @@
 			paper-input,
 			paper-dropdown-menu {
 				--paper-input-container-focus-color: #2a9af2;
-				--paper-input-container-invalid-color: #d23f31;
 				width: 400px;
 				max-width: 100%;
 			}
@@ -46,7 +45,7 @@
 				<iron-icon icon="editor:insert-link"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url" error-message="Invalid format"></paper-input>
+				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url"></paper-input>
 				<paper-dropdown-menu label="Target" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
 					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
 						<paper-item target="_blank">_blank</paper-item>
@@ -114,7 +113,21 @@
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
 					} else {
+						if (this.selectedLink) {
+							this.linkUrl = this.selectedLink.href;
+							this.linkTarget = this.selectedLink.target || '_self';
+						} else {
+							this.linkUrl = '';
+							this.linkTarget = '_self';
+						}
+
 						this.$.dropdown.open();
+
+						this.async(
+							function () {
+								this.$.url.focus();
+							}
+						);
 					}
 				},
 				queryCommandEnabled: function () {
@@ -139,17 +152,6 @@
 					this.linkUrl = '';
 					this.linkTarget = '_self';
 					this.fire('restore-selection');
-				},
-				_selectedLinkChanged: function () {
-					WYSIWYG.ToolBehavior._selectedLinkChanged.apply(this, arguments);
-
-					if (this.selectedLink) {
-						this.linkUrl = this.selectedLink.href;
-						this.linkTarget = this.selectedLink.target || '_self';
-					} else {
-						this.linkUrl = '';
-						this.linkTarget = '_self';
-					}
 				},
 				_stopPropagation: function (event) {
 					event.stopPropagation();
