@@ -486,6 +486,8 @@ Command                                 | Mac Shortcut                          
 				sanitize: function () {
 					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
 
+
+					//Replace &nbsp; with space
 					var textNodeRegExp = new RegExp('\xA0', 'g'), textNode, treeWalker = document.createTreeWalker(this.target, NodeFilter.SHOW_TEXT, null, false);
 
 					while (textNode = treeWalker.nextNode()) {
@@ -494,6 +496,7 @@ Command                                 | Mac Shortcut                          
 							sanitized = false;
 						}
 					}
+
 
 					//Move non-code nodes outside of pre nodes
 					var invalidPreChildren = target.querySelectorAll('pre > :not(code), code > p');
@@ -545,6 +548,7 @@ Command                                 | Mac Shortcut                          
 						}
 					}
 
+
 					//Replace strong with b
 					var strong = target.querySelectorAll('strong');
 
@@ -552,6 +556,7 @@ Command                                 | Mac Shortcut                          
 						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
 						sanitized = false;
 					}
+
 
 					//Replace em with i
 					var em = target.querySelectorAll('em');
@@ -561,6 +566,7 @@ Command                                 | Mac Shortcut                          
 						sanitized = false;
 					}
 
+
 					//Replace DIVs with Ps
 					var divs = target.querySelectorAll('div');
 
@@ -568,6 +574,7 @@ Command                                 | Mac Shortcut                          
 						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
 						sanitized = false;
 					}
+
 
 					//Replace SPANs with Ps
 					var spans = target.querySelectorAll('span');
@@ -577,7 +584,8 @@ Command                                 | Mac Shortcut                          
 						sanitized = false;
 					}
 
-					//Strip classes
+
+					//Strip all classes except style-scope and wysiwyg-e
 					var classes = target.querySelectorAll('*');
 
 					for (i = 0; i < classes.length; i += 1) {
@@ -608,6 +616,8 @@ Command                                 | Mac Shortcut                          
 						}
 					}
 
+
+					//Guard against improper values
 					if (!target.children.length) {
 						p = document.createElement('p');
 						var br = document.createElement('br');
@@ -615,6 +625,7 @@ Command                                 | Mac Shortcut                          
 						target.appendChild(p);
 						sanizted = false;
 					}
+
 
 					return sanitized;
 				},
