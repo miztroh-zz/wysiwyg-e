@@ -662,6 +662,7 @@ Command                                 | Mac Shortcut                          
 				},
 
 				_keydown: function (event) {
+					if (!this.target.contains(event.target)) return;
 					//Prevent default delete behavior
 					if (event.key === 'Delete') event.preventDefault();
 					//Prevent default backspace behavior
