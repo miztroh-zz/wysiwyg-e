@@ -44,6 +44,12 @@
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
+			forceNarrow: {
+			  type: Boolean,
+			  value: true,
+			  readOnly: true,
+			  observer: '_forceNarrowChanged'
+			},
 			minWidth768px: {
 			  type: Boolean,
 			  value: true,
@@ -137,6 +143,7 @@
 			return !this.queryCommandEnabled();
 		},
 		_disabledChanged: function () {},
+		_forceNarrowChanged: function () {},
 		_minWidth768pxChanged: function () {},
 		_modifierChanged: function () {},
 		_range0Changed: function () {},

@@ -393,7 +393,7 @@ Command                                 | Mac Shortcut                          
 				},
 
 				observers: [
-					'updateTools(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition)'
+					'updateTools(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow)'
 				],
 
 				properties: {
@@ -441,7 +441,7 @@ Command                                 | Mac Shortcut                          
 					*/
 					tooltipPosition: {
 						type: String,
-						computed: '_computeTooltipPosition(minWidth768px)'
+						computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
 					}
 				},
 
@@ -629,6 +629,8 @@ Command                                 | Mac Shortcut                          
 						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
 						tools[i]._setTarget(this.target);
 						tools[i]._setMinWidth768px(this.minWidth768px);
+						tools[i]._setForceNarrow(this.forceNarrow);
+						tools[i]._setTooltipPosition(this.tooltipPosition);
 					}
 				},
 
@@ -644,8 +646,8 @@ Command                                 | Mac Shortcut                          
 					}
 				},
 
-				_computeTooltipPosition: function (minWidth768px) {
-					if (minWidth768px) return 'bottom';
+				_computeTooltipPosition: function (minWidth768px, forceNarrow) {
+					if (minWidth768px && !forceNarrow) return 'bottom';
 					return 'right';
 				},
 
