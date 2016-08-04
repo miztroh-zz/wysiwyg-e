@@ -608,6 +608,14 @@ Command                                 | Mac Shortcut                          
 						}
 					}
 
+					if (!target.children.length) {
+						p = document.createElement('p');
+						var br = document.createElement('br');
+						p.appendChild(br);
+						target.appendChild(p);
+						sanizted = false;
+					}
+
 					return sanitized;
 				},
 
