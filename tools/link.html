@@ -112,7 +112,7 @@
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
-					} else {
+					} else if (this.$.button.contains(target)) {
 						if (this.selectedLink) {
 							this.linkUrl = this.selectedLink.href;
 							this.linkTarget = this.selectedLink.target || '_self';

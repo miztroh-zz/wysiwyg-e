@@ -90,47 +90,19 @@
 
 						this.async(
 							function () {
-								var before = {
-									images: this.target.querySelectorAll('img'),
-									indexes: []
-								};
+								if (this.selectedImage) {
+									this.selectedImage.src = imageUrl;
+									this.selectedImage.style.float = imageFloat;
+								} else {
+									document.execCommand('insertImage', false, imageUrl);
 
-								for (var i = 0; i < before.images.length; i += 1) {
-									before.indexes.push(this.value.indexOf(before.images[i].outerHTML));
+									this.async(
+										function () {
+											if (this.selectedImage) this.selectedImage.style.float = imageFloat;
+										},
+										10
+									);
 								}
-
-								document.execCommand('insertImage', false, imageUrl);
-
-								this.async(
-									function () {
-										var after = {
-											images: this.target.querySelectorAll('img'),
-											indexes: []
-										};
-
-										for (var i = 0; i < after.images.length; i += 1) {
-											after.indexes.push(this.value.indexOf(after.images[i].outerHTML));
-										}
-
-										var image;
-
-										if (before.images.length === 0) {
-											image = after.images[0];
-										} else {
-											for (i = 0; i < after.images.length; i += 1) {
-												if (i === after.images.length -1 || i >= before.images.length || after.indexes[i] !== before.indexes[i]) {
-													image = after.images[i];
-													break;
-												}
-											}
-										}
-
-										if (!image) return;
-										image.style.float = imageFloat;
-										this.fire('select-element', {element: image});
-									},
-									10
-								);
 							},
 							10
 						);
@@ -139,7 +111,7 @@
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
-					} else {
+					} else if (this.$.button.contains(target)) {
 						if (this.selectedImage) {
 							this.imageUrl = this.selectedImage.src;
 							this.imageFloat = this.selectedImage.style.float || 'none';
