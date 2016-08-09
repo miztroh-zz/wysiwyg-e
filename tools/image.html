@@ -79,6 +79,26 @@
 					imageUrl: {
 						type: String,
 						value: ''
+					},
+					selectedImage: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_selectedImageChanged'
+					},
+					active: {
+						type: Boolean,
+						value: false,
+						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
+						reflectToAttribute: true,
+						observer: '_activeChanged'
+					},
+					disabled: {
+						type: Boolean,
+						value: true,
+						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
+						reflectToAttribute: true,
+						observer: '_disabledChanged'
 					}
 				},
 				execCommand: function (event) {
@@ -107,7 +127,11 @@
 							10
 						);
 					} else if (this.$.remove.contains(target)) {
-						if (this.selectedImage) this.selectedImage.parentNode.removeChild(this.selectedImage);
+						if (this.selectedImage) {
+							this.selectedImage.parentNode.removeChild(this.selectedImage);
+							this._setSelectedImage(null);
+						}
+
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
@@ -135,6 +159,31 @@
 				queryCommandState: function () {
 					return this.selectedImage;
 				},
+				ready: function () {
+					//Image selection
+					document.addEventListener(
+						'click',
+						function (event) {
+							var target = Polymer.dom(event).rootTarget;
+							if (!this.target.contains(target)) return;
+
+							if (target.tagName === 'IMG') {
+								//if (target.parentNode.tagName !== 'A') {
+									this._setSelectedImage(target);
+								//}
+
+								var selection = this.selectionRoot.getSelection();
+								selection.removeAllRanges();
+								var range = document.createRange();
+								range.selectNode(target);
+								selection.addRange(range);
+								this._setRange0(range);
+							} else {
+								this._setSelectedImage(null);
+							}
+						}.bind(this)
+					);
+				},
 				_click: function (event) {
 					this.execCommand(event);
 				},
@@ -150,6 +199,7 @@
 					this.imageFloat = 'none';
 					this.fire('restore-selection');
 				},
+				_selectedImageChanged: function (event) {},
 				_stopPropagation: function (event) {
 					event.stopPropagation();
 				}

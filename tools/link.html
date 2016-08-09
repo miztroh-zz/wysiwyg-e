@@ -80,6 +80,26 @@
 					linkUrl: {
 						type: String,
 						value: ''
+					},
+					selectedLink: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_selectedLinkChanged'
+					},
+					active: {
+						type: Boolean,
+						value: false,
+						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
+						reflectToAttribute: true,
+						observer: '_activeChanged'
+					},
+					disabled: {
+						type: Boolean,
+						value: true,
+						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
+						reflectToAttribute: true,
+						observer: '_disabledChanged'
 					}
 				},
 				execCommand: function (event) {
@@ -108,7 +128,11 @@
 							10
 						);
 					} else if (this.$.remove.contains(target)) {
-					  if (this.selectedLink) this.selectedLink.outerHTML = this.selectedLink.innerHTML;
+					  if (this.selectedLink) {
+					  	this.selectedLink.outerHTML = this.selectedLink.innerHTML;
+					  	this._setSelectedLink(null);
+					  }
+
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
 						this.$.dropdown.close();
@@ -138,6 +162,33 @@
 				queryCommandState: function () {
 					return this.selectedLink;
 				},
+				ready: function () {
+					//Link selection
+					document.addEventListener(
+						'click',
+						function (event) {
+							var target = Polymer.dom(event).rootTarget;
+							if (!this.target.contains(target)) return;
+
+							this.async(
+								function () {
+									var path = this.commonAncestorPath, selectedLink = null;
+
+									for (var i = 0; i < path.length; i += 1) {
+										if (path[i].tagName === 'A') {
+											selectedLink = path[i];
+											break;
+										}
+									}
+
+									console.log(selectedLink);
+									this._setSelectedLink(selectedLink);
+								},
+								100
+							);
+						}.bind(this)
+					);
+				},
 				_click: function (event) {
 					this.execCommand(event);
 				},
@@ -153,6 +204,7 @@
 					this.linkTarget = '_self';
 					this.fire('restore-selection');
 				},
+				_selectedLinkChanged: function (event) {},
 				_stopPropagation: function (event) {
 					event.stopPropagation();
 				}

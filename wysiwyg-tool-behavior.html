@@ -9,7 +9,7 @@
 			active: {
 				type: Boolean,
 				value: false,
-				computed: 'queryCommandState(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath)',
+				computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
 				reflectToAttribute: true,
 				observer: '_activeChanged'
 			},
@@ -40,7 +40,7 @@
 			disabled: {
 				type: Boolean,
 				value: true,
-				computed: '_computeDisabled(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath)',
+				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
@@ -74,17 +74,11 @@
 				readOnly: true,
 				observer: '_range0Changed'
 			},
-			selectedImage: {
+			selectionRoot: {
 				type: Object,
 				value: null,
 				readOnly: true,
-				observer: '_selectedImageChanged'
-			},
-			selectedLink: {
-				type: Object,
-				value: null,
-				readOnly: true,
-				observer: '_selectedLinkChanged'
+				observer: '_selectionRootChanged'
 			},
 			target: {
 				type: Object,
@@ -112,11 +106,11 @@
 			document.execCommand(this.command);
 		},
 		queryCommandEnabled: function () {
-			if (!this.range0 || this.selectedImage) return false;
+			if (!this.range0) return false;
 			return document.queryCommandEnabled(this.command);
 		},
 		queryCommandState: function () {
-			if (!this.range0 || this.selectedImage) return false;
+			if (!this.range0) return false;
 
 			try {
 				return document.queryCommandState(this.command);
@@ -147,8 +141,7 @@
 		_minWidth768pxChanged: function () {},
 		_modifierChanged: function () {},
 		_range0Changed: function () {},
-		_selectedImageChanged: function () {},
-		_selectedLinkChanged: function () {},
+		_selectionRootChanged: function () {},
 		_targetChanged: function () {},
 		_tooltipPositionChanged: function () {},
 		_valueChanged: function () {}

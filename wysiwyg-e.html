@@ -393,7 +393,7 @@ Command                                 | Mac Shortcut                          
 				},
 
 				observers: [
-					'updateTools(range0, selectedLink, selectedImage, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow)'
+					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow)'
 				],
 
 				properties: {
@@ -457,13 +457,8 @@ Command                                 | Mac Shortcut                          
 						'click',
 						function (event) {
 							if (this.mode !== 'read') return false;
-
-							this.async(
-								function () {
-									if (this.selectedLink) window.open(this.selectedLink.href);
-								},
-								100
-							);
+							var target = Polymer.dom(event).rootTarget;
+							if (target.tagName === 'A') window.open(target.href);
 						}.bind(this)
 					);
 				},
@@ -640,8 +635,7 @@ Command                                 | Mac Shortcut                          
 
 					for (var i = 0; i < tools.length; i += 1) {
 						tools[i]._setRange0(this.range0);
-						tools[i]._setSelectedImage(this.selectedImage);
-						tools[i]._setSelectedLink(this.selectedLink);
+						tools[i]._setSelectionRoot(this.shadowRoot || document);
 						tools[i]._setCanRedo(this.canRedo);
 						tools[i]._setCanUndo(this.canUndo);
 						tools[i]._setValue(this.value);
