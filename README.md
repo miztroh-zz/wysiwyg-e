@@ -13,7 +13,10 @@
 * Clear Formatting
 * Link
 * Image
-* List (numbered / bulleted)
+* Audio
+* Video
+* Ordered List
+* Unordered List
 * Indent / Outdent
 * Heading (H1 - H6)
 * Blockquote
@@ -30,6 +33,8 @@
 	<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
 	<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
 	<wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
+	<wysiwyg-tool-audio class="wysiwyg-tool"></wysiwyg-tool-audio>
+	<wysiwyg-tool-video class="wysiwyg-tool"></wysiwyg-tool-video>
 	<wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
 	<wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
 	<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
