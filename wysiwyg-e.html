@@ -266,6 +266,16 @@ Command                                 | Mac Shortcut                          
 				@apply(--wysiwyg-editable-strike);
 			}
 
+			#editable audio-wrapper,
+			#editable video-wrapper {
+				display: block;
+			}
+
+			:host([mode="edit"]) #editable audio,
+			:host([mode="edit"]) #editable video {
+				pointer-events: none;
+			}
+
 			#html {
 				padding: 0 20px 20px 20px;
 				@apply(--wysiwyg-html);
@@ -351,7 +361,7 @@ Command                                 | Mac Shortcut                          
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
-					<paper-menu-button id="settings" hidden$="[[hideSettings]]">
+					<paper-menu-button id="settings" hidden$="[[hideSettings]]" dynamic-align>
 						<paper-button class="dropdown-trigger">
 							<iron-icon icon="settings"></iron-icon>
 						</paper-button>
@@ -393,7 +403,7 @@ Command                                 | Mac Shortcut                          
 				},
 
 				observers: [
-					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow)'
+					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, mode)'
 				],
 
 				properties: {
@@ -451,16 +461,6 @@ Command                                 | Mac Shortcut                          
 							this.updateTools();
 						}.bind(this)
 					);
-
-					//Link handler for read-only mode
-					this.target.addEventListener(
-						'click',
-						function (event) {
-							if (this.mode !== 'read') return false;
-							var target = Polymer.dom(event).rootTarget;
-							if (target.tagName === 'A') window.open(target.href);
-						}.bind(this)
-					);
 				},
 
 				disconnect: function () {
@@ -480,18 +480,6 @@ Command                                 | Mac Shortcut                          
 
 				sanitize: function () {
 					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
-
-
-					//Replace &nbsp; with space
-					var textNodeRegExp = new RegExp('\xA0', 'g'), textNode, treeWalker = document.createTreeWalker(this.target, NodeFilter.SHOW_TEXT, null, false);
-
-					while (textNode = treeWalker.nextNode()) {
-						if (textNodeRegExp.test(textNode.textContent)) {
-							textNode.textContent = textNode.textContent.replace(textNodeRegExp, ' ');
-							sanitized = false;
-						}
-					}
-
 
 					//Move non-code nodes outside of pre nodes
 					var invalidPreChildren = target.querySelectorAll('pre > :not(code), code > p');
@@ -644,6 +632,7 @@ Command                                 | Mac Shortcut                          
 						tools[i]._setMinWidth768px(this.minWidth768px);
 						tools[i]._setForceNarrow(this.forceNarrow);
 						tools[i]._setTooltipPosition(this.tooltipPosition);
+						tools[i]._setMode(this.mode);
 					}
 				},
 
@@ -693,6 +682,15 @@ Command                                 | Mac Shortcut                          
 					if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
 						this.mode = 'edit';
 						return;
+					}
+
+					if (this.target && this.mode !== 'read') {
+						var AVs = this.target.querySelectorAll('audio, video');
+						if (!AVs) return;
+
+						for (var i = 0; i < AVs.length; i += 1) {
+							AVs[i].paused = true;
+						}
 					}
 				},
 

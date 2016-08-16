@@ -56,6 +56,12 @@
 			  readOnly: true,
 			  observer: '_minWidth768pxChanged'
 			},
+			mode: {
+				type: String,
+				value: 'edit',
+				readOnly: true,
+				observer: '_modeChanged'
+			},
 			modifier: {
 				type: Object,
 				value: function () {
@@ -139,6 +145,7 @@
 		_disabledChanged: function () {},
 		_forceNarrowChanged: function () {},
 		_minWidth768pxChanged: function () {},
+		_modeChanged: function () {},
 		_modifierChanged: function () {},
 		_range0Changed: function () {},
 		_selectionRootChanged: function () {},
