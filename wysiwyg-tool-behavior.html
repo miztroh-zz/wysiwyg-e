@@ -2,6 +2,9 @@
 	WYSIWYG = window.WYSIWYG || {};
 
 	WYSIWYG.ToolBehavior = {
+		hostAttributes: {
+			'wysiwyg-tool': true
+		},
 		listeners: {
 			click: '_click'
 		},

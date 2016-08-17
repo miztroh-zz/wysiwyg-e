@@ -1,0 +1,59 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../wysiwyg-tool-behavior.html">
+<link rel="import" href="../wysiwyg-tool-styles.html">
+<dom-module id="wysiwyg-tool-code">
+	<template>
+		<style include="wysiwyg-tool-styles"></style>
+		<paper-button disabled="[[disabled]]" id="button">
+			<iron-icon icon="code"></iron-icon>
+		</paper-button>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Undo ([[modifier.tooltip]] + Z)</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="execCommand"></iron-a11y-keys>
+	</template>
+	<script>
+		Polymer(
+			{
+				is: 'wysiwyg-tool-code',
+				behaviors: [
+					WYSIWYG.ToolBehavior
+				],
+				execCommand: function () {
+					if (this.disabled || !this.range0) return;
+
+					if (!this.active) {
+						document.execCommand('insertHTML', false, '<pre><code><br></code></pre>');
+					} else  {
+						var path = this.commonAncestorPath;
+
+						if (path) {
+							for (var i = 0; i < path.length - 1; i += 1) {
+								if (['PRE', 'CODE'].indexOf(path[i].tagName) >= 0) {
+									path[i].outerHTML = path[i].innerHTML;
+								}
+							}
+						}
+					}
+				},
+				queryCommandEnabled: function () {
+					return this.range0;
+				},
+				queryCommandState: function () {
+					var path = this.commonAncestorPath;
+
+					if (path) {
+						for (var i = 0; i < path.length; i += 1) {
+							if (['PRE', 'CODE'].indexOf(path[i].tagName) >= 0) return true;
+						}
+					}
+
+					return false;
+				}
+			}
+		);
+	</script>
+</dom-module>

@@ -25,22 +25,23 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 
 ```html
 <wysiwyg-e>
-	<wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
-	<wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
-	<wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
-	<wysiwyg-tool-strike class="wysiwyg-tool"></wysiwyg-tool-strike>
-	<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
-	<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
-	<wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
-	<wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
-	<wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
-	<wysiwyg-tool-indent class="wysiwyg-tool"></wysiwyg-tool-indent>
-	<wysiwyg-tool-outdent class="wysiwyg-tool"></wysiwyg-tool-outdent>
-	<wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
-	<wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-	<wysiwyg-tool-blockquote class="wysiwyg-tool"></wysiwyg-tool-blockquote>
-	<wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
-	<wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+	<wysiwyg-tool-bold></wysiwyg-tool-bold>
+	<wysiwyg-tool-italic></wysiwyg-tool-italic>
+	<wysiwyg-tool-underline></wysiwyg-tool-underline>
+	<wysiwyg-tool-strike></wysiwyg-tool-strike>
+	<wysiwyg-tool-clear></wysiwyg-tool-clear>
+	<wysiwyg-tool-code></wysiwyg-tool-code>
+	<wysiwyg-tool-link></wysiwyg-tool-link>
+	<wysiwyg-tool-image></wysiwyg-tool-image>
+	<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+	<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+	<wysiwyg-tool-indent></wysiwyg-tool-indent>
+	<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+	<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+	<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+	<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+	<wysiwyg-tool-undo></wysiwyg-tool-undo>
+	<wysiwyg-tool-redo></wysiwyg-tool-redo>
 </wysiwyg-e>
 ```
 
@@ -373,7 +374,7 @@ Command                                 | Mac Shortcut                          
 					</paper-menu-button>
 					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">Settings</paper-tooltip>
 					<wysiwyg-tool-backspace></wysiwyg-tool-backspace>
-					<content select=".wysiwyg-tool" id="tools"></content>
+					<content select="[wysiwyg-tool]" id="tools"></content>
 				</div>
 			</paper-toolbar>
 			<div id="content">
@@ -481,6 +482,17 @@ Command                                 | Mac Shortcut                          
 				sanitize: function () {
 					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
 
+					//Wrap target's immediate child text nodes inside p node
+					var childNodes = this.target.childNodes;
+
+					for (i = 0; i < childNodes.length; i += 1) {
+						if (childNodes[i].nodeType === 3) {
+							p = document.createElement('p');
+							this.target.insertBefore(p, childNodes[i].nextSibling);
+							p.appendChild(childNodes[i]);
+						}
+					}
+
 					//Move non-code nodes outside of pre nodes
 					var invalidPreChildren = target.querySelectorAll('pre > :not(code), code > p');
 
@@ -518,7 +530,7 @@ Command                                 | Mac Shortcut                          
 						}
 					}
 
-					pre = target.querySelectorAll('pre');
+					/*pre = target.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
 						if (pre[i].textContent.trim().length === 0) {
@@ -529,7 +541,7 @@ Command                                 | Mac Shortcut                          
 							this.selectElement(p);
 							sanitized = false;
 						}
-					}
+					}*/
 
 
 					//Replace strong with b
