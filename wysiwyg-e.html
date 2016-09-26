@@ -49,6 +49,12 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 
 The following custom properties and mixins are available for styling:
 
+#### Font
+
+Custom property                         | Description                                        | Default
+----------------------------------------|----------------------------------------------------|---------------------------------------
+`--wysiwyg-font`                        | Font-family                                        | `Roboto`
+
 #### Toolbar
 
 Custom property                         | Description                                        | Default
@@ -138,7 +144,7 @@ Command                                 | Mac Shortcut                          
 				display: block;
 				position: relative;
 				overflow-y: hidden;
-				font-family: Roboto;
+				font-family: var(--wysiwyg-font, Roboto);
 			}
 
 			#toolbar {
@@ -400,7 +406,8 @@ Command                                 | Mac Shortcut                          
 				listeners: {
 					keydown: '_keydown',
 					'restore-selection': 'restoreSelection',
-					'select-element': '_selectElement'
+					'select-element': '_selectElement',
+					paste: '_paste'
 				},
 
 				observers: [
@@ -621,7 +628,6 @@ Command                                 | Mac Shortcut                          
 						sanizted = false;
 					}
 
-
 					return sanitized;
 				},
 
@@ -710,6 +716,13 @@ Command                                 | Mac Shortcut                          
 					if (this.mode !== 'edit') return 'seamed';
 					return 'waterfall';
 				},
+
+        _paste: function (event) {
+          event.preventDefault();
+          var data = event.clipboardData.getData('text/html');
+          console.log(data);
+          document.execCommand('insertHTML', false, data);
+        },
 
 				_prismHighlight: function (value) {
 					// process and format functions from
