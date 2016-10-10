@@ -1,19 +1,20 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/hardware-icons.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
-<link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../prism-element/prism-import.html">
-<link rel="import" href="../undo-mgr/behavior.html">
 <link rel="import" href="../selection-mgr/behavior.html">
-<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../undo-mgr/behavior.html">
 
 <!--
 `<wysiwyg-e>` A what-you-see-is-what-you-get editor created with Polymer.
@@ -51,86 +52,86 @@ The following custom properties and mixins are available for styling:
 
 #### Font
 
-Custom property                         | Description                                        | Default
+Custom property												 | Description																				| Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-font`                        | Font-family                                        | `Roboto`
+`--wysiwyg-font`												| Font-family																				| `Roboto`
 
 #### Toolbar
 
-Custom property                         | Description                                        | Default
+Custom property												 | Description																				| Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-toolbar-background-color`    | Toolbar background color                           | `#2A9AF2`
-`--wysiwyg-toolbar-color`               | Toolbar foreground color                           | `white`
-`--wysiwyg-toolbar`                     | Mixin applied to the wysiwyg-e toolbar             | `{}`
+`--wysiwyg-toolbar-background-color`		| Toolbar background color													 | `#2A9AF2`
+`--wysiwyg-toolbar-color`							 | Toolbar foreground color													 | `white`
+`--wysiwyg-toolbar`										 | Mixin applied to the wysiwyg-e toolbar						 | `{}`
 
 #### Editable Content
 
-Custom property                         | Description                                        | Default
+Custom property												 | Description																				| Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-editable`                    | Mixin applied to the wysiwyg-e content             | `{}`
-`--wysiwyg-editable-blockquote`         | Mixen applied to Blockquote `<blockquote>`         | `{}`
-`--wysiwyg-editable-pre`                | Mixen applied to code `<code>`                     | `{}`
-`--wysiwyg-editable-p`                  | Mixen applied to paragraph `<p>`                   | `{}`
-`--wysiwyg-editable-h1`                 | Mixen applied to H1 `<h1>`                         | `{}`
-`--wysiwyg-editable-h2`                 | Mixen applied to H2 `<h2>`                         | `{}`
-`--wysiwyg-editable-h3`                 | Mixen applied to H3 `<h3>`                         | `{}`
-`--wysiwyg-editable-h4`                 | Mixen applied to H4 `<h4>`                         | `{}`
-`--wysiwyg-editable-h5`                 | Mixen applied to H5 `<h5>`                         | `{}`
-`--wysiwyg-editable-h6`                 | Mixen applied to H6 `<h6>`                         | `{}`
-`--wysiwyg-editable-ol`                 | Ordered List `<ol>`                                | `{padding-left: 30px;}`
-`--wysiwyg-editable-ul`                 | Unordered List `<ul>`                              | `{padding-left: 30px;}`
-`--wysiwyg-editable-li`                 | Mixen applied to `<li>`                            | `{}`
-`--wysiwyg-editable-a`                  | Link	`<a>`                                        | `{color: #2A9AF2;}`
-`--wysiwyg-editable-img`                | Mixen applied to `<img>`                           | `{}`
-`--wysiwyg-editable-b`                  | Mixen applied to `<b>`                             | `{}`
-`--wysiwyg-editable-u`                  | Mixen applied to `<u>`                             | `{}`
-`--wysiwyg-editable-i`                  | Mixen applied to `<i>`                             | `{}`
-`--wysiwyg-editable-strike`             | Mixen applied to `<strike>`                        | `{}`
-`--wysiwyg-editable-first-child`        | Mixin applied to editable first child              | `{}`
-`--wysiwyg-editable-last-child`         | Mixin applied to editable last child               | `{}`
-`--wysiwyg-editable-selection`          | Editable selection                                 | `{color: white; background: #2A9AF2;}`
-`--wysiwyg-html`                        | Mixin applied to the wysiwyg-e html content        | `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`                    | Html content `<pre>`                               | `{margin: 0;}`
-`--wysiwyg-html-code`                   | Html content `<code>`                              | `{display: block; display: block;}`
+`--wysiwyg-editable`										| Mixin applied to the wysiwyg-e content						 | `{}`
+`--wysiwyg-editable-blockquote`				 | Mixen applied to Blockquote `<blockquote>`				 | `{}`
+`--wysiwyg-editable-pre`								| Mixen applied to code `<code>`										 | `{}`
+`--wysiwyg-editable-p`									| Mixen applied to paragraph `<p>`									 | `{}`
+`--wysiwyg-editable-h1`								 | Mixen applied to H1 `<h1>`												 | `{}`
+`--wysiwyg-editable-h2`								 | Mixen applied to H2 `<h2>`												 | `{}`
+`--wysiwyg-editable-h3`								 | Mixen applied to H3 `<h3>`												 | `{}`
+`--wysiwyg-editable-h4`								 | Mixen applied to H4 `<h4>`												 | `{}`
+`--wysiwyg-editable-h5`								 | Mixen applied to H5 `<h5>`												 | `{}`
+`--wysiwyg-editable-h6`								 | Mixen applied to H6 `<h6>`												 | `{}`
+`--wysiwyg-editable-ol`								 | Ordered List `<ol>`																| `{padding-left: 30px;}`
+`--wysiwyg-editable-ul`								 | Unordered List `<ul>`															| `{padding-left: 30px;}`
+`--wysiwyg-editable-li`								 | Mixen applied to `<li>`														| `{}`
+`--wysiwyg-editable-a`									| Link	`<a>`																				| `{color: #2A9AF2;}`
+`--wysiwyg-editable-img`								| Mixen applied to `<img>`													 | `{}`
+`--wysiwyg-editable-b`									| Mixen applied to `<b>`														 | `{}`
+`--wysiwyg-editable-u`									| Mixen applied to `<u>`														 | `{}`
+`--wysiwyg-editable-i`									| Mixen applied to `<i>`														 | `{}`
+`--wysiwyg-editable-strike`						 | Mixen applied to `<strike>`												| `{}`
+`--wysiwyg-editable-first-child`				| Mixin applied to editable first child							| `{}`
+`--wysiwyg-editable-last-child`				 | Mixin applied to editable last child							 | `{}`
+`--wysiwyg-editable-selection`					| Editable selection																 | `{color: white; background: #2A9AF2;}`
+`--wysiwyg-html`												| Mixin applied to the wysiwyg-e html content				| `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`										| Html content `<pre>`															 | `{margin: 0;}`
+`--wysiwyg-html-code`									 | Html content `<code>`															| `{display: block; display: block;}`
 
 #### HTML View
 
-Custom property                         | Description                                        | Default
+Custom property												 | Description																				| Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-html`                        | Mixin applied to the wysiwyg-e html content        | `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`                    | Html content `<pre>`                               | `{margin: 0;}`
-`--wysiwyg-html-code`                   | Html content `<code>`                              | `{display: block; display: block;}`
+`--wysiwyg-html`												| Mixin applied to the wysiwyg-e html content				| `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`										| Html content `<pre>`															 | `{margin: 0;}`
+`--wysiwyg-html-code`									 | Html content `<code>`															| `{display: block; display: block;}`
 
 ### Accessibility / Shortcut Keys
 `<wysiwyg-e>` implements key bindings to access commands.
 
-Command                                 | Mac Shortcut                                       | Windows Shortcut
+Command																 | Mac Shortcut																			 | Windows Shortcut
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`Bold`                                  | Cmd + B                                            | Ctrl + B
-`Italic`                                | Cmd + I                                            | Ctrl + I
-`Underline`                             | Cmd + U                                            | Ctrl + U
-`Strikethrough`                         | Shift + Alt + D                                    | Shift + Alt + D
-`Remove Format`                         | Cmd + Space                                        | Ctrl + Space
-`Link`                                  | Shift + Alt + A                                    | Shift + Alt + A
-`Image`                                 | Shift + Alt + M                                    | Shift + Alt + M
-`Ordered List`                          | Shift + Alt + O                                    | Shift + Alt + O
-`Bullet List`                           | Shift + Alt + U                                    | Shift + Alt + U
-`Indent`                                | Tab                                                | Tab
-`Outdent`                               | Shift + Tab                                        | Shift + Tab
-`Align Left`                            | Shift + Alt + L                                    | Shift + Alt + L
-`Align Right`                           | Shift + Alt + R                                    | Shift + Alt + R
-`Align Center`                          | Shift + Alt + C                                    | Shift + Alt + C
-`Justify`                               | Shift + Alt + J                                    | Shift + Alt + J
-`Paragraph`                             | Shift + Alt + 0                                    | Shift + Alt + 0
-`H1`                                    | Shift + Alt + 1                                    | Shift + Alt + 1
-`H2`                                    | Shift + Alt + 2                                    | Shift + Alt + 2
-`H3`                                    | Shift + Alt + 3                                    | Shift + Alt + 2
-`H4`                                    | Shift + Alt + 4                                    | Shift + Alt + 3
-`H5`                                    | Shift + Alt + 5                                    | Shift + Alt + 3
-`H6`                                    | Shift + Alt + 6                                    | Shift + Alt + 6
-`Blockquote`                            | Shift + Alt + Q                                    | Shift + Alt + Q
-`Undo`                                  | Cmd + Z                                            | Ctrl + Z
-`Redo`                                  | Cmd + Y                                            | Ctrl + Y
+`Bold`																	| Cmd + B																						| Ctrl + B
+`Italic`																| Cmd + I																						| Ctrl + I
+`Underline`														 | Cmd + U																						| Ctrl + U
+`Strikethrough`												 | Shift + Alt + D																		| Shift + Alt + D
+`Remove Format`												 | Cmd + Space																				| Ctrl + Space
+`Link`																	| Shift + Alt + A																		| Shift + Alt + A
+`Image`																 | Shift + Alt + M																		| Shift + Alt + M
+`Ordered List`													| Shift + Alt + O																		| Shift + Alt + O
+`Bullet List`													 | Shift + Alt + U																		| Shift + Alt + U
+`Indent`																| Tab																								| Tab
+`Outdent`															 | Shift + Tab																				| Shift + Tab
+`Align Left`														| Shift + Alt + L																		| Shift + Alt + L
+`Align Right`													 | Shift + Alt + R																		| Shift + Alt + R
+`Align Center`													| Shift + Alt + C																		| Shift + Alt + C
+`Justify`															 | Shift + Alt + J																		| Shift + Alt + J
+`Paragraph`														 | Shift + Alt + 0																		| Shift + Alt + 0
+`H1`																		| Shift + Alt + 1																		| Shift + Alt + 1
+`H2`																		| Shift + Alt + 2																		| Shift + Alt + 2
+`H3`																		| Shift + Alt + 3																		| Shift + Alt + 2
+`H4`																		| Shift + Alt + 4																		| Shift + Alt + 3
+`H5`																		| Shift + Alt + 5																		| Shift + Alt + 3
+`H6`																		| Shift + Alt + 6																		| Shift + Alt + 6
+`Blockquote`														| Shift + Alt + Q																		| Shift + Alt + Q
+`Undo`																	| Cmd + Z																						| Ctrl + Z
+`Redo`																	| Cmd + Y																						| Ctrl + Y
 
 @element wysiwyg-e
 @demo demo/index.html
@@ -153,18 +154,6 @@ Command                                 | Mac Shortcut                          
 				user-select: none;
 				color: var(--wysiwyg-toolbar-color, white);
 				@apply(--wysiwyg-toolbar);
-			}
-
-			@media (min-width: 768px) {
-				#toolbar {
-					padding: 0 5px;
-				}
-			}
-
-			@media (max-width: 767px) {
-				#toolbar {
-					padding: 5px 0;
-				}
 			}
 
 			#editable {
@@ -342,6 +331,8 @@ Command                                 | Mac Shortcut                          
 				#layout[force-narrow] #toolbarLayout {
 					@apply(--layout-vertical);
 					width: 40px;
+					max-height: calc(100% - 80px);
+					overflow-y: hidden;
 				}
 			}
 
@@ -353,6 +344,8 @@ Command                                 | Mac Shortcut                          
 				#toolbarLayout {
 					@apply(--layout-vertical);
 					width: 40px;
+					max-height: calc(100% - 80px);
+					overflow-y: hidden;
 				}
 			}
 
@@ -361,13 +354,26 @@ Command                                 | Mac Shortcut                          
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
+
+			#scrollUp,
+			#scrollDown {
+				border-radius: 0;
+			}
+
+			#scrollUp[disabled],
+			#scrollDown[disabled] {
+				color: rgba(255, 255, 255, 0.5);
+			}
 		</style>
 		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
-				<div id="toolbarLayout" on-undo="undo" on-redo="redo">
+				<paper-button id="scrollDown" on-up="_onScrollButtonUp" on-down="_onScrollUp" hidden$="[[!showScrollButtons]]" disabled="[[!canScrollUp]]">
+					<iron-icon icon="hardware:keyboard-arrow-up"></iron-icon>
+				</paper-button>
+				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollOffset]]">
 					<paper-menu-button id="settings" hidden$="[[hideSettings]]" dynamic-align>
 						<paper-button class="dropdown-trigger">
 							<iron-icon icon="settings"></iron-icon>
@@ -382,6 +388,9 @@ Command                                 | Mac Shortcut                          
 					<wysiwyg-tool-backspace></wysiwyg-tool-backspace>
 					<content select="[wysiwyg-tool]" id="tools"></content>
 				</div>
+				<paper-button id="scrollUp" on-up="_onScrollButtonUp" on-down="_onScrollDown" hidden$="[[!showScrollButtons]]" disabled="[[!canScrollDown]]">
+					<iron-icon icon="hardware:keyboard-arrow-down"></iron-icon>
+				</paper-button>
 			</paper-toolbar>
 			<div id="content">
 				<div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
@@ -398,6 +407,7 @@ Command                                 | Mac Shortcut                          
 		Polymer(
 			{
 				is: 'wysiwyg-e',
+
 				behaviors: [
 					UndoMgrBehavior,
 					SelectionMgrBehavior
@@ -415,52 +425,103 @@ Command                                 | Mac Shortcut                          
 				],
 
 				properties: {
-					/**
-					 * If true, force narrow view with vertical toolbar.	Defaults to false.
-					*/
-					forceNarrow: {
-						type: Boolean,
-						value: false
-					},
-					/**
-					 * Option to hide the built-in settings tool.	Defaults to false.
-					*/
-					hideSettings: {
-						type: Boolean,
-						value: false
-					},
-					/**
-					 * Tracks viewport with.	Managed by iron-media-query
-					*/
-					minWidth768px: {
-						type: Boolean
-					},
-					/**
-					 * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
-					*/
-					mode: {
-						type: String,
-						value: 'edit',
-						observer: '_modeChanged',
-						reflectToAttribute: true
-					},
-					/**
-					 * Target for use with selection-mgr and undo-mgr behaviors
-					*/
-					target: {
-						type: Object,
-						value: function () {
-							return this.$.editable;
-						},
-						observer: '_targetChanged'
-					},
-					/**
-					 * Computed based on ``minWidth768px``
-					*/
-					tooltipPosition: {
-						type: String,
-						computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
-					}
+          /**
+           * If true, tools can scroll up.  Computed.
+          */
+          canScrollUp: {
+          	type: Boolean,
+          	computed: '_computeCanScrollUp(minWidth768px, forceNarrow, scrollHeight, scrollOffset)'
+          },
+          /**
+           * If true, tools can scroll down.  Computed.
+          */
+          canScrollDown: {
+          	type: Boolean,
+          	computed: '_computeCanScrollDown(minWidth768px, forceNarrow, scrollHeight, scrollOffset)'
+          },
+          /**
+           * If true, force narrow view with vertical toolbar.	Defaults to false.
+          */
+          forceNarrow: {
+          	type: Boolean,
+          	value: false
+          },
+          /**
+           * Option to hide the built-in settings tool.	Defaults to false.
+          */
+          hideSettings: {
+          	type: Boolean,
+          	value: false
+          },
+          /**
+           * Tracks viewport with.	Managed by iron-media-query
+          */
+          minWidth768px: {
+          	type: Boolean
+          },
+          /**
+           * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
+          */
+          mode: {
+          	type: String,
+          	value: 'edit',
+          	observer: '_modeChanged',
+          	reflectToAttribute: true
+          },
+          /**
+           * Delay for scheduling of scroll jobs for the tool container.  Defaults to 1.
+          */
+          scrollDelay: {
+          	type: Number,
+          	value: 1
+          },
+          /**
+           * Amount in pixels by which to scroll the tool container up or down.  Defaults to 10.
+          */
+          scrollStep: {
+          	type: Number,
+          	value: 10
+          },
+          /**
+           * Height tool scroll container.  Read-only.
+          */
+          scrollHeight: {
+            type: Number,
+            value: 0,
+            readOnly: true
+          },
+          /**
+           * Top offset of tool scroll container.  Read-only.
+          */
+          scrollOffset: {
+            type: Number,
+            value: 0,
+            readOnly: true
+          },
+          /**
+           * Show tool scroll buttons.  Computed;
+          */
+          showScrollButtons: {
+            type: Boolean,
+            computed: '_computeShowScrollButtons(minWidth768px, forceNarrow)'
+          },
+          /**
+           * Target for use with selection-mgr and undo-mgr behaviors
+          */
+          target: {
+          	type: Object,
+          	value: function () {
+          		return this.$.editable;
+          	},
+          	observer: '_targetChanged'
+          },
+          /**
+           * Computed based on ``minWidth768px``
+          */
+          tooltipPosition: {
+          	type: String,
+          	computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
+          }
 				},
 
 				ready: function () {
@@ -469,6 +530,13 @@ Command                                 | Mac Shortcut                          
 							this.updateTools();
 						}.bind(this)
 					);
+
+          var resize = function () {
+  					this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
+  				}.bind(this);
+
+					window.addEventListener('resize', resize);
+					this.async(resize, 100);
 				},
 
 				disconnect: function () {
@@ -536,20 +604,6 @@ Command                                 | Mac Shortcut                          
 							}
 						}
 					}
-
-					/*pre = target.querySelectorAll('pre');
-
-					for (i = 0; i < pre.length; i += 1) {
-						if (pre[i].textContent.trim().length === 0) {
-							p = document.createElement('p');
-							p.textContent = ' ';
-							pre[i].parentNode.insertBefore(p, pre[i]);
-							pre[i].parentNode.removeChild(pre[i]);
-							this.selectElement(p);
-							sanitized = false;
-						}
-					}*/
-
 
 					//Replace strong with b
 					var strong = target.querySelectorAll('strong');
@@ -666,6 +720,21 @@ Command                                 | Mac Shortcut                          
 					}
 				},
 
+        _computeCanScrollDown: function (minWidth768px, forceNarrow, scrollHeight, scrollOffset) {
+          if (minWidth768px && !forceNarrow) return false;
+          return scrollOffset < scrollHeight;
+        },
+
+        _computeCanScrollUp: function (minWidth768px, forceNarrow, scrollHeight, scrollOffset) {
+          if (minWidth768px && !forceNarrow) return false;
+          return scrollOffset > 0;
+        },
+
+        _computeShowScrollButtons: function (minWidth768px, forceNarrow) {
+          if (minWidth768px && !forceNarrow) return false;
+          return true;
+        },
+
 				_computeTooltipPosition: function (minWidth768px, forceNarrow) {
 					if (minWidth768px && !forceNarrow) return 'bottom';
 					return 'right';
@@ -712,17 +781,31 @@ Command                                 | Mac Shortcut                          
 					}
 				},
 
+				_onScrollButtonUp: function () {
+					clearInterval(this._scrollJob);
+					this._scrollJob = null;
+				},
+
+				_onScrollDown: function () {
+					this._scrollDown();
+					this._scrollJob = setInterval(this._scrollDown.bind(this), this.scrollDelay);
+				},
+
+				_onScrollUp: function () {
+					this._scrollUp();
+					this._scrollJob = setInterval(this._scrollUp.bind(this), this.scrollDelay);
+				},
+
 				_panelMode: function () {
 					if (this.mode !== 'edit') return 'seamed';
 					return 'waterfall';
 				},
 
-        _paste: function (event) {
-          event.preventDefault();
-          var data = event.clipboardData.getData('text/html');
-          console.log(data);
-          document.execCommand('insertHTML', false, data);
-        },
+				_paste: function (event) {
+					event.preventDefault();
+					var data = event.clipboardData.getData('text/html');
+					document.execCommand('insertHTML', false, data);
+				},
 
 				_prismHighlight: function (value) {
 					// process and format functions from
@@ -753,6 +836,28 @@ Command                                 | Mac Shortcut                          
 					}
 
 					return Prism.highlight(process(value), Prism.languages.markup);
+				},
+
+				_scroll: function (dx) {
+					this._setScrollOffset(this.scrollOffset + dx);
+				},
+
+				_scrollDown: function () {
+				  if (this.scrollOffset + this.scrollStep > this.scrollHeight) {
+				    this._scroll(this.scrollHeight - this.scrollOffset);
+				    this._onScrollButtonUp();
+				  } else {
+					  this._scroll(this.scrollStep);
+				  }
+				},
+
+				_scrollUp: function () {
+				  if (this.scrollOffset - this.scrollStep < 0) {
+				    this._scroll(-this.scrollOffset);
+				    this._onScrollButtonUp();
+				  } else {
+  					this._scroll(-this.scrollStep);
+				  }
 				},
 
 				_selectElement: function (event) {
