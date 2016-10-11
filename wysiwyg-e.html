@@ -562,6 +562,7 @@ Command                                 | Mac Shortcut                          
 
 					for (i = 0; i < childNodes.length; i += 1) {
 						if (childNodes[i].nodeType === 3) {
+						  sanitized = false;
 							p = document.createElement('p');
 							this.target.insertBefore(p, childNodes[i].nextSibling);
 							p.appendChild(childNodes[i]);
@@ -613,7 +614,6 @@ Command                                 | Mac Shortcut                          
 						sanitized = false;
 					}
 
-
 					//Replace em with i
 					var em = target.querySelectorAll('em');
 
@@ -621,7 +621,6 @@ Command                                 | Mac Shortcut                          
 						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
 						sanitized = false;
 					}
-
 
 					//Replace DIVs with Ps
 					var divs = target.querySelectorAll('div');
@@ -631,20 +630,30 @@ Command                                 | Mac Shortcut                          
 						sanitized = false;
 					}
 
+          //Remove P children of Ps
+          var Ps = target.querySelectorAll('p');
 
-					//Replace SPANs with Ps
-					var spans = target.querySelectorAll('span');
+          for (i = 0; i < Ps.length; i += 1) {
+            var childPs = Ps[i].querySelectorAll('p');
 
-					for (i = 0; i < spans.length; i += 1) {
-						spans[i].outerHTML = '<p>' + spans[i].innerHTML + '</p>';
-						sanitized = false;
-					}
+            if (childPs.length) {
+              sanitized = false;
+            }
 
+            for (j = 0; j < childPs.length; j += 1) {
+              childPs[j].outerHTML = childPs[j].textContent;
+            }
+          }
 
 					//Strip all classes except style-scope and wysiwyg-e
-					var classes = target.querySelectorAll('*');
+					var classes = target.querySelectorAll('*'), excludeTags = ['B', 'I', 'U', 'STRIKE', 'SPAN'];
 
 					for (i = 0; i < classes.length; i += 1) {
+					  if (excludeTags.indexOf(classes[i].tagName) >= 0) {
+					    classes[i].removeAttribute('class');
+					    continue;
+					  }
+
 						var removeClasses = [], hasStyleScope = false, hasWysiwygE = false;
 
 						for (j = 0; j < classes[i].classList.length; j += 1) {
@@ -672,14 +681,13 @@ Command                                 | Mac Shortcut                          
 						}
 					}
 
-
 					//Guard against improper values
 					if (!target.children.length) {
 						p = document.createElement('p');
 						var br = document.createElement('br');
 						p.appendChild(br);
 						target.appendChild(p);
-						sanizted = false;
+						sanitized = false;
 					}
 
 					return sanitized;
