@@ -12,7 +12,7 @@
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="redo"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Redo ([[modifier.tooltip]] + Y)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Redo')]] ([[modifier.tooltip]] + Y)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+y" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
@@ -25,6 +25,13 @@
 				execCommand: function () {
 					if (this.disabled) return;
 					this.fire('redo');
+				},
+				ready: function () {
+					this.resources = {
+						'en': {
+							'Redo': 'Redo'
+						}
+					};
 				},
 				_computeDisabled: function () {
 					return !this.canRedo;

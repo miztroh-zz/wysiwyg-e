@@ -33,14 +33,14 @@
 				background: #e4e4e4;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Headings</paper-tooltip>
-		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">Paragraph (Shift + Alt + 0)</paper-tooltip>
-		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">Heading 1 (Shift + Alt + 1)</paper-tooltip>
-		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">Heading 2 (Shift + Alt + 2)</paper-tooltip>
-		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">Heading 3 (Shift + Alt + 3)</paper-tooltip>
-		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">Heading 4 (Shift + Alt + 4)</paper-tooltip>
-		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">Heading 5 (Shift + Alt + 5)</paper-tooltip>
-		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">Heading 6 (Shift + Alt + 6)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Headings')]]</paper-tooltip>
+		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">[[localize('Paragraph')]] (Shift + Alt + 0)</paper-tooltip>
+		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 1)]] (Shift + Alt + 1)</paper-tooltip>
+		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 2)]] (Shift + Alt + 2)</paper-tooltip>
+		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 3)]] (Shift + Alt + 3)</paper-tooltip>
+		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 4)]] (Shift + Alt + 4)</paper-tooltip>
+		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 5)]] (Shift + Alt + 5)</paper-tooltip>
+		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 6)]] (Shift + Alt + 6)</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+0" on-keys-pressed="_p"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+1" on-keys-pressed="_h1"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+2" on-keys-pressed="_h2"></iron-a11y-keys>
@@ -98,6 +98,14 @@
 				},
 				ready: function () {
 					this._setCommand('formatBlock');
+
+					this.resources = {
+						'en': {
+							'Headings': 'Headings',
+							'Paragraph': 'Paragraph',
+							'Heading': 'Heading {number}'
+						}
+					};
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return false;

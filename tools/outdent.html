@@ -12,7 +12,7 @@
 		<paper-button disabled="[[disabled]]" id="button">
 		  <iron-icon icon="editor:format-indent-decrease"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Outdent (Shift + Tab)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Outdent')]] (Shift + Tab)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
@@ -24,6 +24,12 @@
 				],
 				ready: function () {
 					this._setCommand('outdent');
+
+					this.resources = {
+						'en': {
+							'Outdent': 'Outdent'
+						}
+					};
 				},
 				_keysPressed: function (event, detail) {
 					if (!detail.keyboardEvent.shiftKey) return;

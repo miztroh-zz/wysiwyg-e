@@ -23,6 +23,7 @@
 	],
 	"dependencies": {
 		"polymer": "polymer/polymer#latest",
+		"app-localize-behavior": "PolymerElements/app-localize-behavior#latest",
 		"font-roboto": "PolymerElements/font-roboto#latest",
 		"iron-a11y-keys": "PolymerElements/iron-a11y-keys#latest",
 		"iron-ajax": "PolymerElements/iron-ajax#latest",

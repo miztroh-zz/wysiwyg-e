@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
@@ -379,12 +380,12 @@ Command                                 | Mac Shortcut                          
 							<iron-icon icon="settings"></iron-icon>
 						</paper-button>
 						<paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
-							<paper-item mode="edit">Edit</paper-item>
-							<paper-item mode="read">Read-only</paper-item>
-							<paper-item mode="html">View HTML</paper-item>
+							<paper-item mode="edit">[[localize('Edit')]]</paper-item>
+							<paper-item mode="read">[[localize('Read-only')]]</paper-item>
+							<paper-item mode="html">[[localize('View HTML')]]</paper-item>
 						</paper-listbox>
 					</paper-menu-button>
-					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">Settings</paper-tooltip>
+					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">[[localize('Settings')]]</paper-tooltip>
 					<wysiwyg-tool-backspace></wysiwyg-tool-backspace>
 					<content select="[wysiwyg-tool]" id="tools"></content>
 				</div>
@@ -409,8 +410,9 @@ Command                                 | Mac Shortcut                          
 				is: 'wysiwyg-e',
 
 				behaviors: [
-					UndoMgrBehavior,
-					SelectionMgrBehavior
+				  Polymer.AppLocalizeBehavior,
+					SelectionMgrBehavior,
+					UndoMgrBehavior
 				],
 
 				listeners: {
@@ -421,7 +423,7 @@ Command                                 | Mac Shortcut                          
 				},
 
 				observers: [
-					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, mode)'
+					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, mode, language)'
 				],
 
 				properties: {
@@ -454,6 +456,13 @@ Command                                 | Mac Shortcut                          
 						value: false
 					},
 					/**
+					 * Two-letter language code for use with Polymer.AppLocalizeBehavior.  Defaults to 'en'.
+					*/
+					language: {
+						type: String,
+						value: 'en'
+					},
+					/**
 					 * Tracks viewport with.	Managed by iron-media-query
 					*/
 					minWidth768px: {
@@ -467,6 +476,22 @@ Command                                 | Mac Shortcut                          
 						value: 'edit',
 						observer: '_modeChanged',
 						reflectToAttribute: true
+					},
+					/**
+					 * Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
+					*/
+					resources: {
+						type: Object,
+						value: function () {
+						  return {
+						    'en': {
+						      'Settings': 'Settings',
+						      'Edit': 'Edit',
+						      'Read-only': 'Read-only',
+						      'View HTML': 'View HTML'
+						    }
+						  };
+						}
 					},
 					/**
 					 * Delay for scheduling of scroll jobs for the tool container.	Defaults to 1.
@@ -713,6 +738,7 @@ Command                                 | Mac Shortcut                          
 						tools[i]._setForceNarrow(this.forceNarrow);
 						tools[i]._setTooltipPosition(this.tooltipPosition);
 						tools[i]._setMode(this.mode);
+						tools[i].language = this.language;
 					}
 				},
 

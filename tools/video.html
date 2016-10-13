@@ -38,14 +38,14 @@
 				max-width: 100%;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Video (Shift + Alt + V)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Video')]] (Shift + Alt + V)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
 				<iron-icon icon="maps:local-movies"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content vertical layout" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="URL" always-float-label value="{{videoUrl}}" id="url"></paper-input>
+				<paper-input label="[[localize('URL')]]" always-float-label value="{{videoUrl}}" id="url"></paper-input>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="close"></paper-icon-button>
 					<div class="flex"></div>
@@ -136,6 +136,13 @@
 					return this.selectedVideo;
 				},
 				ready: function () {
+					this.resources = {
+						'en': {
+							'Video': 'Video',
+							'URL': 'URL'
+						}
+					};
+
 					var handler = function (event) {
 						var target = Polymer.dom(event).rootTarget, selectedVideo = null;
 						if (!this.target.contains(target)) return;

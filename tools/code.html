@@ -12,7 +12,7 @@
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="code"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Code ([[modifier.tooltip]] + Z)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Code')]] ([[modifier.tooltip]] + Z)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
@@ -52,6 +52,13 @@
 					}
 
 					return false;
+				},
+				ready: function () {
+					this.resources = {
+						'en': {
+							'Code': 'Code'
+						}
+					};
 				}
 			}
 		);

@@ -12,7 +12,7 @@
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="undo"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Undo ([[modifier.tooltip]] + Z)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Undo')]] ([[modifier.tooltip]] + Z)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+z" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
@@ -25,6 +25,13 @@
 				execCommand: function () {
 					if (this.disabled) return;
 					this.fire('undo');
+				},
+				ready: function () {
+					this.resources = {
+						'en': {
+							'Undo': 'Undo'
+						}
+					};
 				},
 				_computeDisabled: function () {
 					return !this.canUndo;

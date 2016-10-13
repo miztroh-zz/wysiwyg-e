@@ -38,7 +38,7 @@
 				max-width: 100%;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Audio (Shift + Alt + A)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Audio')]] (Shift + Alt + A)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
@@ -136,6 +136,12 @@
 					return this.selectedAudio;
 				},
 				ready: function () {
+					this.resources = {
+						'en': {
+							'Audio': 'Audio'
+						}
+					};
+
 					var handler = function (event) {
 						var target = Polymer.dom(event).rootTarget, selectedAudio = null;
 						if (!this.target.contains(target)) return;

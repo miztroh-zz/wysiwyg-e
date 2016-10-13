@@ -33,11 +33,11 @@
 				background: #e4e4e4;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Justify</paper-tooltip>
-		<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">Left (Shift + Alt + L)</paper-tooltip>
-		<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">Right (Shift + Alt + R)</paper-tooltip>
-		<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">Center (Shift + Alt + E)</paper-tooltip>
-		<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">Full (Shift + Alt + J)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Justify')]]</paper-tooltip>
+		<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">[[localize('Left')]] (Shift + Alt + L)</paper-tooltip>
+		<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">[[localize('Right')]] (Shift + Alt + R)</paper-tooltip>
+		<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">[[localize('Center')]] (Shift + Alt + E)</paper-tooltip>
+		<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">[[localize('Full')]] (Shift + Alt + J)</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+l" on-keys-pressed="_left"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+r" on-keys-pressed="_right"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+c" on-keys-pressed="_center"></iron-a11y-keys>
@@ -47,10 +47,10 @@
 				<iron-icon id="icon" icon="editor:format-align-left"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content">
-				<paper-item id="left">Left</paper-item>
-				<paper-item id="right" hidden$="{{!right}}">Right</paper-item>
-				<paper-item id="center" hidden$="{{!center}}">Center</paper-item>
-				<paper-item id="full" hidden$="{{!full}}">Full</paper-item>
+				<paper-item id="left">[[localize('Left')]]</paper-item>
+				<paper-item id="right" hidden$="{{!right}}">[[localize('Right')]]</paper-item>
+				<paper-item id="center" hidden$="{{!center}}">[[localize('Center')]]</paper-item>
+				<paper-item id="full" hidden$="{{!full}}">[[localize('Full')]]</paper-item>
 			</div>
 		</paper-menu-button>
 	</template>
@@ -77,6 +77,16 @@
 				},
 				ready: function () {
 					this._setCommand('formatBlock');
+
+					this.resources = {
+						'en': {
+							'Justify': 'Justify',
+							'Left': 'Left',
+							'Right': 'Right',
+							'Center': 'Center',
+							'Full': 'Full'
+						}
+					};
 				},
 				execCommand: function (event) {
 					if (this.disabled || !this.range0) return false;

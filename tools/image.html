@@ -38,19 +38,19 @@
 				max-width: 100%;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Image (Shift + Alt + M)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Image')]] (Shift + Alt + M)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+m" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
 				<iron-icon icon="editor:insert-photo"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="URL" always-float-label value="{{imageUrl}}" id="url"></paper-input>
-				<paper-dropdown-menu label="Float" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
+				<paper-input label="[[localize('URL')]]" always-float-label value="{{imageUrl}}" id="url"></paper-input>
+				<paper-dropdown-menu label="[[localize('Float')]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
 					<paper-listbox class="dropdown-content" selected="{{imageFloat}}" attr-for-selected="float">
-						<paper-item float="none">none</paper-item>
-						<paper-item float="left">left</paper-item>
-						<paper-item float="right">right</paper-item>
+						<paper-item float="none">[[localize('none')]]</paper-item>
+						<paper-item float="left">[[localize('left')]]</paper-item>
+						<paper-item float="right">[[localize('right')]]</paper-item>
 					</paper-listbox>
 				</paper-dropdown-menu>
 				<div class="horizontal layout">
@@ -161,6 +161,17 @@
 					return this.selectedImage;
 				},
 				ready: function () {
+					this.resources = {
+						'en': {
+							'Image': 'Image',
+							'URL': 'URL',
+							'Float': 'Float',
+							'none': 'none',
+							'left': 'left',
+							'right': 'right'
+						}
+					};
+
 					//Image selection
 					document.addEventListener(
 						'click',

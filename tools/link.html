@@ -38,15 +38,15 @@
 				max-width: 100%;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">Link (Shift + Alt + A)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Link')]] (Shift + Alt + A)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
 				<iron-icon icon="editor:insert-link"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="URL" always-float-label value="{{linkUrl}}" id="url"></paper-input>
-				<paper-dropdown-menu label="Target" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
+				<paper-input label="[[localize('URL')]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
+				<paper-dropdown-menu label="[[localize('Target')]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
 					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
 						<paper-item target="_blank">_blank</paper-item>
 						<paper-item target="_self">_self</paper-item>
@@ -164,6 +164,14 @@
 					return this.selectedLink;
 				},
 				ready: function () {
+					this.resources = {
+						'en': {
+							'Link': 'Link',
+							'URL': 'URL',
+							'Target': 'Target'
+						}
+					};
+
 					//Link selection
 					document.addEventListener(
 						'click',
