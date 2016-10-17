@@ -161,9 +161,6 @@
 					document.addEventListener('click', handler);
 					document.addEventListener('keydown', handler);
 				},
-				_click: function (event) {
-					this.execCommand(event);
-				},
 				_paperDropdownClose: function (event) {
 					if (event.target !== this.$.dropdown) return;
 					this.audioUrl = '';

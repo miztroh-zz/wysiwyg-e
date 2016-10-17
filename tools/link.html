@@ -208,9 +208,6 @@
 						}.bind(this)
 					);
 				},
-				_click: function (event) {
-					this.execCommand(event);
-				},
 				_linkTargetChanged: function () {
 					if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
 						this.linkTarget = '_self';

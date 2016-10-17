@@ -9,7 +9,7 @@
   			'wysiwyg-tool': true
   		},
   		listeners: {
-  			click: '_click',
+  			click: 'execCommand',
   			mousedown: '_mousedown'
   		},
   		properties: {
@@ -134,16 +134,6 @@
   		_activeChanged: function () {},
   		_canRedoChanged: function () {},
   		_canUndoChanged: function () {},
-  		_click: function (event) {
-  			this.fire('restore-selection');
-  
-  			this.async(
-  				function () {
-  					this.execCommand(event);
-  				},
-  				10
-  			);
-  		},
   		_commandChanged: function () {},
   		_commonAncestorPathChanged: function () {},
   		_computeDisabled: function () {
