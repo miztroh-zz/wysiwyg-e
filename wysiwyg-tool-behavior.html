@@ -9,7 +9,8 @@
   			'wysiwyg-tool': true
   		},
   		listeners: {
-  			click: '_click'
+  			click: '_click',
+  			mousedown: '_mousedown'
   		},
   		properties: {
   			active: {
@@ -153,6 +154,10 @@
   		_minWidth768pxChanged: function () {},
   		_modeChanged: function () {},
   		_modifierChanged: function () {},
+  		_mousedown: function (event) {
+  		  console.log('mousedown');
+  		  event.preventDefault();
+  		},
   		_range0Changed: function () {},
   		_selectionRootChanged: function () {},
   		_targetChanged: function () {},
