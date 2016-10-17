@@ -36,13 +36,14 @@
 				},
 				execCommand: function () {
 					if (this.disabled || !this.range0) return false;
+					var i, blockquote, parent;
 
 					if (!this.active) {
 						if (this.commonAncestorPath) {
-							for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+							for (i = 0; i < this.commonAncestorPath.length; i += 1) {
 								if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') {
-									var blockquote = this.commonAncestorPath[i];
-									var parent = blockquote.parentNode;
+									blockquote = this.commonAncestorPath[i];
+									parent = blockquote.parentNode;
 									this.range0.selectNodeContents(blockquote);
 									parent.insertBefore(this.range0.extractContents(), blockquote);
 									parent.removeChild(blockquote);
@@ -54,10 +55,10 @@
 						document.execCommand('formatBlock', null, 'BLOCKQUOTE');
 					} else {
 						if (this.commonAncestorPath) {
-							for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+							for (i = 0; i < this.commonAncestorPath.length; i += 1) {
 								if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') {
-									var blockquote = this.commonAncestorPath[i];
-									var parent = blockquote.parentNode;
+									blockquote = this.commonAncestorPath[i];
+									parent = blockquote.parentNode;
 									this.range0.selectNodeContents(blockquote);
 									parent.insertBefore(this.range0.extractContents(), blockquote);
 									parent.removeChild(blockquote);

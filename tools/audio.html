@@ -159,7 +159,7 @@
 
 					//Audio selection
 					document.addEventListener('click', handler);
-					document.addEventListener('keydown', handler)
+					document.addEventListener('keydown', handler);
 				},
 				_click: function (event) {
 					this.execCommand(event);
@@ -169,7 +169,7 @@
 					this.audioUrl = '';
 					this.fire('restore-selection');
 				},
-				_selectedAudioChanged: function (event) {},
+				_selectedAudioChanged: function () {},
 				_stopPropagation: function (event) {
 					event.stopPropagation();
 				}

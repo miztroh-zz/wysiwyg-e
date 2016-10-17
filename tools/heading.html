@@ -136,8 +136,6 @@
 				queryCommandState: function () {
 					if (this.range0 && this.commonAncestorPath) {
 						for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-							var p = this.commonAncestorPath[i].tagName === 'P';
-
 							var h1 = this.commonAncestorPath[i].tagName === 'H1';
 
 							if (h1) {

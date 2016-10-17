@@ -586,17 +586,17 @@ Command                                 | Mac Shortcut                          
 				},
 
 				sanitize: function () {
-					var target = Polymer.dom(this.target), html = target.innerHTML, i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
+					var target = Polymer.dom(this.target), i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
 
 					//Wrap target's immediate child text nodes inside p node
 					var childNodes = this.target.childNodes;
 
 					for (i = 0; i < childNodes.length; i += 1) {
 						if (childNodes[i].nodeType === 3) {
-						  sanitized = false;
 							p = document.createElement('p');
 							this.target.insertBefore(p, childNodes[i].nextSibling);
 							p.appendChild(childNodes[i]);
+						  sanitized = false;
 						}
 					}
 
@@ -611,7 +611,8 @@ Command                                 | Mac Shortcut                          
 					pre = target.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
-						var codes = 0, childNodes = Array.prototype.slice.call(pre[i].childNodes), insertBefore = pre[i];
+						var codes = 0, insertBefore = pre[i];
+						childNodes = Array.prototype.slice.call(pre[i].childNodes);
 
 						for (j = 0; j < childNodes.length; j += 1) {
 							if (childNodes[j].tagName !== 'CODE') {
@@ -639,42 +640,42 @@ Command                                 | Mac Shortcut                          
 
 					//Replace strong with b
 					var strong = target.querySelectorAll('strong');
+					if (strong.length) sanitized = false;
 
 					for (i = 0; i < strong.length; i += 1) {
 						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
-						sanitized = false;
 					}
 
 					//Replace em with i
 					var em = target.querySelectorAll('em');
+					if (em.length) sanitized = false;
 
 					for (i = 0; i < em.length; i += 1) {
 						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
-						sanitized = false;
 					}
 
 					//Replace DIVs with Ps
 					var divs = target.querySelectorAll('div');
+					if (divs.length) sanitized = false;
 
 					for (i = 0; i < divs.length; i += 1) {
 						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
-						sanitized = false;
 					}
 
-          //Remove P children of Ps
-          var Ps = target.querySelectorAll('p');
-
-          for (i = 0; i < Ps.length; i += 1) {
-            var childPs = Ps[i].querySelectorAll('p');
-
-            if (childPs.length) {
-              sanitized = false;
-            }
-
-            for (j = 0; j < childPs.length; j += 1) {
-              childPs[j].outerHTML = childPs[j].textContent;
-            }
-          }
+					//Remove P children of Ps
+					var Ps = target.querySelectorAll('p');
+					
+					for (i = 0; i < Ps.length; i += 1) {
+						var childPs = Ps[i].querySelectorAll('p');
+						
+						if (childPs.length) {
+							sanitized = false;
+						}
+						
+						for (j = 0; j < childPs.length; j += 1) {
+							childPs[j].outerHTML = childPs[j].textContent;
+						}
+					}
 
 					//Strip all classes except style-scope and wysiwyg-e
 					var classes = target.querySelectorAll('*'), excludeTags = ['B', 'I', 'U', 'STRIKE', 'SPAN'];
@@ -784,7 +785,7 @@ Command                                 | Mac Shortcut                          
 					document.execCommand('forwardDelete');
 				},
 
-				_edit: function (a, b) {
+				_edit: function () {
 					return this.mode === 'edit';
 				},
 
