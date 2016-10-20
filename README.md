@@ -27,25 +27,25 @@
 
 ```
 <wysiwyg-e>
-	<wysiwyg-tool-bold></wysiwyg-tool-bold>
-	<wysiwyg-tool-italic></wysiwyg-tool-italic>
-	<wysiwyg-tool-underline></wysiwyg-tool-underline>
-	<wysiwyg-tool-strike></wysiwyg-tool-strike>
-	<wysiwyg-tool-clear></wysiwyg-tool-clear>
-	<wysiwyg-tool-code></wysiwyg-tool-code>
-	<wysiwyg-tool-link></wysiwyg-tool-link>
-	<wysiwyg-tool-image></wysiwyg-tool-image>
-	<wysiwyg-tool-audio></wysiwyg-tool-audio>
-	<wysiwyg-tool-video></wysiwyg-tool-video>
-	<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
-	<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
-	<wysiwyg-tool-indent></wysiwyg-tool-indent>
-	<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
-	<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
-	<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-	<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-	<wysiwyg-tool-undo></wysiwyg-tool-undo>
-	<wysiwyg-tool-redo></wysiwyg-tool-redo>
+  <wysiwyg-tool-bold></wysiwyg-tool-bold>
+  <wysiwyg-tool-italic></wysiwyg-tool-italic>
+  <wysiwyg-tool-underline></wysiwyg-tool-underline>
+  <wysiwyg-tool-strike></wysiwyg-tool-strike>
+  <wysiwyg-tool-clear></wysiwyg-tool-clear>
+  <wysiwyg-tool-code></wysiwyg-tool-code>
+  <wysiwyg-tool-link></wysiwyg-tool-link>
+  <wysiwyg-tool-image></wysiwyg-tool-image>
+  <wysiwyg-tool-audio></wysiwyg-tool-audio>
+  <wysiwyg-tool-video></wysiwyg-tool-video>
+  <wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+  <wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+  <wysiwyg-tool-indent></wysiwyg-tool-indent>
+  <wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+  <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+  <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+  <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+  <wysiwyg-tool-undo></wysiwyg-tool-undo>
+  <wysiwyg-tool-redo></wysiwyg-tool-redo>
 </wysiwyg-e>
 ```
 
