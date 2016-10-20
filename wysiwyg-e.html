@@ -586,29 +586,30 @@ Command                                 | Mac Shortcut                          
 				},
 
 				sanitize: function () {
-					var target = Polymer.dom(this.target), i, j, p, pre, sanitized = UndoMgrBehavior.sanitize.apply(this, arguments);
-
-					//Wrap target's immediate child text nodes inside p node
+				  //Wrap target's immediate child text nodes inside p node
 					var childNodes = this.target.childNodes;
 
 					for (i = 0; i < childNodes.length; i += 1) {
 						if (childNodes[i].nodeType === 3) {
+						  if (!childNodes[i].textContent.trim().length) continue;
 							p = document.createElement('p');
 							this.target.insertBefore(p, childNodes[i].nextSibling);
 							p.appendChild(childNodes[i]);
-						  sanitized = false;
+						  if (this.logging) console.log('wrap top level text nodes inside p node');
+						  return false;
 						}
 					}
 
 					//Move non-code nodes outside of pre nodes
-					var invalidPreChildren = target.querySelectorAll('pre > :not(code), code > p');
+					var invalidPreChildren = this.target.querySelectorAll('pre > :not(code), code > p');
 
 					for (i = 0; i < invalidPreChildren.length; i += 1) {
 						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
-						sanitized = false;
+						if (this.logging) console.log('invalid pre children 1');
+						return false;
 					}
 
-					pre = target.querySelectorAll('pre');
+					pre = this.target.querySelectorAll('pre');
 
 					for (i = 0; i < pre.length; i += 1) {
 						var codes = 0, insertBefore = pre[i];
@@ -620,8 +621,8 @@ Command                                 | Mac Shortcut                          
 								p.textContent = childNodes[j].textContent;
 								pre[i].removeChild(childNodes[j]);
 								pre[i].parentNode.insertBefore(p, insertBefore);
-								sanitized = false;
-								continue;
+								if (this.logging) console.log('invalid pre children 3');
+								return false;
 							}
 
 							codes += 1;
@@ -633,96 +634,88 @@ Command                                 | Mac Shortcut                          
 								newPre.appendChild(childNodes[j]);
 								pre[i].parentNode.insertBefore(newPre, insertBefore);
 								insertBefore = newPre.nextSibling;
-								sanitized = false;
+								if (this.logging) console.log('invalid pre children 3');
+								return false;
 							}
 						}
 					}
 
 					//Replace strong with b
-					var strong = target.querySelectorAll('strong');
-					if (strong.length) sanitized = false;
+					var strong = this.target.querySelectorAll('strong');
 
 					for (i = 0; i < strong.length; i += 1) {
 						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
+					  if (this.logging) console.log('strong');
+						return false;
 					}
 
 					//Replace em with i
-					var em = target.querySelectorAll('em');
-					if (em.length) sanitized = false;
+					var em = this.target.querySelectorAll('em');
 
 					for (i = 0; i < em.length; i += 1) {
 						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
+					  if (this.logging) console.log('em');
+					  return false;
 					}
 
 					//Replace DIVs with Ps
-					var divs = target.querySelectorAll('div');
-					if (divs.length) sanitized = false;
+					var divs = this.target.querySelectorAll('div');
 
 					for (i = 0; i < divs.length; i += 1) {
 						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
+					  if (this.logging) console.log('div');
+					  return false;
 					}
 
 					//Remove P children of Ps
-					var Ps = target.querySelectorAll('p');
+					var Ps = this.target.querySelectorAll('p');
 					
 					for (i = 0; i < Ps.length; i += 1) {
 						var childPs = Ps[i].querySelectorAll('p');
 						
-						if (childPs.length) {
-							sanitized = false;
-						}
-						
 						for (j = 0; j < childPs.length; j += 1) {
 							childPs[j].outerHTML = childPs[j].textContent;
+							if (this.logging) console.log('p child of p');
+							return false;
 						}
 					}
 
 					//Strip all classes except style-scope and wysiwyg-e
-					var classes = target.querySelectorAll('*'), excludeTags = ['B', 'I', 'U', 'STRIKE', 'SPAN'];
+					var classes = this.target.querySelectorAll('*');
 
 					for (i = 0; i < classes.length; i += 1) {
-					  if (excludeTags.indexOf(classes[i].tagName) >= 0) {
-					    classes[i].removeAttribute('class');
-					    continue;
-					  }
-
-						var removeClasses = [], hasStyleScope = false, hasWysiwygE = false;
-
 						for (j = 0; j < classes[i].classList.length; j += 1) {
 							if (['style-scope', 'wysiwyg-e'].indexOf(classes[i].classList[j]) === -1) {
-								removeClasses.push(classes[i].classList[j]);
-							} else {
-								if (classes[i].classList[j] === 'style-scope') hasStyleScope = true;
-								if (classes[i].classList[j] === 'wysiwyg-e') hasWysiwygE = true;
+								classes[i].classList.remove(classes[i].classList[j]);
+							  if (this.logging) console.log('remove invalid class');
+							  return false;
 							}
 						}
 
-						for (j = 0; j < removeClasses.length; j += 1) {
-							classes[i].classList.remove(removeClasses[j]);
-							sanitized = false;
-						}
-
-						if (!hasStyleScope) {
+						if (!classes[i].classList.contains('style-scope')) {
 							classes[i].classList.add('style-scope');
-							sanitized = false;
+							if (this.logging) console.log('add style-scope class', classes[i]);
+							return false;
 						}
 
-						if (!hasWysiwygE) {
+						if (!classes[i].classList.contains('wysiwyg-e')) {
 							classes[i].classList.add('wysiwyg-e');
-							sanitized = false;
+							if (this.logging) console.log('add wysiwyg-e class', classes[i]);
+							return false;
 						}
 					}
 
 					//Guard against improper values
-					if (!target.children.length) {
+					if (!this.target.children.length) {
 						p = document.createElement('p');
 						var br = document.createElement('br');
 						p.appendChild(br);
-						target.appendChild(p);
-						sanitized = false;
+						this.target.appendChild(p);
+						if (this.logging) console.log('improper value');
+						return false;
 					}
 
-					return sanitized;
+					return true;
 				},
 
 				undo: function () {
