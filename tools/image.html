@@ -67,9 +67,15 @@
 		Polymer(
 			{
 				is: 'wysiwyg-tool-image',
+				attached: function () {
+					document.addEventListener('click', this._handler.bind(this));
+				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
+				detached: function () {
+					document.removeEventListener('click', this._handler.bind(this));
+				},
 				properties: {
 					imageFloat: {
 						type: String,
@@ -179,31 +185,23 @@
 							'right': 'droite'
 						}
 					};
+				},
+				_handler: function (event) {
+					var target = Polymer.dom(event).rootTarget;
+					if (!this.target.contains(target)) return;
+					event.preventDefault();
 
-					//Image selection
-					document.addEventListener(
-						'click',
-						function (event) {
-							var target = Polymer.dom(event).rootTarget;
-							if (!this.target.contains(target)) return;
-							event.preventDefault();
-
-							if (target.tagName === 'IMG') {
-								//if (target.parentNode.tagName !== 'A') {
-									this._setSelectedImage(target);
-								//}
-
-								var selection = this.selectionRoot.getSelection();
-								selection.removeAllRanges();
-								var range = document.createRange();
-								range.selectNode(target);
-								selection.addRange(range);
-								this._setRange0(range);
-							} else {
-								this._setSelectedImage(null);
-							}
-						}.bind(this)
-					);
+					if (target.tagName === 'IMG') {
+						this._setSelectedImage(target);
+						var selection = this.selectionRoot.getSelection();
+						selection.removeAllRanges();
+						var range = document.createRange();
+						range.selectNode(target);
+						selection.addRange(range);
+						this._setRange0(range);
+					} else {
+						this._setSelectedImage(null);
+					}
 				},
 				_imageFloatChanged: function () {
 					if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {

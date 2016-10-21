@@ -60,9 +60,17 @@
 		Polymer(
 			{
 				is: 'wysiwyg-tool-video',
+				attached: function () {
+					document.addEventListener('click', this._handler.bind(this));
+					document.addEventListener('keydown', this._handler.bind(this));
+				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
+				detached: function () {
+					document.removeEventListener('click', this._handler.bind(this));
+					document.removeEventListener('keydown', this._handler.bind(this));
+				},
 				properties: {
 					videoUrl: {
 						type: String,
@@ -146,22 +154,17 @@
 							'URL': 'URL'
 						}
 					};
+				},
+				_handler: function (event) {
+					var target = Polymer.dom(event).rootTarget, selectedVideo = null;
+					if (!this.target.contains(target)) return;
 
-					var handler = function (event) {
-						var target = Polymer.dom(event).rootTarget, selectedVideo = null;
-						if (!this.target.contains(target)) return;
+					if (target.tagName === 'VIDEO-WRAPPER') {
+						var video = target.querySelector('video');
+						if (video) selectedVideo = video;
+					}
 
-						if (target.tagName === 'VIDEO-WRAPPER') {
-							var video = target.querySelector('video');
-							if (video) selectedVideo = video;
-						}
-
-						this._setSelectedVideo(selectedVideo);
-					}.bind(this);
-
-					//video selection
-					document.addEventListener('click', handler);
-					document.addEventListener('keydown', handler);
+					this._setSelectedVideo(selectedVideo);
 				},
 				_paperDropdownClose: function (event) {
 					if (event.target !== this.$.dropdown) return;

@@ -60,9 +60,17 @@
 		Polymer(
 			{
 				is: 'wysiwyg-tool-audio',
+				attached: function () {
+					document.addEventListener('click', this._handler.bind(this));
+					document.addEventListener('keydown', this._handler.bind(this));
+				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
+				detached: function () {
+					document.removeEventListener('click', this._handler.bind(this));
+					document.removeEventListener('keydown', this._handler.bind(this));
+				},
 				properties: {
 					audioUrl: {
 						type: String,
@@ -144,22 +152,17 @@
 							'Audio': 'Audio'
 						}
 					};
+				},
+				_handler: function (event) {
+					var target = Polymer.dom(event).rootTarget, selectedAudio = null;
+					if (!this.target.contains(target)) return;
 
-					var handler = function (event) {
-						var target = Polymer.dom(event).rootTarget, selectedAudio = null;
-						if (!this.target.contains(target)) return;
+					if (target.tagName === 'AUDIO-WRAPPER') {
+						var audio = target.querySelector('audio');
+						if (audio) selectedAudio = audio;
+					}
 
-						if (target.tagName === 'AUDIO-WRAPPER') {
-							var audio = target.querySelector('audio');
-							if (audio) selectedAudio = audio;
-						}
-
-						this._setSelectedAudio(selectedAudio);
-					}.bind(this);
-
-					//Audio selection
-					document.addEventListener('click', handler);
-					document.addEventListener('keydown', handler);
+					this._setSelectedAudio(selectedAudio);
 				},
 				_paperDropdownClose: function (event) {
 					if (event.target !== this.$.dropdown) return;

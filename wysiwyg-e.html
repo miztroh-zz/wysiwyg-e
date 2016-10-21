@@ -411,11 +411,22 @@ Command                                 | Mac Shortcut                          
 			{
 				is: 'wysiwyg-e',
 
+				attached: function () {
+					Polymer.dom(this.$.tools).observeNodes(this.updateTools);
+					window.addEventListener('resize', this._resize.bind(this));
+					this.async(this._resize, 100);
+				},
+
 				behaviors: [
 				  Polymer.AppLocalizeBehavior,
 					SelectionMgrBehavior,
 					UndoMgrBehavior
 				],
+
+				detached: function () {
+					Polymer.dom(this.$.tools).unobserveNodes(this.updateTools);
+					window.removeEventListener('resize', this._resize.bind(this));
+				},
 
 				listeners: {
 					keydown: '_keydown',
@@ -557,50 +568,35 @@ Command                                 | Mac Shortcut                          
 					}
 				},
 
-				ready: function () {
-					Polymer.dom(this.$.tools).observeNodes(
-						function () {
-							this.updateTools();
-						}.bind(this)
-					);
-
-					var resize = function () {
-						this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
-					}.bind(this);
-
-					window.addEventListener('resize', resize);
-					this.async(resize, 100);
-				},
-
-        /**
-         * Stop observing with selectionObserver and undoObserver
-        */
+				/**
+				 * Stop observing with selectionObserver and undoObserver
+				*/
 				disconnect: function () {
 					UndoMgrBehavior.disconnect.apply(this, arguments);
 					SelectionMgrBehavior.disconnect.apply(this, arguments);
 				},
 
-        /**
-         * Start observing with selectionObserver and undoObserver
-        */
+				/**
+				 * Start observing with selectionObserver and undoObserver
+				*/
 				observe: function () {
 					UndoMgrBehavior.observe.apply(this, arguments);
 					SelectionMgrBehavior.observe.apply(this, arguments);
 				},
 
-        /**
-         * Revert an undo operation
-        */
+				/**
+				 * Revert an undo operation
+				*/
 				redo: function () {
 					if (this.mode !== 'edit') return false;
 					return UndoMgrBehavior.redo.apply(this, arguments);
 				},
 
-        /**
-         * Sanitize DOM changes
-        */
+				/**
+				 * Sanitize DOM changes
+				*/
 				sanitize: function () {
-				  //Wrap target's immediate child text nodes inside p node
+					//Wrap target's immediate child text nodes inside p node
 					var childNodes = this.target.childNodes;
 
 					for (i = 0; i < childNodes.length; i += 1) {
@@ -732,17 +728,17 @@ Command                                 | Mac Shortcut                          
 					return true;
 				},
 
-        /**
-         * Perform an undo operation
-        */
+				/**
+				 * Perform an undo operation
+				*/
 				undo: function () {
 					if (this.mode !== 'edit') return false;
 					return UndoMgrBehavior.undo.apply(this, arguments);
 				},
 
-        /**
-         * Update tools properties
-        */
+				/**
+				 * Update tools properties
+				*/
 				updateTools: function () {
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
 
@@ -890,6 +886,10 @@ Command                                 | Mac Shortcut                          
 					}
 
 					return Prism.highlight(process(value), Prism.languages.markup);
+				},
+
+				_resize: function () {
+					this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
 				},
 
 				_scroll: function (dx) {

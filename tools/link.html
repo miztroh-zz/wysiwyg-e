@@ -68,9 +68,15 @@
 		Polymer(
 			{
 				is: 'wysiwyg-tool-link',
+				attached: function () {
+					document.addEventListener('click', this._handler.bind(this));
+				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
+				detached: function () {
+					document.removeEventListener('click', this._handler.bind(this));
+				},
 				properties: {
 					linkTarget: {
 						type: String,
@@ -176,36 +182,31 @@
 							'Target': 'Cible'
 						}
 					};
+				},
+				_handler: function (event) {
+					var target = Polymer.dom(event).rootTarget;
+					if (!this.target.contains(target)) return;
+					event.preventDefault();
 
-					//Link selection
-					document.addEventListener(
-						'click',
-						function (event) {
-							var target = Polymer.dom(event).rootTarget;
-							if (!this.target.contains(target)) return;
-							event.preventDefault();
+					this.async(
+						function () {
+							var path = this.commonAncestorPath, selectedLink = null;
 
-							this.async(
-								function () {
-									var path = this.commonAncestorPath, selectedLink = null;
+							for (var i = 0; i < path.length; i += 1) {
+								if (path[i].tagName === 'A') {
+									selectedLink = path[i];
+									break;
+								}
+							}
 
-									for (var i = 0; i < path.length; i += 1) {
-										if (path[i].tagName === 'A') {
-											selectedLink = path[i];
-											break;
-										}
-									}
+							this._setSelectedLink(selectedLink);
 
-									this._setSelectedLink(selectedLink);
-
-									if (selectedLink) {
-										if (this.mode !== 'read') return;
-										window.open(selectedLink.href);
-									}
-								},
-								100
-							);
-						}.bind(this)
+							if (selectedLink) {
+								if (this.mode !== 'read') return;
+								window.open(selectedLink.href);
+							}
+						},
+						100
 					);
 				},
 				_linkTargetChanged: function () {
