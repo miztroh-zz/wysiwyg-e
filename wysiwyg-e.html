@@ -26,25 +26,25 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 
 ```html
 <wysiwyg-e>
-  <wysiwyg-tool-bold></wysiwyg-tool-bold>
-  <wysiwyg-tool-italic></wysiwyg-tool-italic>
-  <wysiwyg-tool-underline></wysiwyg-tool-underline>
-  <wysiwyg-tool-strike></wysiwyg-tool-strike>
-  <wysiwyg-tool-clear></wysiwyg-tool-clear>
-  <wysiwyg-tool-code></wysiwyg-tool-code>
-  <wysiwyg-tool-link></wysiwyg-tool-link>
-  <wysiwyg-tool-image></wysiwyg-tool-image>
-  <wysiwyg-tool-audio></wysiwyg-tool-audio>
-  <wysiwyg-tool-video></wysiwyg-tool-video>
-  <wysiwyg-tool-ordered></wysiwyg-tool-ordered>
-  <wysiwyg-tool-unordered></wysiwyg-tool-unordered>
-  <wysiwyg-tool-indent></wysiwyg-tool-indent>
-  <wysiwyg-tool-outdent></wysiwyg-tool-outdent>
-  <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
-  <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-  <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-  <wysiwyg-tool-undo></wysiwyg-tool-undo>
-  <wysiwyg-tool-redo></wysiwyg-tool-redo>
+	<wysiwyg-tool-bold></wysiwyg-tool-bold>
+	<wysiwyg-tool-italic></wysiwyg-tool-italic>
+	<wysiwyg-tool-underline></wysiwyg-tool-underline>
+	<wysiwyg-tool-strike></wysiwyg-tool-strike>
+	<wysiwyg-tool-clear></wysiwyg-tool-clear>
+	<wysiwyg-tool-code></wysiwyg-tool-code>
+	<wysiwyg-tool-link></wysiwyg-tool-link>
+	<wysiwyg-tool-image></wysiwyg-tool-image>
+	<wysiwyg-tool-audio></wysiwyg-tool-audio>
+	<wysiwyg-tool-video></wysiwyg-tool-video>
+	<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+	<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+	<wysiwyg-tool-indent></wysiwyg-tool-indent>
+	<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+	<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+	<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+	<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+	<wysiwyg-tool-undo></wysiwyg-tool-undo>
+	<wysiwyg-tool-redo></wysiwyg-tool-redo>
 </wysiwyg-e>
 ```
 
@@ -151,7 +151,6 @@ Command                                 | Mac Shortcut                          
 			}
 
 			#toolbar {
-				--paper-toolbar-height: auto;
 				background: var(--wysiwyg-toolbar-background, #2A9AF2);
 				user-select: none;
 				color: var(--wysiwyg-toolbar-color, white);
@@ -320,10 +319,16 @@ Command                                 | Mac Shortcut                          
 					@apply(--layout-vertical);
 				}
 
-				#toolbarLayout {
+				#toolbar {
 					@apply(--layout-horizontal);
-					@apply(--layout-wrap);
-					@apply(--layout-center-justified);
+				}
+
+				#toolbarLayout {
+					height: 40px;
+					@apply(--layout-horizontal);
+					@apply(--layout-flex);
+					flex-wrap: nowrap;
+					overflow-x: hidden;
 				}
 
 				#layout[force-narrow] {
@@ -331,6 +336,7 @@ Command                                 | Mac Shortcut                          
 				}
 
 				#layout[force-narrow] #toolbarLayout {
+					height: auto;
 					@apply(--layout-vertical);
 					width: 40px;
 					max-height: calc(100% - 80px);
@@ -341,6 +347,10 @@ Command                                 | Mac Shortcut                          
 			@media (max-width: 767px) {
 				#layout {
 					@apply(--layout-horizontal);
+				}
+
+				#toolbar {
+					@apply(--layout-vertical);
 				}
 
 				#toolbarLayout {
@@ -357,13 +367,13 @@ Command                                 | Mac Shortcut                          
 				@apply(--layout-vertical);
 			}
 
-			#scrollUp,
-			#scrollDown {
+			#scrollPrevious,
+			#scrollNext {
 				border-radius: 0;
 			}
 
-			#scrollUp[disabled],
-			#scrollDown[disabled] {
+			#scrollPrevious[disabled],
+			#scrollNext[disabled] {
 				color: rgba(255, 255, 255, 0.5);
 			}
 		</style>
@@ -371,11 +381,11 @@ Command                                 | Mac Shortcut                          
 		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
-			<paper-toolbar id="toolbar" on-tap="updateTools">
-				<paper-button id="scrollDown" on-up="_onScrollButtonUp" on-down="_onScrollUp" hidden$="[[!showScrollButtons]]" disabled="[[!canScrollUp]]">
-					<iron-icon icon="wysiwyg:scroll-up"></iron-icon>
+			<div id="toolbar" on-tap="updateTools">
+				<paper-button id="scrollPrevious" on-up="_onScrollButtonUp" on-down="_onScrollPrevious"  disabled="[[!canScrollPrevious]]">
+					<iron-icon icon="[[_scrollPreviousIcon(minWidth768px, forceNarrow)]]"></iron-icon>
 				</paper-button>
-				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollOffset]]">
+				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
 					<paper-menu-button id="settings" hidden$="[[hideSettings]]" dynamic-align>
 						<paper-button class="dropdown-trigger">
 							<iron-icon icon="wysiwyg:settings"></iron-icon>
@@ -387,13 +397,12 @@ Command                                 | Mac Shortcut                          
 						</paper-listbox>
 					</paper-menu-button>
 					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">[[localize('Settings')]]</paper-tooltip>
-					<wysiwyg-tool-backspace></wysiwyg-tool-backspace>
 					<content select="[wysiwyg-tool]" id="tools"></content>
 				</div>
-				<paper-button id="scrollUp" on-up="_onScrollButtonUp" on-down="_onScrollDown" hidden$="[[!showScrollButtons]]" disabled="[[!canScrollDown]]">
-					<iron-icon icon="wysiwyg:scroll-down"></iron-icon>
+				<paper-button id="scrollNext" on-up="_onScrollButtonUp" on-down="_onScrollNext" disabled="[[!canScrollNext]]">
+					<iron-icon icon="[[_scrollNextIcon(minWidth768px, forceNarrow)]]"></iron-icon>
 				</paper-button>
-			</paper-toolbar>
+			</div>
 			<div id="content">
 				<div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
 				<div id="html" hidden$="[[!_html(mode)]]">
@@ -411,13 +420,13 @@ Command                                 | Mac Shortcut                          
 				is: 'wysiwyg-e',
 
 				attached: function () {
-          Polymer.dom(this.$.tools).observeNodes(this.updateTools);
-          window.addEventListener('resize', this._resize.bind(this));
-          this.async(this._resize, 100);
+					Polymer.dom(this.$.tools).observeNodes(this.updateTools);
+					window.addEventListener('resize', this._resize.bind(this));
+					this.async(this._resize, 100);
 				},
 
 				behaviors: [
-				  Polymer.AppLocalizeBehavior,
+					Polymer.AppLocalizeBehavior,
 					SelectionMgrBehavior,
 					UndoMgrBehavior
 				],
@@ -442,16 +451,16 @@ Command                                 | Mac Shortcut                          
 					/**
 					 * If true, tools can scroll up.	Computed.
 					*/
-					canScrollUp: {
+					canScrollPrevious: {
 						type: Boolean,
-						computed: '_computeCanScrollUp(minWidth768px, forceNarrow, scrollHeight, scrollOffset)'
+						computed: '_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
 					},
 					/**
 					 * If true, tools can scroll down.	Computed.
 					*/
-					canScrollDown: {
+					canScrollNext: {
 						type: Boolean,
-						computed: '_computeCanScrollDown(minWidth768px, forceNarrow, scrollHeight, scrollOffset)'
+						computed: '_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
 					},
 					/**
 					 * If true, force narrow view with vertical toolbar.	Defaults to false.
@@ -468,7 +477,7 @@ Command                                 | Mac Shortcut                          
 						value: false
 					},
 					/**
-					 * Two-letter language code for use with Polymer.AppLocalizeBehavior.  Defaults to 'en'.
+					 * Two-letter language code for use with Polymer.AppLocalizeBehavior.	Defaults to 'en'.
 					*/
 					language: {
 						type: String,
@@ -478,7 +487,8 @@ Command                                 | Mac Shortcut                          
 					 * Tracks viewport with.	Managed by iron-media-query
 					*/
 					minWidth768px: {
-						type: Boolean
+						type: Boolean,
+						observer: '_minWidth768pxChanged'
 					},
 					/**
 					 * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
@@ -495,20 +505,20 @@ Command                                 | Mac Shortcut                          
 					resources: {
 						type: Object,
 						value: function () {
-						  return {
-						    'en': {
-						      'Settings': 'Settings',
-						      'Edit': 'Edit',
-						      'Read-only': 'Read-only',
-						      'View HTML': 'View HTML'
-						    },
+							return {
+								'en': {
+									'Settings': 'Settings',
+									'Edit': 'Edit',
+									'Read-only': 'Read-only',
+									'View HTML': 'View HTML'
+								},
 							'fr': {
-							  'Settings': 'Réglages',
-							  'Edit': 'Editer',
-							  'Read-only': 'Lecture-seul',
-							  'View HTML': 'Vue HTML'
+								'Settings': 'Réglages',
+								'Edit': 'Editer',
+								'Read-only': 'Lecture-seul',
+								'View HTML': 'Vue HTML'
 							}
-						  };
+							};
 						}
 					},
 					/**
@@ -526,7 +536,7 @@ Command                                 | Mac Shortcut                          
 						value: 10
 					},
 					/**
-					 * Height tool scroll container.	Read-only.
+					 * Height of tool scroll container.	Read-only.
 					*/
 					scrollHeight: {
 						type: Number,
@@ -534,19 +544,28 @@ Command                                 | Mac Shortcut                          
 						readOnly: true
 					},
 					/**
-					 * Top offset of tool scroll container.	Read-only.
+					 * Left offset of tool scroll container.	Read-only.
 					*/
-					scrollOffset: {
+					scrollLeft: {
 						type: Number,
 						value: 0,
 						readOnly: true
 					},
 					/**
-					 * Show tool scroll buttons.	Computed;
+					 * Top offset of tool scroll container.	Read-only.
 					*/
-					showScrollButtons: {
-						type: Boolean,
-						computed: '_computeShowScrollButtons(minWidth768px, forceNarrow)'
+					scrollTop: {
+						type: Number,
+						value: 0,
+						readOnly: true
+					},
+					/**
+					 * Width of tool scroll container.	Read-only.
+					*/
+					scrollWidth: {
+						type: Number,
+						value: 0,
+						readOnly: true
 					},
 					/**
 					 * Target for use with selection-mgr and undo-mgr behaviors
@@ -600,12 +619,12 @@ Command                                 | Mac Shortcut                          
 
 					for (i = 0; i < childNodes.length; i += 1) {
 						if (childNodes[i].nodeType === 3) {
-						  if (!childNodes[i].textContent.trim().length) continue;
+							if (!childNodes[i].textContent.trim().length) continue;
 							p = document.createElement('p');
 							this.target.insertBefore(p, childNodes[i].nextSibling);
 							p.appendChild(childNodes[i]);
-						  if (this.logging) console.log('wrap top level text nodes inside p node');
-						  return false;
+							if (this.logging) console.log('wrap top level text nodes inside p node');
+							return false;
 						}
 					}
 
@@ -654,7 +673,7 @@ Command                                 | Mac Shortcut                          
 
 					for (i = 0; i < strong.length; i += 1) {
 						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
-					  if (this.logging) console.log('strong');
+						if (this.logging) console.log('strong');
 						return false;
 					}
 
@@ -663,8 +682,8 @@ Command                                 | Mac Shortcut                          
 
 					for (i = 0; i < em.length; i += 1) {
 						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
-					  if (this.logging) console.log('em');
-					  return false;
+						if (this.logging) console.log('em');
+						return false;
 					}
 
 					//Replace DIVs with Ps
@@ -672,8 +691,8 @@ Command                                 | Mac Shortcut                          
 
 					for (i = 0; i < divs.length; i += 1) {
 						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
-					  if (this.logging) console.log('div');
-					  return false;
+						if (this.logging) console.log('div');
+						return false;
 					}
 
 					//Remove P children of Ps
@@ -696,8 +715,8 @@ Command                                 | Mac Shortcut                          
 						for (j = 0; j < classes[i].classList.length; j += 1) {
 							if (['style-scope', 'wysiwyg-e'].indexOf(classes[i].classList[j]) === -1) {
 								classes[i].classList.remove(classes[i].classList[j]);
-							  if (this.logging) console.log('remove invalid class');
-							  return false;
+								if (this.logging) console.log('remove invalid class');
+								return false;
 							}
 						}
 
@@ -739,7 +758,7 @@ Command                                 | Mac Shortcut                          
 				 * Update tools properties
 				*/
 				updateTools: function () {
-				  if (!this.$) return;
+					if (!this.$) return;
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
 
 					for (var i = 0; i < tools.length; i += 1) {
@@ -770,19 +789,15 @@ Command                                 | Mac Shortcut                          
 					}
 				},
 
-				_computeCanScrollDown: function (minWidth768px, forceNarrow, scrollHeight, scrollOffset) {
-					if (minWidth768px && !forceNarrow) return false;
-					return scrollOffset < scrollHeight;
+				_computeCanScrollNext: function (minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
+					if (minWidth768px && !forceNarrow) return scrollLeft < scrollWidth;
+					return scrollTop < scrollHeight;
 				},
 
-				_computeCanScrollUp: function (minWidth768px, forceNarrow, scrollHeight, scrollOffset) {
-					if (minWidth768px && !forceNarrow) return false;
-					return scrollOffset > 0;
-				},
-
-				_computeShowScrollButtons: function (minWidth768px, forceNarrow) {
-					if (minWidth768px && !forceNarrow) return false;
-					return true;
+				_computeCanScrollPrevious: function (minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
+				  console.log(arguments);
+					if (minWidth768px && !forceNarrow) return scrollLeft > 0;
+					return scrollTop > 0;
 				},
 
 				_computeTooltipPosition: function (minWidth768px, forceNarrow) {
@@ -815,6 +830,11 @@ Command                                 | Mac Shortcut                          
 					event.preventDefault();
 				},
 
+				_minWidth768pxChanged: function () {
+					this._setScrollTop(0);
+					this._setScrollLeft(0);
+				},
+
 				_modeChanged: function () {
 					if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
 						this.mode = 'edit';
@@ -836,14 +856,14 @@ Command                                 | Mac Shortcut                          
 					this._scrollJob = null;
 				},
 
-				_onScrollDown: function () {
-					this._scrollDown();
-					this._scrollJob = setInterval(this._scrollDown.bind(this), this.scrollDelay);
+				_onScrollNext: function () {
+					this._scrollNext();
+					this._scrollJob = setInterval(this._scrollNext.bind(this), this.scrollDelay);
 				},
 
-				_onScrollUp: function () {
-					this._scrollUp();
-					this._scrollJob = setInterval(this._scrollUp.bind(this), this.scrollDelay);
+				_onScrollPrevious: function () {
+					this._scrollPrevious();
+					this._scrollJob = setInterval(this._scrollPrevious.bind(this), this.scrollDelay);
 				},
 
 				_panelMode: function () {
@@ -890,28 +910,61 @@ Command                                 | Mac Shortcut                          
 
 				_resize: function () {
 					this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
+					this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
 				},
 
 				_scroll: function (dx) {
-					this._setScrollOffset(this.scrollOffset + dx);
-				},
-
-				_scrollDown: function () {
-					if (this.scrollOffset + this.scrollStep > this.scrollHeight) {
-						this._scroll(this.scrollHeight - this.scrollOffset);
-						this._onScrollButtonUp();
+					if (this.minWidth768px) {
+						this._setScrollLeft(this.scrollLeft + dx);
 					} else {
-						this._scroll(this.scrollStep);
+						this._setScrollTop(this.scrollTop + dx);
 					}
 				},
 
-				_scrollUp: function () {
-					if (this.scrollOffset - this.scrollStep < 0) {
-						this._scroll(-this.scrollOffset);
-						this._onScrollButtonUp();
+				_scrollNext: function () {
+					if (this.minWidth768px) {
+						if (this.scrollLeft + this.scrollStep > this.scrollWidth) {
+							this._scroll(this.scrollWidth - this.scrollLeft);
+							this._onScrollButtonUp();
+						} else {
+							this._scroll(this.scrollStep);
+						}
 					} else {
-						this._scroll(-this.scrollStep);
+						if (this.scrollTop + this.scrollStep > this.scrollHeight) {
+							this._scroll(this.scrollHeight - this.scrollTop);
+							this._onScrollButtonUp();
+						} else {
+							this._scroll(this.scrollStep);
+						}
 					}
+				},
+
+				_scrollNextIcon: function (minWidth768px, forceNarrow) {
+					if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-right';
+					return 'wysiwyg:scroll-down';
+				},
+
+				_scrollPrevious: function () {
+					if (this.minWidth768px) {
+						if (this.scrollLeft - this.scrollStep < 0) {
+							this._scroll(-this.scrollLeft);
+							this._onScrollButtonUp();
+						} else {
+							this._scroll(-this.scrollStep);
+						}
+					} else {
+						if (this.scrollTop - this.scrollStep < 0) {
+							this._scroll(-this.scrollTop);
+							this._onScrollButtonUp();
+						} else {
+							this._scroll(-this.scrollStep);
+						}
+					}
+				},
+
+				_scrollPreviousIcon: function (minWidth768px, forceNarrow) {
+					if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-left';
+					return 'wysiwyg:scroll-up';
 				},
 
 				_selectElement: function (event) {
