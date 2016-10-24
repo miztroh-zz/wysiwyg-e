@@ -16,13 +16,13 @@
 <link rel="import" href="../wysiwyg-tool-styles.html">
 <link rel="import" href="../wysiwyg-tool-icons.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-image">
-  <svg>
-    <defs>
-      <g id="icon">
-        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"></path>
-      </g>
-    </defs>
-  </svg>
+	<svg>
+		<defs>
+			<g id="icon">
+				<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"></path>
+			</g>
+		</defs>
+	</svg>
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-image">
 	<template>
@@ -58,13 +58,33 @@
 			{
 				is: 'wysiwyg-tool-image',
 				attached: function () {
-					document.addEventListener('click', this._handler.bind(this));
+					if (!this._handler) {
+						this._handler = function (event) {
+							var target = Polymer.dom(event).rootTarget;
+							if (!this.target.contains(target)) return;
+							event.preventDefault();
+		
+							if (target.tagName === 'IMG') {
+								this._setSelectedImage(target);
+								var selection = this.selectionRoot.getSelection();
+								selection.removeAllRanges();
+								var range = document.createRange();
+								range.selectNode(target);
+								selection.addRange(range);
+								this._setRange0(range);
+							} else {
+								this._setSelectedImage(null);
+							}
+						}.bind(this);
+					}
+
+					document.addEventListener('click', this._handler);
 				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
 				detached: function () {
-					document.removeEventListener('click', this._handler.bind(this));
+					document.removeEventListener('click', this._handler);
 				},
 				properties: {
 					imageFloat: {
@@ -175,23 +195,6 @@
 							'right': 'droite'
 						}
 					};
-				},
-				_handler: function (event) {
-					var target = Polymer.dom(event).rootTarget;
-					if (!this.target.contains(target)) return;
-					event.preventDefault();
-
-					if (target.tagName === 'IMG') {
-						this._setSelectedImage(target);
-						var selection = this.selectionRoot.getSelection();
-						selection.removeAllRanges();
-						var range = document.createRange();
-						range.selectNode(target);
-						selection.addRange(range);
-						this._setRange0(range);
-					} else {
-						this._setSelectedImage(null);
-					}
 				},
 				_imageFloatChanged: function () {
 					if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {

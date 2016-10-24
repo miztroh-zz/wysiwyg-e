@@ -51,15 +51,29 @@
 			{
 				is: 'wysiwyg-tool-video',
 				attached: function () {
-					document.addEventListener('click', this._handler.bind(this));
-					document.addEventListener('keydown', this._handler.bind(this));
+				  if (!this._handler) {
+				    this._handler = function (event) {
+							var target = Polymer.dom(event).rootTarget, selectedVideo = null;
+							if (!this.target.contains(target)) return;
+		
+							if (target.tagName === 'VIDEO-WRAPPER') {
+								var video = target.querySelector('video');
+								if (video) selectedVideo = video;
+							}
+		
+							this._setSelectedVideo(selectedVideo);
+						}.bind(this);
+				  }
+
+					document.addEventListener('click', this._handler);
+					document.addEventListener('keydown', this._handler);
 				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
 				detached: function () {
-					document.removeEventListener('click', this._handler.bind(this));
-					document.removeEventListener('keydown', this._handler.bind(this));
+					document.removeEventListener('click', this._handler);
+					document.removeEventListener('keydown', this._handler);
 				},
 				properties: {
 					videoUrl: {
@@ -144,17 +158,6 @@
 							'URL': 'URL'
 						}
 					};
-				},
-				_handler: function (event) {
-					var target = Polymer.dom(event).rootTarget, selectedVideo = null;
-					if (!this.target.contains(target)) return;
-
-					if (target.tagName === 'VIDEO-WRAPPER') {
-						var video = target.querySelector('video');
-						if (video) selectedVideo = video;
-					}
-
-					this._setSelectedVideo(selectedVideo);
 				},
 				_paperDropdownClose: function (event) {
 					if (event.target !== this.$.dropdown) return;

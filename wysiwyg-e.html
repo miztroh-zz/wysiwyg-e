@@ -428,9 +428,16 @@ Command                                 | Mac Shortcut                          
 				is: 'wysiwyg-e',
 
 				attached: function () {
+					if (!this._handler) {
+						this._handler = function () {
+							this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
+							this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
+						}.bind(this);
+					}
+
 					Polymer.dom(this.$.tools).observeNodes(this.updateTools);
-					window.addEventListener('resize', this._resize.bind(this));
-					this.async(this._resize, 100);
+					window.addEventListener('resize', this._handler);
+					this.async(this._handler, 100);
 				},
 
 				behaviors: [
@@ -441,7 +448,7 @@ Command                                 | Mac Shortcut                          
 
 				detached: function () {
 					Polymer.dom(this.$.tools).unobserveNodes(this.updateTools);
-					window.removeEventListener('resize', this._resize.bind(this));
+					window.removeEventListener('resize', this._handler);
 				},
 
 				listeners: {
@@ -803,7 +810,6 @@ Command                                 | Mac Shortcut                          
 				},
 
 				_computeCanScrollPrevious: function (minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
-				  console.log(arguments);
 					if (minWidth768px && !forceNarrow) return scrollLeft > 0;
 					return scrollTop > 0;
 				},
@@ -914,11 +920,6 @@ Command                                 | Mac Shortcut                          
 					}
 
 					return Prism.highlight(process(value), Prism.languages.markup);
-				},
-
-				_resize: function () {
-					this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
-					this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
 				},
 
 				_scroll: function (dx) {

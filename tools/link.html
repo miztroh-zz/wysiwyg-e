@@ -16,13 +16,13 @@
 <link rel="import" href="../wysiwyg-tool-styles.html">
 <link rel="import" href="../wysiwyg-tool-icons.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-link">
-  <svg>
-    <defs>
-      <g id="icon">
-        <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path>
-      </g>
-    </defs>
-  </svg>
+	<svg>
+		<defs>
+			<g id="icon">
+				<path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path>
+			</g>
+		</defs>
+	</svg>
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-link">
 	<template>
@@ -59,13 +59,42 @@
 			{
 				is: 'wysiwyg-tool-link',
 				attached: function () {
-					document.addEventListener('click', this._handler.bind(this));
+					if (!this._handler) {
+						this._handler = function (event) {
+							var target = Polymer.dom(event).rootTarget;
+							if (!this.target.contains(target)) return;
+							event.preventDefault();
+		
+							this.async(
+								function () {
+									var path = this.commonAncestorPath, selectedLink = null;
+		
+									for (var i = 0; i < path.length; i += 1) {
+										if (path[i].tagName === 'A') {
+											selectedLink = path[i];
+											break;
+										}
+									}
+		
+									this._setSelectedLink(selectedLink);
+		
+									if (selectedLink) {
+										if (this.mode !== 'read') return;
+										window.open(selectedLink.href);
+									}
+								},
+								100
+							);
+						}.bind(this);
+					}
+
+					document.addEventListener('click', this._handler);
 				},
 				behaviors: [
 					WYSIWYG.ToolBehavior
 				],
 				detached: function () {
-					document.removeEventListener('click', this._handler.bind(this));
+					document.removeEventListener('click', this._handler);
 				},
 				properties: {
 					linkTarget: {
@@ -124,10 +153,10 @@
 							10
 						);
 					} else if (this.$.remove.contains(target)) {
-					  if (this.selectedLink) {
-					  	this.selectedLink.outerHTML = this.selectedLink.innerHTML;
-					  	this._setSelectedLink(null);
-					  }
+						if (this.selectedLink) {
+							this.selectedLink.outerHTML = this.selectedLink.innerHTML;
+							this._setSelectedLink(null);
+						}
 
 						this.$.dropdown.close();
 					} else if (this.$.close.contains(target)) {
@@ -152,7 +181,7 @@
 					}
 				},
 				queryCommandEnabled: function () {
-				  if (this.selectedLink) return true;
+					if (this.selectedLink) return true;
 					if (!this.range0) return false;
 					return this.range0.endOffset > this.range0.startOffset;
 				},
@@ -172,32 +201,6 @@
 							'Target': 'Cible'
 						}
 					};
-				},
-				_handler: function (event) {
-					var target = Polymer.dom(event).rootTarget;
-					if (!this.target.contains(target)) return;
-					event.preventDefault();
-
-					this.async(
-						function () {
-							var path = this.commonAncestorPath, selectedLink = null;
-
-							for (var i = 0; i < path.length; i += 1) {
-								if (path[i].tagName === 'A') {
-									selectedLink = path[i];
-									break;
-								}
-							}
-
-							this._setSelectedLink(selectedLink);
-
-							if (selectedLink) {
-								if (this.mode !== 'read') return;
-								window.open(selectedLink.href);
-							}
-						},
-						100
-					);
 				},
 				_linkTargetChanged: function () {
 					if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
