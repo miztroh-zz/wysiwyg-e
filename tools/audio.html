@@ -28,26 +28,6 @@
 	<template>
 		<style include="iron-flex"></style>
 		<style include="wysiwyg-tool-styles"></style>
-		<style>
-			#close {
-				color: rgba(0, 0, 0, 0.5)!important;
-			}
-
-			#updateInsert {
-				color: #2A9AF2!important;
-			}
-
-			#remove {
-				color: #d23f31!important;
-			}
-
-			paper-input,
-			paper-dropdown-menu {
-				--paper-input-container-focus-color: #2a9af2;
-				width: 400px;
-				max-width: 100%;
-			}
-		</style>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Audio')]] (Shift + Alt + A)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
