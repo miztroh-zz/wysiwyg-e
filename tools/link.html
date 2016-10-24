@@ -1,8 +1,8 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
@@ -14,6 +14,16 @@
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool-icons.html">
+<iron-iconset-svg size="24" name="wysiwyg-tool-link">
+  <svg>
+    <defs>
+      <g id="icon">
+        <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path>
+      </g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
 <dom-module id="wysiwyg-tool-link">
 	<template>
 		<style include="iron-flex"></style>
@@ -42,7 +52,7 @@
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
-				<iron-icon icon="editor:insert-link"></iron-icon>
+				<iron-icon icon="wysiwyg-tool-link:icon"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
 				<paper-input label="[[localize('URL')]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
@@ -55,11 +65,11 @@
 					</paper-listbox>
 				</paper-dropdown-menu>
 				<div class="horizontal layout">
-					<paper-icon-button id="close" icon="close"></paper-icon-button>
+					<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
 					<div class="flex"></div>
-					<paper-icon-button hidden$="[[!selectedLink]]" id="remove" icon="delete"></paper-icon-button>
+					<paper-icon-button hidden$="[[!selectedLink]]" id="remove" icon="wysiwyg-tool:remove"></paper-icon-button>
 					<div class="flex"></div>
-					<paper-icon-button id="updateInsert" icon="check"></paper-icon-button>
+					<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert"></paper-icon-button>
 				</div>
 			</div>
 		</paper-menu-button>

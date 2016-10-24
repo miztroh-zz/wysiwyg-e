@@ -1,8 +1,8 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../iron-icons/editor-icons.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
@@ -14,6 +14,16 @@
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool-icons.html">
+<iron-iconset-svg size="24" name="wysiwyg-tool-image">
+  <svg>
+    <defs>
+      <g id="icon">
+        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"></path>
+      </g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
 <dom-module id="wysiwyg-tool-image">
 	<template>
 		<style include="iron-flex"></style>
@@ -42,7 +52,7 @@
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+m" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
-				<iron-icon icon="editor:insert-photo"></iron-icon>
+				<iron-icon icon="wysiwyg-tool-image:icon"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
 				<paper-input label="[[localize('URL')]]" always-float-label value="{{imageUrl}}" id="url"></paper-input>
@@ -54,11 +64,11 @@
 					</paper-listbox>
 				</paper-dropdown-menu>
 				<div class="horizontal layout">
-					<paper-icon-button id="close" icon="close"></paper-icon-button>
+					<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
 					<div class="flex"></div>
-					<paper-icon-button hidden$="[[!selectedImage]]" id="remove" icon="delete"></paper-icon-button>
+					<paper-icon-button hidden$="[[!selectedImage]]" id="remove" icon="wysiwyg-tool:remove"></paper-icon-button>
 					<div class="flex"></div>
-					<paper-icon-button id="updateInsert" icon="check"></paper-icon-button>
+					<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert"></paper-icon-button>
 				</div>
 			</div>
 		</paper-menu-button>

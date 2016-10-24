@@ -1,12 +1,22 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
-<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
+<iron-iconset-svg size="24" name="wysiwyg-tool-justify">
+  <svg>
+    <defs>
+      <g id="icon">
+        <path d="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"></path>
+      </g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
 <dom-module id="wysiwyg-tool-justify">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
@@ -44,7 +54,7 @@
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+j" on-keys-pressed="_full"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
-				<iron-icon id="icon" icon="editor:format-align-left"></iron-icon>
+				<iron-icon id="icon" icon="wysiwyg-tool-justify:icon"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content">
 				<paper-item id="left">[[localize('Left')]]</paper-item>

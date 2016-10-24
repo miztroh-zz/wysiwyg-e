@@ -1,16 +1,25 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
+<iron-iconset-svg size="24" name="wysiwyg-tool-undo">
+  <svg>
+    <defs>
+      <g id="icon">
+        <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"></path>
+      </g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
 <dom-module id="wysiwyg-tool-undo">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<paper-button disabled="[[disabled]]" id="button">
-			<iron-icon icon="undo"></iron-icon>
+			<iron-icon icon="wysiwyg-tool-undo:icon"></iron-icon>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Undo')]] ([[modifier.tooltip]] + Z)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+z" on-keys-pressed="execCommand"></iron-a11y-keys>

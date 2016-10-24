@@ -29,7 +29,7 @@
 		"iron-ajax": "PolymerElements/iron-ajax#latest",
 		"iron-flex-layout": "PolymerElements/iron-flex-layout#latest",
 		"iron-icon": "PolymerElements/iron-icon#latest",
-		"iron-icons": "PolymerElements/iron-icons#latest",
+		"iron-iconset-svg": "PolymerElements/iron-iconset-svg#latest",
 		"iron-media-query": "PolymerElements/iron-media-query#latest",
 		"iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#latest",
 		"paper-button": "PolymerElements/paper-button#latest",

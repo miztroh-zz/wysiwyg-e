@@ -1,16 +1,25 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/editor-icons.html">
+<link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../wysiwyg-tool-behavior.html">
 <link rel="import" href="../wysiwyg-tool-styles.html">
+<iron-iconset-svg size="24" name="wysiwyg-tool-italic">
+  <svg>
+    <defs>
+      <g id="icon">
+        <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"></path>
+      </g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
 <dom-module id="wysiwyg-tool-italic">
 	<template>
 		<style include="wysiwyg-tool-styles"></style>
 		<paper-button disabled="[[disabled]]" id="button">
-			<iron-icon icon="editor:format-italic"></iron-icon>
+			<iron-icon icon="wysiwyg-tool-italic:icon"></iron-icon>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Italic')]] ([[modifier.tooltip]] + I)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+i" on-keys-pressed="execCommand"></iron-a11y-keys>

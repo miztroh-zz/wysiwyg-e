@@ -5,8 +5,6 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/hardware-icons.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-item/paper-item.html">
@@ -16,6 +14,7 @@
 <link rel="import" href="../prism-element/prism-import.html">
 <link rel="import" href="../selection-mgr/behavior.html">
 <link rel="import" href="../undo-mgr/behavior.html">
+<link rel="import" href="wysiwyg-icons.html">
 
 <!--
 `<wysiwyg-e>` A what-you-see-is-what-you-get editor created with Polymer.
@@ -374,12 +373,12 @@ Command                                 | Mac Shortcut                          
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<paper-toolbar id="toolbar" on-tap="updateTools">
 				<paper-button id="scrollDown" on-up="_onScrollButtonUp" on-down="_onScrollUp" hidden$="[[!showScrollButtons]]" disabled="[[!canScrollUp]]">
-					<iron-icon icon="hardware:keyboard-arrow-up"></iron-icon>
+					<iron-icon icon="wysiwyg:scroll-up"></iron-icon>
 				</paper-button>
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollOffset]]">
 					<paper-menu-button id="settings" hidden$="[[hideSettings]]" dynamic-align>
 						<paper-button class="dropdown-trigger">
-							<iron-icon icon="settings"></iron-icon>
+							<iron-icon icon="wysiwyg:settings"></iron-icon>
 						</paper-button>
 						<paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
 							<paper-item mode="edit">[[localize('Edit')]]</paper-item>
@@ -392,7 +391,7 @@ Command                                 | Mac Shortcut                          
 					<content select="[wysiwyg-tool]" id="tools"></content>
 				</div>
 				<paper-button id="scrollUp" on-up="_onScrollButtonUp" on-down="_onScrollDown" hidden$="[[!showScrollButtons]]" disabled="[[!canScrollDown]]">
-					<iron-icon icon="hardware:keyboard-arrow-down"></iron-icon>
+					<iron-icon icon="wysiwyg:scroll-down"></iron-icon>
 				</paper-button>
 			</paper-toolbar>
 			<div id="content">
@@ -412,9 +411,9 @@ Command                                 | Mac Shortcut                          
 				is: 'wysiwyg-e',
 
 				attached: function () {
-					Polymer.dom(this.$.tools).observeNodes(this.updateTools);
-					window.addEventListener('resize', this._resize.bind(this));
-					this.async(this._resize, 100);
+          Polymer.dom(this.$.tools).observeNodes(this.updateTools);
+          window.addEventListener('resize', this._resize.bind(this));
+          this.async(this._resize, 100);
 				},
 
 				behaviors: [
@@ -740,6 +739,7 @@ Command                                 | Mac Shortcut                          
 				 * Update tools properties
 				*/
 				updateTools: function () {
+				  if (!this.$) return;
 					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
 
 					for (var i = 0; i < tools.length; i += 1) {
