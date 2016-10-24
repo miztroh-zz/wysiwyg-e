@@ -43,18 +43,15 @@
 		}
 
     paper-icon-button#close {
-      color: rgba(0, 0, 0, 0.5)
-      @apply(--wysiwyg-tool-button-close);
+      color: var(--wysiwyg-tool-button-close, rgba(0, 0, 0, 0.5));
     }
 
     paper-icon-button#remove {
-      color: #d23f31;
-      @apply(--wysiwyg-tool-button-remove);
+      color: var(--wysiwyg-tool-button-remove, #d23f31);
     }
 
     paper-icon-button#updateInsert {
-    	color: #2A9AF2;
-      @apply(--wysiwyg-tool-button-updateinsert);
+    	color: var(--wysiwyg-tool-button-updateinsert, #2A9AF2);
     }
 
 		paper-input,
