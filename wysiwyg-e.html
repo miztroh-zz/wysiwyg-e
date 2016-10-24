@@ -888,6 +888,8 @@ Command                                 | Mac Shortcut                          
 				_paste: function (event) {
 					event.preventDefault();
 					var data = event.clipboardData.getData('text/html');
+					// If paste does not contain HTML, fall back to plain text
+					if (!data.length) data = event.clipboardData.getData('text');
 					document.execCommand('insertHTML', false, data);
 				},
 
