@@ -31,28 +31,28 @@
 		:host([active]) > paper-button,
 		:host([active]) > paper-menu-button,
 		:host([active]) > paper-menu-button paper-button.dropdown-trigger {
-			color: rgba(0, 0, 0, 0.5);
+			color: var(--wysiwyg-tool-icon-active-color, rgba(0, 0, 0, 0.5));
 			background: transparent;
 		}
 
 		:host([disabled]) > paper-button,
 		:host([disabled]) > paper-menu-button,
 		:host([disabled]) > paper-menu-button paper-button.dropdown-trigger {
-			color: rgba(255, 255, 255, 0.5);
+			color: var(--wysiwyg-tool-icon-disabled-color, rgba(255, 255, 255, 0.5));
 			background: transparent;
 		}
 
-    paper-icon-button#close {
-      color: var(--wysiwyg-tool-button-close, rgba(0, 0, 0, 0.5));
-    }
+		paper-icon-button#close {
+			color: var(--wysiwyg-tool-button-close, rgba(0, 0, 0, 0.5));
+		}
 
-    paper-icon-button#remove {
-      color: var(--wysiwyg-tool-button-remove, #d23f31);
-    }
+		paper-icon-button#remove {
+			color: var(--wysiwyg-tool-button-remove, #d23f31);
+		}
 
-    paper-icon-button#updateInsert {
-    	color: var(--wysiwyg-tool-button-updateinsert, #2A9AF2);
-    }
+		paper-icon-button#updateInsert {
+			color: var(--wysiwyg-tool-button-updateinsert, #2A9AF2);
+		}
 
 		paper-input,
 		paper-dropdown-menu {
