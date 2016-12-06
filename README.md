@@ -1,4 +1,4 @@
-# wysiwyg-e [![Build Status](https://travis-ci.org/miztroh/wysiwyg-e.svg?branch=master)](https://travis-ci.org/miztroh/wysiwyg-e)
+# wysiwyg-e [![Build Status](https://travis-ci.org/miztroh/wysiwyg-e.svg?branch=master)](https://travis-ci.org/miztroh/wysiwyg-e) [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/miztroh/wysiwyg-e)
 
 > /wɪziwɪɡi/
 
@@ -25,7 +25,17 @@
 
 ## Usage
 
+<!--
 ```
+<custom-element-demo>
+  <template>
+    <link rel="import" href="demo/wysiwyg-demo.html">
+    <wysiwyg-demo></wysiwyg-demo>
+  </template>
+</custom-element-demo>
+```
+-->
+```html
 <wysiwyg-e>
   <wysiwyg-tool-bold></wysiwyg-tool-bold>
   <wysiwyg-tool-italic></wysiwyg-tool-italic>
