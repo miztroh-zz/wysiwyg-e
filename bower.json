@@ -45,6 +45,8 @@
 		"marked-element": "PolymerElements/marked-element#latest",
 		"iron-component-page": "PolymerElements/iron-component-page#latest",
 		"selection-mgr": "miztroh/selection-mgr#latest",
-		"undo-mgr": "miztroh/undo-mgr#latest"
+		"undo-mgr": "miztroh/undo-mgr#latest",
+		"keyboardevent-key-polyfill": "cvan/keyboardevent-key-polyfill",
+    "mixwith.js": "justinfagnani/mixwith.js"
 	}
 }

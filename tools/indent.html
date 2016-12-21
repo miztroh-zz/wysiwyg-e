@@ -2,10 +2,9 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
-<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<!--<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">-->
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-indent">
   <svg>
     <defs>
@@ -17,7 +16,7 @@
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-indent">
 	<template>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="wysiwyg-tool-indent:icon"></iron-icon>
 		</paper-button>
@@ -25,29 +24,29 @@
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-indent',
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				ready: function () {
-					this._setCommand('indent');
+		class WysiwygToolIndent extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-indent' }
 
-					this.resources = {
-						'en': {
-							'Indent': 'Indent'
-						},
-						'fr': {
-							'Indent': 'Augmenter le retrait'
-						}
-					};
-				},
-				_keysPressed: function (event, detail) {
-					if (detail.keyboardEvent.shiftKey) return;
-					this.execCommand();
-				}
+			ready () {
+				super.ready();
+				this._setCommand('indent');
+
+				this.resources = {
+					'en': {
+						'Indent': 'Indent'
+					},
+					'fr': {
+						'Indent': 'Augmenter le retrait'
+					}
+				};
 			}
-		);
+
+			_keysPressed (event, detail) {
+				if (detail.keyboardEvent.shiftKey) return;
+				this.execCommand();
+			}
+		}
+
+		customElements.define(WysiwygToolIndent.is, WysiwygToolIndent);
 	</script>
 </dom-module>

@@ -1,0 +1,278 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
+<iron-iconset-svg size="24" name="wysiwyg-tool">
+  <svg>
+    <defs>
+      <g id="updateInsert">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+      </g>
+      <g id="close">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+      </g>
+      <g id="remove">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+      </g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
+<dom-module id="wysiwyg-tool">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+	
+			:host > paper-button,
+			:host > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				padding: 0;
+				margin: 0;
+				height: 40px;
+				line-height: 40px;
+				border-radius: 0px;
+				min-width: 40px;
+				background: transparent;
+				text-transform: none;
+			}
+	
+			:host > paper-menu-button {
+				padding: 0;
+			}
+	
+			:host > paper-button,
+			:host > paper-menu-button,
+			:host > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				color: inherit;
+				background: transparent;
+			}
+	
+			:host([active]) > paper-button,
+			:host([active]) > paper-menu-button,
+			:host([active]) > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				color: var(--wysiwyg-tool-icon-active-color, rgba(0, 0, 0, 0.5));
+				background: transparent;
+			}
+	
+			:host([disabled]) > paper-button,
+			:host([disabled]) > paper-menu-button,
+			:host([disabled]) > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				color: var(--wysiwyg-tool-icon-disabled-color, rgba(255, 255, 255, 0.5));
+				background: transparent;
+			}
+	
+			paper-icon-button#close {
+				color: var(--wysiwyg-tool-button-close, rgba(0, 0, 0, 0.5));
+			}
+	
+			paper-icon-button#remove {
+				color: var(--wysiwyg-tool-button-remove, #d23f31);
+			}
+	
+			paper-icon-button#updateInsert {
+				color: var(--wysiwyg-tool-button-updateinsert, #2A9AF2);
+			}
+	
+			paper-input,
+			paper-dropdown-menu {
+				--paper-input-container-focus-color: var(--wysiwyg-tool-focus-color, #2a9af2);
+				width: 400px;
+				max-width: 100%;
+			}
+		</style>
+	</template>
+	<script>
+		class WysiwygTool extends Polymer.Element {
+			static get is() { return 'wysiwyg-tool' }
+
+			connectedCallback() {
+				super.connectedCallback();
+	
+				if (!this._clickHandler) {
+					this._clickHandler = function () {
+						this.execCommand();
+					}.bind(this);
+				}
+	
+				this.addEventListener('click', this._clickHandler);
+	
+				if (!this._mousedownHanlder) {
+					this._mousedownHandler = function (event) {
+						event.preventDefault();
+					}.bind(this);
+				}
+	
+				this.addEventListener('mousedown', this._mousedownHandler);
+			}
+	
+			disconnectedCallback() {
+				super.disconnectedCallback();
+				this.removeEventListener('click', this._clickHandler);
+				this.removeEventListener('mousedown', this._mousedownHandler);
+			}
+	
+			static get config() {
+				return {
+					properties: {
+						active: {
+							type: Boolean,
+							value: false,
+							computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
+							reflectToAttribute: true,
+							observer: '_activeChanged'
+						},
+						canRedo: {
+							type: Boolean,
+							value: false,
+							readOnly: true,
+							observer: '_canRedoChanged'
+						},
+						canUndo: {
+							type: Boolean,
+							value: false,
+							readOnly: true,
+							observer: '_canUndoChanged'
+						},
+						command: {
+							type: String,
+							value: '',
+							readOnly: true,
+							observer: '_commandChanged'
+						},
+						commonAncestorPath: {
+							type: Array,
+							value: null,
+							readOnly: true,
+							observer: '_commonAncestorPathChanged'
+						},
+						disabled: {
+							type: Boolean,
+							value: true,
+							computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
+							reflectToAttribute: true,
+							observer: '_disabledChanged'
+						},
+						forceNarrow: {
+							type: Boolean,
+							value: true,
+							readOnly: true,
+							observer: '_forceNarrowChanged'
+						},
+						minWidth768px: {
+							type: Boolean,
+							value: true,
+							readOnly: true,
+							observer: '_minWidth768pxChanged'
+						},
+						mode: {
+							type: String,
+							value: 'edit',
+							readOnly: true,
+							observer: '_modeChanged'
+						},
+						modifier: {
+							type: Object,
+							value: function () {
+								var isMac = navigator.platform.indexOf('Mac') >= 0;
+			
+								return {
+									key: isMac ? 'meta' : 'ctrl',
+									tooltip: isMac ? '⌘' : 'Ctrl'
+								};
+							},
+							observer: '_modifierChanged'
+						},
+						range0: {
+							type: Object,
+							value: null,
+							readOnly: true,
+							observer: '_range0Changed'
+						},
+						selectionRoot: {
+							type: Object,
+							value: null,
+							readOnly: true,
+							observer: '_selectionRootChanged'
+						},
+						target: {
+							type: Object,
+							value: function () {
+								return this;
+							},
+							readOnly: true,
+							observer: '_targetChanged'
+						},
+						tooltipPosition: {
+							type: String,
+							value: 'bottom',
+							readOnly: true,
+							observer: '_tooltipPositionChanged'
+						},
+						value: {
+							type: String,
+							value: '',
+							readOnly: true,
+							observer: '_valueChanged'
+						}
+					}
+				};
+			}
+	
+			execCommand() {
+				if (this.disabled || !this.range0) return false;
+				document.execCommand(this.command);
+			}
+	
+			queryCommandEnabled() {
+				if (!this.range0) return false;
+				return document.queryCommandEnabled(this.command);
+			}
+	
+			queryCommandState() {
+				if (!this.range0) return false;
+	
+				try {
+					return document.queryCommandState(this.command);
+				} catch (ignore) {
+					return false;
+				}
+			}
+	
+			_activeChanged() {}
+	
+			_canRedoChanged() {}
+	
+			_canUndoChanged() {}
+	
+			_commandChanged() {}
+	
+			_commonAncestorPathChanged() {}
+	
+			_computeDisabled() {
+				return !this.queryCommandEnabled();
+			}
+	
+			_disabledChanged() {}
+	
+			_forceNarrowChanged() {}
+	
+			_minWidth768pxChanged() {}
+	
+			_modeChanged() {}
+	
+			_modifierChanged() {}
+	
+			_range0Changed() {}
+	
+			_selectionRootChanged() {}
+	
+			_targetChanged() {}
+	
+			_tooltipPositionChanged() {}
+	
+			_valueChanged() {}
+		}
+
+		customElements.define(WysiwygTool.is, WysiwygTool);
+	</script>
+</dom-module>

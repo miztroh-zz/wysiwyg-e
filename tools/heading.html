@@ -2,12 +2,11 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
-<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<!--<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">-->
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-heading">
   <svg>
     <defs>
@@ -19,7 +18,7 @@
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-heading">
 	<template>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<style>
 			:host {
 				font-family: Roboto;
@@ -59,10 +58,10 @@
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+5" on-keys-pressed="_h5"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+6" on-keys-pressed="_h6"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
-			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-heading:icon"></iron-icon>
 			</paper-button>
-			<div class="dropdown-content">
+			<div>
 				<paper-item id="p">P</paper-item>
 				<paper-item id="h1" hidden$="{{!h1}}">H1</paper-item>
 				<paper-item id="h2" hidden$="{{!h2}}">H2</paper-item>
@@ -74,188 +73,203 @@
 		</paper-menu-button>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-heading',
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				properties: {
-					h1: {
-						type: Boolean,
-						value: false
-					},
-					h2: {
-						type: Boolean,
-						value: false
-					},
-					h3: {
-						type: Boolean,
-						value: false
-					},
-					h4: {
-						type: Boolean,
-						value: false
-					},
-					h5: {
-						type: Boolean,
-						value: false
-					},
-					h6: {
-						type: Boolean,
-						value: false
-					}
-				},
-				ready: function () {
-					this._setCommand('formatBlock');
+		class WysiwygToolHeading extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-heading' }
 
-					this.resources = {
-						'en': {
-							'Headings': 'Headings',
-							'Paragraph': 'Paragraph',
-							'Heading': 'Heading {number}'
+			static get config () {
+				return {
+					properties: {
+						h1: {
+							type: Boolean,
+							value: false
 						},
-						'fr': {
-							'Headings': 'Titres',
-							'Paragraph': 'Paragraphe',
-							'Heading': 'Titre {number}'
-						}
-					};
-				},
-				execCommand: function (event) {
-					if (this.disabled || !this.range0) return false;
-
-					var target = Polymer.dom(event).rootTarget;
-
-					if (this.$.p.contains(target)) {
-						this._heading(0);
-					} else if (this.$.h1.contains(target)) {
-						this._heading(1);
-					} else if (this.$.h2.contains(target)) {
-						this._heading(2);
-					} else if (this.$.h3.contains(target)) {
-						this._heading(3);
-					} else if (this.$.h4.contains(target)) {
-						this._heading(4);
-					} else if (this.$.h5.contains(target)) {
-						this._heading(5);
-					} else if (this.$.h6.contains(target)) {
-						this._heading(6);
-					}
-				},
-				queryCommandState: function () {
-					if (this.range0 && this.commonAncestorPath) {
-						for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-							var h1 = this.commonAncestorPath[i].tagName === 'H1';
-
-							if (h1) {
-								this.$.h1.setAttribute('active', '');
-							} else {
-								this.$.h1.removeAttribute('active');
-							}
-
-							var h2 = this.commonAncestorPath[i].tagName === 'H2';
-
-							if (h2) {
-								this.$.h2.setAttribute('active', '');
-							} else {
-								this.$.h2.removeAttribute('active');
-							}
-
-							var h3 = this.commonAncestorPath[i].tagName === 'H3';
-
-							if (h3) {
-								this.$.h3.setAttribute('active', '');
-							} else {
-								this.$.h3.removeAttribute('active');
-							}
-
-							var h4 = this.commonAncestorPath[i].tagName === 'H4';
-
-							if (h4) {
-								this.$.h4.setAttribute('active', '');
-							} else {
-								this.$.h4.removeAttribute('active');
-							}
-
-							var h5 = this.commonAncestorPath[i].tagName === 'H5';
-
-							if (h5) {
-								this.$.h5.setAttribute('active', '');
-							} else {
-								this.$.h5.removeAttribute('active');
-							}
-
-							var h6 = this.commonAncestorPath[i].tagName === 'H6';
-
-							if (h6) {
-								this.$.h6.setAttribute('active', '');
-							} else {
-								this.$.h6.removeAttribute('active');
-							}
-
-							if (h1 || h2 || h3 || h4 || h5 || h6) {
-								this.$.p.removeAttribute('active');
-								return true;
-							} else {
-								this.$.p.setAttribute('active', '');
-							}
-						}
-					}
-
-					return false;
-				},
-				_h1: function () {
-					this._heading(1);
-				},
-				_h2: function () {
-					this._heading(2);
-				},
-				_h3: function () {
-					this._heading(3);
-				},
-				_h4: function () {
-					this._heading(4);
-				},
-				_h5: function () {
-					this._heading(5);
-				},
-				_h6: function () {
-					this._heading(6);
-				},
-				_heading: function (level) {
-					if (this.disabled || !this.range0 || level !== parseInt(level) || level < 0 || level > 6) return false;
-
-					var heading;
-
-					for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-						if (['H' + level].indexOf(this.commonAncestorPath[i].tagName) >= 0) {
-							heading = true;
-							break;
-						}
-					}
-
-					this.$.dropdown.close();
-
-					this.async(
-						function () {
-							if (heading || level === 0) {
-								document.execCommand('formatBlock', null, 'P');
-							} else {
-								document.execCommand('formatBlock', null, 'H' + level);
-							}
+						h2: {
+							type: Boolean,
+							value: false
 						},
-						10
-					);
-				},
-				_p: function () {
+						h3: {
+							type: Boolean,
+							value: false
+						},
+						h4: {
+							type: Boolean,
+							value: false
+						},
+						h5: {
+							type: Boolean,
+							value: false
+						},
+						h6: {
+							type: Boolean,
+							value: false
+						}
+					}
+				};
+			}
+
+			ready () {
+				super.ready();
+				this._setCommand('formatBlock');
+
+				this.resources = {
+					'en': {
+						'Headings': 'Headings',
+						'Paragraph': 'Paragraph',
+						'Heading': 'Heading {number}'
+					},
+					'fr': {
+						'Headings': 'Titres',
+						'Paragraph': 'Paragraphe',
+						'Heading': 'Titre {number}'
+					}
+				};
+			}
+
+			execCommand (event) {
+				if (this.disabled || !this.range0) return false;
+
+				var target = Polymer.dom(event).rootTarget;
+
+				if (this.$.p.contains(target)) {
 					this._heading(0);
-				},
-				_paperDropdownClose: function (event) {
-					if (event.target !== this.$.dropdown) return;
-					this.fire('restore-selection');
+				} else if (this.$.h1.contains(target)) {
+					this._heading(1);
+				} else if (this.$.h2.contains(target)) {
+					this._heading(2);
+				} else if (this.$.h3.contains(target)) {
+					this._heading(3);
+				} else if (this.$.h4.contains(target)) {
+					this._heading(4);
+				} else if (this.$.h5.contains(target)) {
+					this._heading(5);
+				} else if (this.$.h6.contains(target)) {
+					this._heading(6);
 				}
 			}
-		);
+
+			queryCommandState () {
+				if (this.range0 && this.commonAncestorPath) {
+					for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+						var h1 = this.commonAncestorPath[i].tagName === 'H1';
+
+						if (h1) {
+							this.$.h1.setAttribute('active', '');
+						} else {
+							this.$.h1.removeAttribute('active');
+						}
+
+						var h2 = this.commonAncestorPath[i].tagName === 'H2';
+
+						if (h2) {
+							this.$.h2.setAttribute('active', '');
+						} else {
+							this.$.h2.removeAttribute('active');
+						}
+
+						var h3 = this.commonAncestorPath[i].tagName === 'H3';
+
+						if (h3) {
+							this.$.h3.setAttribute('active', '');
+						} else {
+							this.$.h3.removeAttribute('active');
+						}
+
+						var h4 = this.commonAncestorPath[i].tagName === 'H4';
+
+						if (h4) {
+							this.$.h4.setAttribute('active', '');
+						} else {
+							this.$.h4.removeAttribute('active');
+						}
+
+						var h5 = this.commonAncestorPath[i].tagName === 'H5';
+
+						if (h5) {
+							this.$.h5.setAttribute('active', '');
+						} else {
+							this.$.h5.removeAttribute('active');
+						}
+
+						var h6 = this.commonAncestorPath[i].tagName === 'H6';
+
+						if (h6) {
+							this.$.h6.setAttribute('active', '');
+						} else {
+							this.$.h6.removeAttribute('active');
+						}
+
+						if (h1 || h2 || h3 || h4 || h5 || h6) {
+							this.$.p.removeAttribute('active');
+							return true;
+						} else {
+							this.$.p.setAttribute('active', '');
+						}
+					}
+				}
+
+				return false;
+			}
+
+			_h1 () {
+				this._heading(1);
+			}
+
+			_h2 () {
+				this._heading(2);
+			}
+
+			_h3 () {
+				this._heading(3);
+			}
+
+			_h4 () {
+				this._heading(4);
+			}
+
+			_h5 () {
+				this._heading(5);
+			}
+
+			_h6 () {
+				this._heading(6);
+			}
+
+			_heading (level) {
+				if (this.disabled || !this.range0 || level !== parseInt(level) || level < 0 || level > 6) return false;
+
+				var heading;
+
+				for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+					if (['H' + level].indexOf(this.commonAncestorPath[i].tagName) >= 0) {
+						heading = true;
+						break;
+					}
+				}
+
+				this.$.dropdown.close();
+
+				this.async(
+					function () {
+						if (heading || level === 0) {
+							document.execCommand('formatBlock', null, 'P');
+						} else {
+							document.execCommand('formatBlock', null, 'H' + level);
+						}
+					},
+					10
+				);
+			}
+
+			_p () {
+				this._heading(0);
+			}
+
+			_paperDropdownClose (event) {
+				if (event.target !== this.$.dropdown) return;
+				this.dispatchEvent(new CustomEvent('restore-selection'));
+			}
+		}
+
+		customElements.define(WysiwygToolHeading.is, WysiwygToolHeading);
 	</script>
 </dom-module>

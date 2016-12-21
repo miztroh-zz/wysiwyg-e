@@ -2,10 +2,9 @@
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
-<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<!--<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">-->
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-undo">
   <svg>
     <defs>
@@ -17,7 +16,7 @@
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-undo">
 	<template>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="wysiwyg-tool-undo:icon"></iron-icon>
 		</paper-button>
@@ -25,30 +24,32 @@
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+z" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-undo',
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				execCommand: function () {
-					if (this.disabled) return;
-					this.fire('undo');
-				},
-				ready: function () {
-					this.resources = {
-						'en': {
-							'Undo': 'Undo'
-						},
-						'fr': {
-							'Undo': 'Annuler'
-						}
-					};
-				},
-				_computeDisabled: function () {
-					return !this.canUndo;
-				}
+		class WysiwygToolUndo extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-undo' }
+
+			execCommand () {
+				if (this.disabled) return;
+				this.dispatchEvent(new CustomEvent('undo'));
 			}
-		);
+
+			ready () {
+				super.ready();
+
+				this.resources = {
+					'en': {
+						'Undo': 'Undo'
+					},
+					'fr': {
+						'Undo': 'Annuler'
+					}
+				};
+			}
+
+			_computeDisabled () {
+				return !this.canUndo;
+			}
+		}
+
+		customElements.define(WysiwygToolUndo.is, WysiwygToolUndo);
 	</script>
 </dom-module>

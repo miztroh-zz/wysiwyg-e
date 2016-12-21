@@ -5,16 +5,14 @@
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-button/paper-button.html">
-<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<!--<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">-->
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../paper-listbox/paper-listbox.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
-<link rel="import" href="../wysiwyg-tool-icons.html">
+<link rel="import" href="../wysiwyg-tool.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-image">
 	<svg>
 		<defs>
@@ -27,17 +25,17 @@
 <dom-module id="wysiwyg-tool-image">
 	<template>
 		<style include="iron-flex"></style>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Image')]] (Shift + Alt + M)</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+m" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
-			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-image:icon"></iron-icon>
 			</paper-button>
-			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
+			<div style="padding: 8px 16px 18px 16px;">
 				<paper-input label="[[localize('URL')]]" always-float-label value="{{imageUrl}}" id="url"></paper-input>
 				<paper-dropdown-menu label="[[localize('Float')]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-					<paper-listbox class="dropdown-content" selected="{{imageFloat}}" attr-for-selected="float">
+					<paper-listbox slot="content" selected="{{imageFloat}}" attr-for-selected="float">
 						<paper-item float="none">[[localize('none')]]</paper-item>
 						<paper-item float="left">[[localize('left')]]</paper-item>
 						<paper-item float="right">[[localize('right')]]</paper-item>
@@ -54,165 +52,179 @@
 		</paper-menu-button>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-image',
-				attached: function () {
-					if (!this._handler) {
-						this._handler = function (event) {
-							var target = Polymer.dom(event).rootTarget;
-							if (!this.target.contains(target)) return;
-							event.preventDefault();
-		
-							if (target.tagName === 'IMG') {
-								this._setSelectedImage(target);
-								var selection = this.selectionRoot.getSelection();
-								selection.removeAllRanges();
-								var range = document.createRange();
-								range.selectNode(target);
-								selection.addRange(range);
-								this._setRange0(range);
-							} else {
-								this._setSelectedImage(null);
-							}
-						}.bind(this);
-					}
+		class WysiwygToolImage extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-image' }
 
-					document.addEventListener('click', this._handler);
-				},
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				detached: function () {
-					document.removeEventListener('click', this._handler);
-				},
-				properties: {
-					imageFloat: {
-						type: String,
-						value: 'none',
-						observer: '_imageFloatChanged'
-					},
-					imageUrl: {
-						type: String,
-						value: ''
-					},
-					selectedImage: {
-						type: Object,
-						value: null,
-						readOnly: true,
-						observer: '_selectedImageChanged'
-					},
-					active: {
-						type: Boolean,
-						value: false,
-						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
-						reflectToAttribute: true,
-						observer: '_activeChanged'
-					},
-					disabled: {
-						type: Boolean,
-						value: true,
-						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
-						reflectToAttribute: true,
-						observer: '_disabledChanged'
-					}
-				},
-				execCommand: function (event) {
-					if (this.disabled || !this.range0) return;
-					var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = Polymer.dom(event).rootTarget;
-
-					if (this.$.updateInsert.contains(target)) {
-						this.$.dropdown.close();
-
-						this.async(
-							function () {
-								if (this.selectedImage) {
-									this.selectedImage.src = imageUrl;
-									this.selectedImage.style.float = imageFloat;
-								} else {
-									document.execCommand('insertImage', false, imageUrl);
-
-									this.async(
-										function () {
-											if (this.selectedImage) this.selectedImage.style.float = imageFloat;
-										},
-										10
-									);
-								}
-							},
-							10
-						);
-					} else if (this.$.remove.contains(target)) {
-						if (this.selectedImage) {
-							this.selectedImage.parentNode.removeChild(this.selectedImage);
+			attached () {
+				if (!this._handler) {
+					this._handler = function (event) {
+						var target = Polymer.dom(event).rootTarget;
+						if (!this.target.contains(target)) return;
+						event.preventDefault();
+	
+						if (target.tagName === 'IMG') {
+							this._setSelectedImage(target);
+							var selection = this.selectionRoot.getSelection();
+							selection.removeAllRanges();
+							var range = document.createRange();
+							range.selectNode(target);
+							selection.addRange(range);
+							this._setRange0(range);
+						} else {
 							this._setSelectedImage(null);
 						}
+					}.bind(this);
+				}
 
-						this.$.dropdown.close();
-					} else if (this.$.close.contains(target)) {
-						this.$.dropdown.close();
-					} else if (this.$.button.contains(target)) {
-						if (this.selectedImage) {
-							this.imageUrl = this.selectedImage.src;
-							this.imageFloat = this.selectedImage.style.float || 'none';
-						} else {
-							this.imageUrl = '';
-							this.imageFloat = 'none';
-						}
+				document.addEventListener('click', this._handler);
+			}
 
-						this.$.dropdown.open();
+			detached () {
+				document.removeEventListener('click', this._handler);
+			}
 
-						this.async(
-							function () {
-								this.$.url.focus();
-							},
-							100
-						);
-					}
-				},
-				queryCommandEnabled: function () {
-					return this.range0;
-				},
-				queryCommandState: function () {
-					return this.selectedImage;
-				},
-				ready: function () {
-					this.resources = {
-						'en': {
-							'Image': 'Image',
-							'URL': 'URL',
-							'Float': 'Float',
-							'none': 'none',
-							'left': 'left',
-							'right': 'right'
+			static get config () {
+				return {
+					properties: {
+						imageFloat: {
+							type: String,
+							value: 'none',
+							observer: '_imageFloatChanged'
 						},
-						'fr': {
-							'Image': 'Image',
-							'URL': 'URL',
-							'Float': 'Flottant',
-							'none': 'aucun',
-							'left': 'gauche',
-							'right': 'droite'
+						imageUrl: {
+							type: String,
+							value: ''
+						},
+						selectedImage: {
+							type: Object,
+							value: null,
+							readOnly: true,
+							observer: '_selectedImageChanged'
+						},
+						active: {
+							type: Boolean,
+							value: false,
+							computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
+							reflectToAttribute: true,
+							observer: '_activeChanged'
+						},
+						disabled: {
+							type: Boolean,
+							value: true,
+							computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
+							reflectToAttribute: true,
+							observer: '_disabledChanged'
 						}
-					};
-				},
-				_imageFloatChanged: function () {
-					if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
-						this.imageFloat = 'none';
-						return;
 					}
-				},
-				_paperDropdownClose: function (event) {
-					if (event.target !== this.$.dropdown) return;
-					this.imageUrl = '';
-					this.imageFloat = 'none';
-					this.fire('restore-selection');
-				},
-				_selectedImageChanged: function () {},
-				_stopPropagation: function (event) {
-					event.stopPropagation();
+				};
+			}
+
+			execCommand (event) {
+				if (this.disabled || !this.range0) return;
+				var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = Polymer.dom(event).rootTarget;
+
+				if (this.$.updateInsert.contains(target)) {
+					this.$.dropdown.close();
+
+					this.async(
+						function () {
+							if (this.selectedImage) {
+								this.selectedImage.src = imageUrl;
+								this.selectedImage.style.float = imageFloat;
+							} else {
+								document.execCommand('insertImage', false, imageUrl);
+
+								this.async(
+									function () {
+										if (this.selectedImage) this.selectedImage.style.float = imageFloat;
+									},
+									10
+								);
+							}
+						},
+						10
+					);
+				} else if (this.$.remove.contains(target)) {
+					if (this.selectedImage) {
+						this.selectedImage.parentNode.removeChild(this.selectedImage);
+						this._setSelectedImage(null);
+					}
+
+					this.$.dropdown.close();
+				} else if (this.$.close.contains(target)) {
+					this.$.dropdown.close();
+				} else if (this.$.button.contains(target)) {
+					if (this.selectedImage) {
+						this.imageUrl = this.selectedImage.src;
+						this.imageFloat = this.selectedImage.style.float || 'none';
+					} else {
+						this.imageUrl = '';
+						this.imageFloat = 'none';
+					}
+
+					this.$.dropdown.open();
+
+					this.async(
+						function () {
+							this.$.url.focus();
+						},
+						100
+					);
 				}
 			}
-		);
+
+			queryCommandEnabled () {
+				return this.range0;
+			}
+
+			queryCommandState () {
+				return this.selectedImage;
+			}
+
+			ready () {
+				super.ready();
+
+				this.resources = {
+					'en': {
+						'Image': 'Image',
+						'URL': 'URL',
+						'Float': 'Float',
+						'none': 'none',
+						'left': 'left',
+						'right': 'right'
+					},
+					'fr': {
+						'Image': 'Image',
+						'URL': 'URL',
+						'Float': 'Flottant',
+						'none': 'aucun',
+						'left': 'gauche',
+						'right': 'droite'
+					}
+				};
+			}
+
+			_imageFloatChanged () {
+				if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
+					this.imageFloat = 'none';
+					return;
+				}
+			}
+
+			_paperDropdownClose (event) {
+				if (event.target !== this.$.dropdown) return;
+				this.imageUrl = '';
+				this.imageFloat = 'none';
+				this.dispatchEvent(new CustomEvent('restore-selection'));
+			}
+
+			_selectedImageChanged () {}
+
+			_stopPropagation (event) {
+				event.stopPropagation();
+			}
+		}
+
+		customElements.define(WysiwygToolImage.is, WysiwygToolImage);
 	</script>
 </dom-module>
