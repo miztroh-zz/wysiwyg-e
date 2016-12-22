@@ -41,8 +41,6 @@
 		"paper-material": "PolymerElements/paper-material#latest",
 		"paper-menu-button": "PolymerElements/paper-menu-button#latest",
 		"paper-tooltip": "PolymerElements/paper-tooltip#latest",
-		"prism-element": "PolymerElements/prism-element#latest",
-		"marked-element": "PolymerElements/marked-element#latest",
 		"iron-component-page": "PolymerElements/iron-component-page#latest",
 		"selection-mgr": "miztroh/selection-mgr#latest",
 		"undo-mgr": "miztroh/undo-mgr#latest",

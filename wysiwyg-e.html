@@ -11,8 +11,7 @@
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
-<!--<link rel="import" href="../paper-tooltip/paper-tooltip.html">-->
-<link rel="import" href="../prism-element/prism-import.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../selection-mgr/mixin.html">
 <link rel="import" href="../undo-mgr/mixin.html">
 <link rel="import" href="wysiwyg-tool.html">
@@ -301,8 +300,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				display: block;
 			}
 
-			:host([mode="edit"]) #editable audio,
-			:host([mode="edit"]) #editable video {
+			:host #editable audio,
+			:host #editable video {
 				pointer-events: none;
 			}
 
@@ -340,11 +339,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 
 			paper-item:hover {
 				cursor: pointer;
-			}
-
-			:host([mode="read"]) ::content .wysiwyg-tool,
-			:host([mode="html"]) ::content .wysiwyg-tool {
-				visibility: hidden;
 			}
 
 			@media (min-width: 768px) {
@@ -419,17 +413,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					<iron-icon icon="[[_scrollPreviousIcon(minWidth768px, forceNarrow)]]"></iron-icon>
 				</paper-button>
 				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
-					<paper-menu-button id="settings" hidden$="[[hideSettings]]" dynamic-align>
-						<paper-button class="dropdown-trigger">
-							<iron-icon icon="wysiwyg:settings"></iron-icon>
-						</paper-button>
-						<paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
-							<paper-item mode="edit">[[localize('Edit')]]</paper-item>
-							<paper-item mode="read">[[localize('Read-only')]]</paper-item>
-							<paper-item mode="html">[[localize('View HTML')]]</paper-item>
-						</paper-listbox>
-					</paper-menu-button>
-					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">[[localize('Settings')]]</paper-tooltip>
 					<slot id="tools"></slot>
 				</div>
 				<paper-button id="scrollNext" on-up="_onScrollButtonUp" on-down="_onScrollNext" disabled="[[!canScrollNext]]">
@@ -437,12 +420,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				</paper-button>
 			</div>
 			<div id="content">
-				<div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
-				<div id="html" hidden$="[[!_html(mode)]]">
-					<pre>
-						<code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
-					</pre>
-				</div>
+				<div id="editable" contenteditable></div>
 			</div>
 		</div>
 	</template>
@@ -534,7 +512,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			static get config() {
 				return {
 					observers: [
-						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, mode, language)'
+						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language)'
 					],
 
 					properties: {
@@ -579,15 +557,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 						minWidth768px: {
 							type: Boolean,
 							observer: '_minWidth768pxChanged'
-						},
-						/**
-						 * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
-						*/
-						mode: {
-							type: String,
-							value: 'edit',
-							observer: '_modeChanged',
-							reflectToAttribute: true
 						},
 						/**
 						 * Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
@@ -686,132 +655,168 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			 * Revert an undo operation
 			*/
 			redo() {
-				if (this.mode !== 'edit') return false;
 				return super.redo();
 			}
 
 			/**
 			 * Sanitize DOM changes
 			*/
-			sanitize() {
-				var i, j, p, pre;
+			sanitize(mutations) {
+				if (!mutations) return;
+				var nodes = [], i, j, k, p, pre;
 
-				//Wrap target's immediate child text nodes inside p node
-				var childNodes = this.target.childNodes;
+				for (i = 0; i < mutations.length; i += 1) {
+					var mutation = mutations[i];
 
-				for (i = 0; i < childNodes.length; i += 1) {
-					if (childNodes[i].nodeType === 3) {
-						if (!childNodes[i].textContent.trim().length) continue;
-						p = document.createElement('p');
-						this.target.insertBefore(p, childNodes[i].nextSibling);
-						p.appendChild(childNodes[i]);
-						if (this.logging) console.log('wrap top level text nodes inside p node');
-						return false;
+					if (nodes.indexOf(mutation.target) === -1) {
+						nodes.push(mutation.target);
+
+						if (mutation.target.querySelectorAll) {
+							var subnodes = mutation.target.querySelectorAll('*');
+
+							for (k = 0; k < subnodes.length; k += 1) {
+								if (nodes.indexOf(subnodes[k]) === -1) nodes.push(subnodes[k]);
+							}
+						}
+					}
+
+					for (j = 0; j < mutation.addedNodes.length; j += 1) {
+						var addedNode = mutation.addedNodes[j];
+
+						if (nodes.indexOf(addedNode) === -1) {
+							nodes.push(addedNode);
+
+							if (addedNode.querySelectorAll) {
+								var subnodes = addedNode.querySelectorAll('*');
+
+								for (k = 0; k < subnodes.length; k += 1) {
+									if (nodes.indexOf(subnodes[k]) === -1) nodes.push(subnodes[k]);
+								}
+							}
+						}
 					}
 				}
 
-				//Move non-code nodes outside of pre nodes
-				var invalidPreChildren = this.target.querySelectorAll('pre > :not(code), code > p');
+				for (i = 0; i < nodes.length; i += 1) {
+					var node = nodes[i];
 
-				for (i = 0; i < invalidPreChildren.length; i += 1) {
-					invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
-					if (this.logging) console.log('invalid pre children 1');
-					return false;
-				}
+					if (node !== this.target && this.target.contains(node)) {
+						//Remove the id attribute
+						if (node.removeAttribute) node.removeAttribute('id');
 
-				pre = this.target.querySelectorAll('pre');
+						//Remove the style attribute
+						if (node.removeAttribute) node.removeAttribute('style');
 
-				for (i = 0; i < pre.length; i += 1) {
-					var codes = 0, insertBefore = pre[i];
-					childNodes = Array.prototype.slice.call(pre[i].childNodes);
+						//Remove invalid classes; Add required classes
+						if (node.classList) {
+							var classList = Array.prototype.slice.call(node.classList);
 
-					for (j = 0; j < childNodes.length; j += 1) {
-						if (childNodes[j].tagName !== 'CODE') {
+							for (j = 0; j < classList.length; j += 1) {
+								if (['style-scope', 'wysiwyg-e'].indexOf(classList[j]) === -1) {
+									node.classList.remove(classList[j]);
+									if (this.logging) console.log('remove invalid class');
+									return false;
+								}
+							}
+		
+							if (!node.classList.contains('style-scope')) {
+								node.classList.add('style-scope');
+								if (this.logging) console.log('add style-scope class');
+								return false;
+							}
+		
+							if (!node.classList.contains('wysiwyg-e')) {
+								node.classList.add('wysiwyg-e');
+								if (this.logging) console.log('add wysiwyg-e class');
+								return false;
+							}
+						}
+
+						//If node is a text node immediate child of target, wrap inside a P
+						if (node.parentNode === this.target && node.nodeType === 3) {
+							if (!node.textContent.trim().length) continue;
 							p = document.createElement('p');
-							p.textContent = childNodes[j].textContent;
-							pre[i].removeChild(childNodes[j]);
-							pre[i].parentNode.insertBefore(p, insertBefore);
-							if (this.logging) console.log('invalid pre children 3');
+							this.target.insertBefore(p, node.nextSibling);
+							p.appendChild(node);
+							if (this.logging) console.log('wrap top level text nodes inside p node');
 							return false;
 						}
 
-						codes += 1;
+						switch (node.tagName) {
+							//Remove invalid PRE children
+							case 'PRE':
+								var codes = 0, insertBefore = node;
+								var childNodes = Array.prototype.slice.call(node.childNodes);
+			
+								for (j = 0; j < childNodes.length; j += 1) {
+									if (childNodes[j].tagName !== 'CODE') {
+										p = document.createElement('p');
+										p.textContent = childNodes[j].textContent;
+										node.removeChild(childNodes[j]);
+										node.parentNode.insertBefore(p, insertBefore);
+										if (this.logging) console.log('invalid pre child 1');
+										return false;
+									}
+			
+									codes += 1;
+			
+									if (codes === 1) {
+										insertBefore = node.nextSibling;
+									} else if (codes > 1) {
+										var pre = document.createElement('pre');
+										pre.appendChild(childNodes[j]);
+										node.parentNode.insertBefore(pre, insertBefore);
+										insertBefore = pre.nextSibling;
+										if (this.logging) console.log('invalid pre child 2');
+										return false;
+									}
+								}
 
-						if (codes === 1) {
-							insertBefore = pre[i].nextSibling;
-						} else if (codes > 1) {
-							var newPre = document.createElement('pre');
-							newPre.appendChild(childNodes[j]);
-							pre[i].parentNode.insertBefore(newPre, insertBefore);
-							insertBefore = newPre.nextSibling;
-							if (this.logging) console.log('invalid pre children 3');
-							return false;
+								break;
+							//Remove invalid CODE children
+							case 'CODE':
+								var childNodes = Array.prototype.slice.call(node.childNodes);
+			
+								for (j = 0; j < childNodes.length; j += 1) {
+									if (childNodes[j].tagName === 'P') {
+										node.outerHTML = node.innerHTML;
+										if (this.logging) console.log('invalid code child');
+										return false;
+									}
+								}
+
+								break;
+							//Replace STRONG with B
+							case 'STRONG':
+								node.outerHTML = '<b>' + node.innerHTML + '</b>';
+								if (this.logging) console.log('strong');
+								return false;
+								break;
+							//Replace EM with I
+							case 'EM':
+								node.outerHTML = '<i>' + node.innerHTML + '</i>';
+								if (this.logging) console.log('em');
+								return false;
+								break;
+							//Replace DIV with P
+							case 'DIV':
+								node.outerHTML = '<p>' + node.innerHTML + '</p>';
+								if (this.logging) console.log('div');
+								return false;
+							//Remove P children of P
+							case 'P':
+								var childNodes = Array.prototype.slice.call(node.childNodes);
+			
+								for (j = 0; j < childNodes.length; j += 1) {
+									if (childNodes[j].tagName === 'P') {
+										node.outerHTML = node.innerHTML;
+										if (this.logging) console.log('invalid p child');
+										return false;
+									}
+								}
+
+								break;
 						}
-					}
-				}
-
-				//Replace strong with b
-				var strong = this.target.querySelectorAll('strong');
-
-				for (i = 0; i < strong.length; i += 1) {
-					strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
-					if (this.logging) console.log('strong');
-					return false;
-				}
-
-				//Replace em with i
-				var em = this.target.querySelectorAll('em');
-
-				for (i = 0; i < em.length; i += 1) {
-					em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
-					if (this.logging) console.log('em');
-					return false;
-				}
-
-				//Replace DIVs with Ps
-				var divs = this.target.querySelectorAll('div');
-
-				for (i = 0; i < divs.length; i += 1) {
-					divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
-					if (this.logging) console.log('div');
-					return false;
-				}
-
-				//Remove P children of Ps
-				var Ps = this.target.querySelectorAll('p');
-
-				for (i = 0; i < Ps.length; i += 1) {
-					var childPs = Ps[i].querySelectorAll('p');
-
-					for (j = 0; j < childPs.length; j += 1) {
-						childPs[j].outerHTML = childPs[j].textContent;
-						if (this.logging) console.log('p child of p');
-						return false;
-					}
-				}
-
-				//Strip all classes except style-scope and wysiwyg-e
-				var classes = this.target.querySelectorAll('*');
-
-				for (i = 0; i < classes.length; i += 1) {
-					for (j = 0; j < classes[i].classList.length; j += 1) {
-						if (['style-scope', 'wysiwyg-e'].indexOf(classes[i].classList[j]) === -1) {
-							classes[i].classList.remove(classes[i].classList[j]);
-							if (this.logging) console.log('remove invalid class');
-							return false;
-						}
-					}
-
-					if (!classes[i].classList.contains('style-scope')) {
-						classes[i].classList.add('style-scope');
-						if (this.logging) console.log('add style-scope class', classes[i]);
-						return false;
-					}
-
-					if (!classes[i].classList.contains('wysiwyg-e')) {
-						classes[i].classList.add('wysiwyg-e');
-						if (this.logging) console.log('add wysiwyg-e class', classes[i]);
-						return false;
 					}
 				}
 
@@ -832,7 +837,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			 * Perform an undo operation
 			*/
 			undo() {
-				if (this.mode !== 'edit') return false;
 				return super.undo();
 			}
 
@@ -840,6 +844,19 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			 * Update tools properties
 			*/
 			updateTools() {
+				var now = new Date();
+
+				if (this._toolUpdateTimeout) {
+					delete this._toolUpdateTimeout;
+					clearTimeout(this._toolUpdateTimeout);
+				}
+
+				if (this._lastToolUpdate && now - this._lastToolUpdate < 250) {
+					this._toolUpdateTimeout = setTimeout(this.updateTools.bind(this), 250 - (now - this._lastToolUpdate));
+					return;
+				}
+
+				this._lastToolUpdate = now;
 				if (!this.$) return;
 				var tools = this.$.tools.assignedNodes({flatten: true});
 
@@ -855,7 +872,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					tools[i]._setMinWidth768px(this.minWidth768px);
 					tools[i]._setForceNarrow(this.forceNarrow);
 					tools[i]._setTooltipPosition(this.tooltipPosition);
-					tools[i]._setMode(this.mode);
 					tools[i].language = this.language;
 				}
 			}
@@ -891,33 +907,9 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				document.execCommand('forwardDelete');
 			}
 
-			_edit() {
-				return this.mode === 'edit';
-			}
-
-			_html() {
-				return this.mode === 'html';
-			}
-
 			_minWidth768pxChanged() {
 				this._setScrollTop(0);
 				this._setScrollLeft(0);
-			}
-
-			_modeChanged() {
-				if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
-					this.mode = 'edit';
-					return;
-				}
-
-				if (this.target && this.mode !== 'read') {
-					var AVs = this.target.querySelectorAll('audio, video');
-					if (!AVs) return;
-
-					for (var i = 0; i < AVs.length; i += 1) {
-						AVs[i].paused = true;
-					}
-				}
 			}
 
 			_onScrollButtonUp() {
@@ -933,42 +925,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			_onScrollPrevious() {
 				this._scrollPrevious();
 				this._scrollJob = setInterval(this._scrollPrevious.bind(this), this.scrollDelay);
-			}
-
-			_panelMode() {
-				if (this.mode !== 'edit') return 'seamed';
-				return 'waterfall';
-			}
-
-			_prismHighlight(value) {
-				// process and format functions from
-				// http://stackoverflow.com/questions/26360414/javascript-how-to-correct-indentation-in-html-string
-
-				function process (str) {
-					if (typeof str !== 'string') str = '';
-					var div = document.createElement('div');
-					div.innerHTML = str.trim();
-					return format(div, 0).innerHTML;
-				}
-
-				function format (node, level) {
-					var indentBefore = new Array(level++ + 1).join('	'), indentAfter	= new Array(level - 1).join('	'), textNode;
-
-					for (var i = 0; i < node.children.length; i += 1) {
-						textNode = document.createTextNode('\n' + indentBefore);
-						node.insertBefore(textNode, node.children[i]);
-						format(node.children[i], level);
-
-						if (node.lastElementChild == node.children[i]) {
-							textNode = document.createTextNode('\n' + indentAfter);
-							node.appendChild(textNode);
-						}
-					}
-
-					return node;
-				}
-
-				return Prism.highlight(process(value), Prism.languages.markup);
 			}
 
 			_scroll(dx) {
