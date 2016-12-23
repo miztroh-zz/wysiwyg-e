@@ -509,10 +509,122 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			static get config() {
 				return {
 					observers: [
-						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language)'
+						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug)'
 					],
 
 					properties: {
+						/**
+						 * Array of tagNames allowed by the sanitize method
+						*/
+						allowedTagNames: {
+							type: Array,
+							value: function () {
+								return [
+									'a',
+									'abbr',
+									'address',
+									'area',
+									'article',
+									'aside',
+									'audio',
+									'b',
+									'base',
+									'bdi',
+									'bdo',
+									'blockquote',
+									'br',
+									'button',
+									'canvas',
+									'caption',
+									'cite',
+									'code',
+									'col',
+									'colgroup',
+									'data',
+									'datalist',
+									'dd',
+									'del',
+									'details',
+									'dfn',
+									'div',
+									'dl',
+									'dt',
+									'element',
+									'em',
+									'embed',
+									'fieldset',
+									'figcaption',
+									'figure',
+									'footer',
+									'form',
+									'h1',
+									'h2',
+									'h3',
+									'h4',
+									'h5',
+									'h6',
+									'header',
+									'hgroup',
+									'hr',
+									'i',
+									'img',
+									'input',
+									'ins',
+									'kbd',
+									'label',
+									'legend',
+									'li',
+									'main',
+									'map',
+									'mark',
+									'meter',
+									'nav',
+									'noframes',
+									'noscript',
+									'object',
+									'ol',
+									'optgroup',
+									'option',
+									'output',
+									'p',
+									'param',
+									'pre',
+									'progress',
+									'q',
+									'rp',
+									'rt',
+									'rtc',
+									'ruby',
+									's',
+									'samp',
+									'section',
+									'select',
+									'small',
+									'source',
+									'span',
+									'strong',
+									'sub',
+									'summary',
+									'sup',
+									'table',
+									'tbody',
+									'td',
+									'template',
+									'textarea',
+									'tfoot',
+									'th',
+									'thead',
+									'time',
+									'tr',
+									'track',
+									'u',
+									'ul',
+									'var',
+									'video',
+									'wbr'
+								];
+							}
+						},
 						/**
 						 * If true, tools can scroll up.	Computed.
 						*/
@@ -526,6 +638,13 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 						canScrollNext: {
 							type: Boolean,
 							computed: '_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
+						},
+						/**
+						 * If true, console.log debug messages.
+						*/
+						debug: {
+							type: Boolean,
+							value: false
 						},
 						/**
 						 * If true, force narrow view with vertical toolbar.	Defaults to false.
@@ -641,7 +760,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			*/
 			sanitize(mutations) {
 				if (!mutations) return;
-				var nodes = [], i, j, k, p, pre;
+				var sanitized = true, nodes = [], i, j, k, p, pre;
 
 				for (i = 0; i < mutations.length; i += 1) {
 					var mutation = mutations[i];
@@ -679,35 +798,32 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					var node = nodes[i];
 
 					if (node !== this.target && this.target.contains(node)) {
+						//Make sure tagName is allowed
+						if (node.tagName && this.allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
+							node.outerHTML = node.innerHTML;
+							if (this.debug) console.log(node, 'invalid tagName');
+							sanitized = false;
+						}
+
 						//Remove the id attribute
-						if (node.removeAttribute) node.removeAttribute('id');
+						if (node.hasAttribute && node.hasAttribute('id')) {
+							node.removeAttribute('id');
+							if (this.debug) console.log(node, 'id attribute');
+							sanitized = false;
+						}
 
 						//Remove the style attribute
-						if (node.removeAttribute) node.removeAttribute('style');
+						if (node.hasAttribute && node.hasAttribute('style')) {
+							node.removeAttribute('style');
+							if (this.debug) console.log(node, 'style attribute');
+							sanitized = false;
+						}
 
-						//Remove invalid classes; Add required classes
-						if (node.classList) {
-							var classList = Array.prototype.slice.call(node.classList);
-
-							for (j = 0; j < classList.length; j += 1) {
-								if (['style-scope', 'wysiwyg-e'].indexOf(classList[j]) === -1) {
-									node.classList.remove(classList[j]);
-									if (this.logging) console.log('remove invalid class');
-									return false;
-								}
-							}
-		
-							if (!node.classList.contains('style-scope')) {
-								node.classList.add('style-scope');
-								if (this.logging) console.log('add style-scope class');
-								return false;
-							}
-		
-							if (!node.classList.contains('wysiwyg-e')) {
-								node.classList.add('wysiwyg-e');
-								if (this.logging) console.log('add wysiwyg-e class');
-								return false;
-							}
+						//Remove the class attribute
+						if (node.hasAttribute && node.hasAttribute('class')) {
+							node.removeAttribute('class');
+							if (this.debug) console.log(node, 'class attribute');
+							sanitized = false;
 						}
 
 						//If node is a text node immediate child of target, wrap inside a P
@@ -716,8 +832,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 							p = document.createElement('p');
 							this.target.insertBefore(p, node.nextSibling);
 							p.appendChild(node);
-							if (this.logging) console.log('wrap top level text nodes inside p node');
-							return false;
+							if (this.debug) console.log(node, 'wrap top level text nodes inside p node');
+							sanitized = false;
 						}
 
 						switch (node.tagName) {
@@ -732,8 +848,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 										p.textContent = childNodes[j].textContent;
 										node.removeChild(childNodes[j]);
 										node.parentNode.insertBefore(p, insertBefore);
-										if (this.logging) console.log('invalid pre child 1');
-										return false;
+										if (this.debug) console.log(node, 'invalid pre child 1');
+										sanitized = false;
 									}
 			
 									codes += 1;
@@ -745,8 +861,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 										pre.appendChild(childNodes[j]);
 										node.parentNode.insertBefore(pre, insertBefore);
 										insertBefore = pre.nextSibling;
-										if (this.logging) console.log('invalid pre child 2');
-										return false;
+										if (this.debug) console.log(node, 'invalid pre child 2');
+										sanitized = false;
 									}
 								}
 
@@ -758,8 +874,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 								for (j = 0; j < childNodes.length; j += 1) {
 									if (childNodes[j].tagName === 'P') {
 										node.outerHTML = node.innerHTML;
-										if (this.logging) console.log('invalid code child');
-										return false;
+										if (this.debug) console.log(node, 'invalid code child');
+										sanitized = false;
 									}
 								}
 
@@ -767,33 +883,20 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 							//Replace STRONG with B
 							case 'STRONG':
 								node.outerHTML = '<b>' + node.innerHTML + '</b>';
-								if (this.logging) console.log('strong');
-								return false;
+								if (this.debug) console.log(node, 'strong');
+								sanitized = false;
 								break;
 							//Replace EM with I
 							case 'EM':
 								node.outerHTML = '<i>' + node.innerHTML + '</i>';
-								if (this.logging) console.log('em');
-								return false;
+								if (this.debug) console.log(node, 'em');
+								sanitized = false;
 								break;
 							//Replace DIV with P
 							case 'DIV':
 								node.outerHTML = '<p>' + node.innerHTML + '</p>';
-								if (this.logging) console.log('div');
-								return false;
-							//Remove P children of P
-							case 'P':
-								var childNodes = Array.prototype.slice.call(node.childNodes);
-			
-								for (j = 0; j < childNodes.length; j += 1) {
-									if (childNodes[j].tagName === 'P') {
-										node.outerHTML = node.innerHTML;
-										if (this.logging) console.log('invalid p child');
-										return false;
-									}
-								}
-
-								break;
+								if (this.debug) console.log(node, 'div');
+								sanitized = false;
 						}
 					}
 				}
@@ -804,11 +907,11 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					var br = document.createElement('br');
 					p.appendChild(br);
 					this.target.appendChild(p);
-					if (this.logging) console.log('improper value');
-					return false;
+					if (this.debug) console.log('improper value');
+					sanitized = false;
 				}
 
-				return true;
+				return sanitized;
 			}
 
 			/**
@@ -851,6 +954,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					tools[i]._setForceNarrow(this.forceNarrow);
 					tools[i]._setTooltipPosition(this.tooltipPosition);
 					tools[i].language = this.language;
+					tools[i]._setDebug(this.debug);
 				}
 			}
 

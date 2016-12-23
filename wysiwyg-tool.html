@@ -145,6 +145,12 @@
 							readOnly: true,
 							observer: '_commonAncestorPathChanged'
 						},
+						debug: {
+							type: Boolean,
+							value: false,
+							readOnly: true,
+							observer: '_debugChanged',
+						},
 						disabled: {
 							type: Boolean,
 							value: true,
@@ -251,6 +257,8 @@
 			_computeDisabled() {
 				return !this.queryCommandEnabled();
 			}
+
+			_debugChanged() {}
 	
 			_disabledChanged() {}
 	
