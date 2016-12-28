@@ -7,6 +7,7 @@
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-heading">
   <svg>
     <defs>
@@ -42,14 +43,38 @@
 				background: #e4e4e4;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Headings')]]</paper-tooltip>
-		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">[[localize('Paragraph')]] (Shift + Alt + 0)</paper-tooltip>
-		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 1)]] (Shift + Alt + 1)</paper-tooltip>
-		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 2)]] (Shift + Alt + 2)</paper-tooltip>
-		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 3)]] (Shift + Alt + 3)</paper-tooltip>
-		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 4)]] (Shift + Alt + 4)</paper-tooltip>
-		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 5)]] (Shift + Alt + 5)</paper-tooltip>
-		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">[[localize('Heading', 'number', 6)]] (Shift + Alt + 6)</paper-tooltip>
+		<app-localize id="localize"></app-localize>
+		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Paragraph"></app-localize>
+			<span> (Shift + Alt + 0)</span>
+		</paper-tooltip>
+		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="1"></app-localize>
+			<span> (Shift + Alt + 1)</span>
+		</paper-tooltip>
+		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="2"></app-localize>
+			<span> (Shift + Alt + 2)</span>
+		</paper-tooltip>
+		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="3"></app-localize>
+			<span> (Shift + Alt + 3)</span>
+		</paper-tooltip>
+		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="4"></app-localize>
+			<span> (Shift + Alt + 4)</span>
+		</paper-tooltip>
+		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="5"></app-localize>
+			<span> (Shift + Alt + 5)</span>
+		</paper-tooltip>
+		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="6"></app-localize>
+			<span> (Shift + Alt + 6)</span>
+		</paper-tooltip>
+		<paper-tooltip for="button" position="[[tooltipPosition]]" offset="5" slot="dropdown-trigger">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></app-localize>
+		</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+0" on-keys-pressed="_p"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+1" on-keys-pressed="_h1"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+2" on-keys-pressed="_h2"></iron-a11y-keys>

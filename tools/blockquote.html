@@ -5,6 +5,7 @@
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-blockquote">
   <svg>
     <defs>
@@ -20,7 +21,10 @@
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="wysiwyg-tool-blockquote:icon"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Blockquote')]] (Shift + Alt + Q)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Blockquote"></app-localize>
+			<span> (Shift + Alt + Q)</span>
+		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+q" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>

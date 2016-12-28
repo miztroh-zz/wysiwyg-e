@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
@@ -8,13 +7,11 @@
 <link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../paper-item/paper-item.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../selection-mgr/mixin.html">
 <link rel="import" href="../undo-mgr/mixin.html">
 <link rel="import" href="wysiwyg-tool.html">
+<link rel="import" href="app-localize.html">
 <script src="../keyboardevent-key-polyfill/index.js"></script>
 <iron-iconset-svg size="24" name="wysiwyg">
 	<svg>
@@ -31,6 +28,12 @@
 			<g id="scroll-up">
 				<path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path>
 			</g>
+      <g id="undo">
+        <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"></path>
+      </g>
+      <g id="redo">
+        <path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"></path>
+      </g>
 		</defs>
 	</svg>
 </iron-iconset-svg>
@@ -330,12 +333,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				text-transform: none;
 			}
 
-			paper-menu-button {
-				padding: 0;
-			}
-
-			paper-item:hover {
-				cursor: pointer;
+			paper-button[disabled] {
+				color: rgba(255, 255, 255, 0.5);
 			}
 
 			@media (min-width: 768px) {
@@ -390,16 +389,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				@apply(--layout-flex);
 				@apply(--layout-vertical);
 			}
-
-			#scrollPrevious,
-			#scrollNext {
-				border-radius: 0;
-			}
-
-			#scrollPrevious[disabled],
-			#scrollNext[disabled] {
-				color: rgba(255, 255, 255, 0.5);
-			}
 		</style>
 		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
@@ -409,8 +398,20 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				<paper-button id="scrollPrevious" on-up="_onScrollButtonUp" on-down="_onScrollPrevious"	disabled="[[!canScrollPrevious]]">
 					<iron-icon icon="[[_scrollPreviousIcon(minWidth768px, forceNarrow)]]"></iron-icon>
 				</paper-button>
-				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
+				<div id="toolbarLayout" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
 					<slot id="tools"></slot>
+					<paper-button id="undo" on-tap="undo" disabled="[[!canUndo]]">
+						<iron-icon icon="wysiwyg:undo"></iron-icon>
+					</paper-button>
+					<paper-tooltip for="undo" position="[[tooltipPosition]]" offset="5">
+						<app-localize language="[[language]]" resources="[[resources]]" string-key="Undo"></app-localize>
+					</paper-tooltip>
+					<paper-button id="redo" on-tap="redo" disabled="[[!canRedo]]">
+						<iron-icon icon="wysiwyg:redo"></iron-icon>
+					</paper-button>
+					<paper-tooltip for="redo" position="[[tooltipPosition]]" offset="5">
+						<app-localize language="[[language]]" resources="[[resources]]" string-key="Redo"></app-localize>
+					</paper-tooltip>
 				</div>
 				<paper-button id="scrollNext" on-up="_onScrollButtonUp" on-down="_onScrollNext" disabled="[[!canScrollNext]]">
 					<iron-icon icon="[[_scrollNextIcon(minWidth768px, forceNarrow)]]"></iron-icon>
@@ -456,8 +457,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 
 				this.addEventListener('keydown', this._keydownHandler);
 
-				//if (!this._restoreSelectionHandler) this._restoreSelectionHandler = super.restoreSelection.bind(this);
-				//this.addEventListener('restore-selection', this._restoreSelectionHandler);
+				if (!this._restoreSelectionHandler) this._restoreSelectionHandler = super.restoreSelection.bind(this);
+				this.addEventListener('restore-selection', this._restoreSelectionHandler);
 
 				if (!this._selectElementHandler) {
 					this._selectElementHandler = function (event) {
@@ -492,10 +493,10 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				super.disconnectedCallback();
 				window.removeEventListener('resize', this._resizeHandler);
 				this.removeEventListener('keydown', this._keydownHandler);
-				//this.removeEventListener('restore-selection', this._restoreSelectionHandler);
+				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
 				this.removeEventListener('select-element', this._selectElementHandler);
 				this.removeEventListener('paste', this._pasteHandler);
-				this.removeEventListener('slotchange', this._slotchangeHandler);
+				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
 			}
 
 			ready() {
@@ -674,6 +675,14 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 							type: Object,
 							value: function () {
 								return {
+									'en': {
+										'Undo': 'Undo',
+										'Redo': 'Redo'
+									},
+									'fr': {
+										'Undo': 'Annuler',
+										'Redo': 'Rétablir'
+									}
 								};
 							}
 						},
@@ -939,7 +948,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 
 				this._lastToolUpdate = now;
 				if (!this.$) return;
-				var tools = this.$.tools.assignedNodes({flatten: true});
+				var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
 
 				for (var i = 0; i < tools.length; i += 1) {
 					if (!(tools[i] instanceof WysiwygTool)) continue;
