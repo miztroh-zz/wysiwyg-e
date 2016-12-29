@@ -967,15 +967,51 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				}
 			}
 
-			_backspace() {
-				if (this.target.children.length > 1) {
-					document.execCommand('delete');
-				} else if (this.target.children.length === 1) {
-					if (this.target.children[0].textContent.length) {
+			_backspace(event) {
+				if (!this.range0) return;
+				var keyboardEvent = event.detail.keyboardEvent;
+				if (keyboardEvent.altKey || keyboardEvent.shiftKey) return;
+
+				var singleBackspace = function () {
+					if (this.target.children.length > 1) {
 						document.execCommand('delete');
-					} else {
-						document.execCommand('formatBlock', null, 'P');
+					} else if (this.target.children.length === 1) {
+						if (this.target.children[0].textContent.length) {
+							document.execCommand('delete');
+						} else {
+							document.execCommand('formatBlock', null, 'P');
+						}
 					}
+				}.bind(this);
+
+				var wholeWordBackspace = function (lastWord, lastWordPosition) {
+					this.range0.collapse(true);
+					this.range0.setStart(this.range0.commonAncestorContainer, lastWordPosition);
+					this.range0.setEnd(this.range0.commonAncestorContainer, this.range0.commonAncestorContainer.textContent.length < lastWordPosition + lastWord.length + 1 ? this.range0.commonAncestorContainer : lastWordPosition + lastWord.length + 1);
+					this.range0.deleteContents();
+				}.bind(this);
+
+				if (keyboardEvent.ctrlKey || keyboardEvent.metaKey) {
+					var range = this.range0.cloneRange();
+					range.collapse();
+					range.setStart(this.range0.commonAncestorContainer, 0);
+					var preceding = range.toString();
+
+					if (preceding.length) {
+						var match = preceding.match(/(?:\s|^)([\S]+)$/i);
+	
+						if (match) {
+							wholeWordBackspace(match.slice(-1)[0], match.index);
+						} else if (preceding.trim().split(' ').length === 1) {
+							wholeWordBackspace(preceding.split(' ')[0], 0);
+						} else {
+							singleBackspace();
+						}
+					} else {
+						singleBackspace();
+					}
+				} else {
+					singleBackspace();
 				}
 			}
 
