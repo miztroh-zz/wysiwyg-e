@@ -248,6 +248,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				line-height: 1.5;
 				background-color: #f7f7f7;
 				border-radius: 3px;
+				white-space: pre;
 				@apply(--wysiwyg-editable-pre);
 			}
 
@@ -392,6 +393,8 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 		</style>
 		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+z" on-keys-pressed="undo"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+y" on-keys-pressed="redo"></iron-a11y-keys>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<div id="toolbar" on-tap="updateTools">
@@ -400,13 +403,13 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				</paper-button>
 				<div id="toolbarLayout" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
 					<slot id="tools"></slot>
-					<paper-button id="undo" on-tap="undo" disabled="[[!canUndo]]">
+					<paper-button id="undo" on-tap="undo" disabled="[[!canUndo]]" hidden="[[noUndo]]">
 						<iron-icon icon="wysiwyg:undo"></iron-icon>
 					</paper-button>
 					<paper-tooltip for="undo" position="[[tooltipPosition]]" offset="5">
 						<app-localize language="[[language]]" resources="[[resources]]" string-key="Undo"></app-localize>
 					</paper-tooltip>
-					<paper-button id="redo" on-tap="redo" disabled="[[!canRedo]]">
+					<paper-button id="redo" on-tap="redo" disabled="[[!canRedo]]" hidden="[[noRedo]]">
 						<iron-icon icon="wysiwyg:redo"></iron-icon>
 					</paper-button>
 					<paper-tooltip for="redo" position="[[tooltipPosition]]" offset="5">
@@ -589,7 +592,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 									'output',
 									'p',
 									'param',
-									'pre',
 									'progress',
 									'q',
 									'rp',
@@ -667,6 +669,20 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 						minWidth768px: {
 							type: Boolean,
 							observer: '_minWidth768pxChanged'
+						},
+						/**
+						 * Hide the redo button and prevent redo operations
+						*/
+						noRedo: {
+							type: Boolean,
+							value: false
+						},
+						/**
+						 * Hide the undo button and prevent undo operations
+						*/
+						noUndo: {
+							type: Boolean,
+							value: false
 						},
 						/**
 						 * Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
@@ -761,7 +777,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			 * Revert an undo operation
 			*/
 			redo() {
-				return super.redo();
+				if (!this.noRedo) return super.redo();
 			}
 
 			/**
@@ -769,6 +785,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			*/
 			sanitize(mutations) {
 				if (!mutations) return;
+				var stackPosition = this.stack.stackPosition;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
 
 				for (i = 0; i < mutations.length; i += 1) {
@@ -846,36 +863,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 						}
 
 						switch (node.tagName) {
-							//Remove invalid PRE children
-							case 'PRE':
-								var codes = 0, insertBefore = node;
-								var childNodes = Array.prototype.slice.call(node.childNodes);
-			
-								for (j = 0; j < childNodes.length; j += 1) {
-									if (childNodes[j].tagName !== 'CODE') {
-										p = document.createElement('p');
-										p.textContent = childNodes[j].textContent;
-										node.removeChild(childNodes[j]);
-										node.parentNode.insertBefore(p, insertBefore);
-										if (this.debug) console.log(node, 'invalid pre child 1');
-										sanitized = false;
-									}
-			
-									codes += 1;
-			
-									if (codes === 1) {
-										insertBefore = node.nextSibling;
-									} else if (codes > 1) {
-										var pre = document.createElement('pre');
-										pre.appendChild(childNodes[j]);
-										node.parentNode.insertBefore(pre, insertBefore);
-										insertBefore = pre.nextSibling;
-										if (this.debug) console.log(node, 'invalid pre child 2');
-										sanitized = false;
-									}
-								}
-
-								break;
 							//Remove invalid CODE children
 							case 'CODE':
 								var childNodes = Array.prototype.slice.call(node.childNodes);
@@ -927,7 +914,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			 * Perform an undo operation
 			*/
 			undo() {
-				return super.undo();
+				if (!this.noUndo) return super.undo();
 			}
 
 			/**
