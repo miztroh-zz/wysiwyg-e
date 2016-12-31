@@ -164,6 +164,12 @@
 							readOnly: true,
 							observer: '_forceNarrowChanged'
 						},
+						language: {
+							type: String,
+							value: '',
+							readOnly: true,
+							observer: '_languageChanged'
+						},
 						minWidth768px: {
 							type: Boolean,
 							value: true,
@@ -179,13 +185,9 @@
 						modifier: {
 							type: Object,
 							value: function () {
-								var isMac = navigator.platform.indexOf('Mac') >= 0;
-			
-								return {
-									key: isMac ? 'meta' : 'ctrl',
-									tooltip: isMac ? '⌘' : 'Ctrl'
-								};
+								return {};
 							},
+							readOnly: true,
 							observer: '_modifierChanged'
 						},
 						range0: {
@@ -263,6 +265,8 @@
 			_disabledChanged() {}
 	
 			_forceNarrowChanged() {}
+
+			_languageChanged() {}
 	
 			_minWidth768pxChanged() {}
 	

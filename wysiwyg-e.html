@@ -368,7 +368,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				}
 			}
 
-			@media (max-width: 767px) {
+			@media (max-width: 767.9px) {
 				#layout {
 					@apply(--layout-horizontal);
 				}
@@ -522,7 +522,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			static get config() {
 				return {
 					observers: [
-						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug)'
+						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug, modifier)'
 					],
 
 					properties: {
@@ -962,8 +962,9 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					tools[i]._setMinWidth768px(this.minWidth768px);
 					tools[i]._setForceNarrow(this.forceNarrow);
 					tools[i]._setTooltipPosition(this.tooltipPosition);
-					tools[i].language = this.language;
+					tools[i]._setLanguage(this.language);
 					tools[i]._setDebug(this.debug);
+					tools[i]._setModifier(this.modifier);
 				}
 			}
 
