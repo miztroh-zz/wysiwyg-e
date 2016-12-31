@@ -107,7 +107,6 @@
 			}
 
 			_readmeChanged() {
-				this.$.wysiwygE.clearHistory();
 				var value = this.marked(this.readme);
 				this.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
 			}
