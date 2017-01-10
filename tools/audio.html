@@ -55,7 +55,7 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var target = Polymer.dom(event).rootTarget, selectedAudio = null;
+						var target = event.path[0], selectedAudio = null;
 						if (!this.target.contains(target)) return;
 		
 						if (target.tagName === 'AUDIO-WRAPPER') {
@@ -109,12 +109,12 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = Polymer.dom(event).rootTarget;
+				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.path[0];
 
 				if (this.$.updateInsert.contains(target)) {
 					this.$.dropdown.close();
 
-					this.async(
+					setTimeout(
 						function () {
 							if (this.selectedAudio) {
 								this.selectedAudio.src = audioUrl;
@@ -122,7 +122,7 @@
 								var html = '<p><br><audio-wrapper><audio src="' + audioUrl + '" controls></audio></audio-wrapper><br></p>';
 								document.execCommand('insertHTML', false, html);
 							}
-						},
+						}.bind(this),
 						10
 					);
 				} else if (this.$.remove.contains(target)) {
@@ -139,10 +139,10 @@
 
 					this.$.dropdown.open();
 
-					this.async(
+					setTimeout(
 						function () {
 							this.$.url.focus();
-						},
+						}.bind(this),
 						100
 					);
 				}

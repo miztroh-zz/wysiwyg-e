@@ -248,7 +248,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 				line-height: 1.5;
 				background-color: #f7f7f7;
 				border-radius: 3px;
-				white-space: pre;
+				white-space: pre-wrap;
 				@apply(--wysiwyg-editable-pre);
 			}
 
@@ -462,8 +462,14 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 
 				this.addEventListener('keydown', this._keydownHandler);
 
-				if (!this._restoreSelectionHandler) this._restoreSelectionHandler = super.restoreSelection.bind(this);
-				this.addEventListener('restore-selection', this._restoreSelectionHandler);
+				if (!this._restoreSelectionHandler) {
+					this._restoreSelectionHandler = function () {
+						console.log('restore-selection');
+						this.restoreSelection();
+					}.bind(this);
+				}
+					
+				this.$.toolbar.addEventListener('restore-selection', this._restoreSelectionHandler);
 
 				if (!this._selectElementHandler) {
 					this._selectElementHandler = function (event) {
@@ -506,7 +512,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 
 			ready() {
 				super.ready();
-				Polymer.dom(this.target).innerHTML = '';
 				this.target = this.$.editable;
 				this.sanitize();
 
@@ -800,7 +805,7 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 			// Sanitize DOM changes
 			//
 			sanitize(mutations) {
-				if (!mutations) return;
+				if (!mutations) return true;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
 
 				for (i = 0; i < mutations.length; i += 1) {
@@ -839,13 +844,6 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 					var node = nodes[i];
 
 					if (node !== this.target && this.target.contains(node)) {
-						//Make sure tagName is allowed
-						if (node.tagName && this.allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
-							node.outerHTML = node.innerHTML;
-							if (this.debug) console.log(node, 'invalid tagName');
-							sanitized = false;
-						}
-
 						//Remove the id attribute
 						if (node.hasAttribute && node.hasAttribute('id')) {
 							node.removeAttribute('id');
@@ -855,9 +853,23 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 
 						//Remove the style attribute
 						if (node.hasAttribute && node.hasAttribute('style')) {
-							node.removeAttribute('style');
-							if (this.debug) console.log(node, 'style attribute');
-							sanitized = false;
+							var styles = node.getAttribute('style').split(';'), validStyles = [];
+
+							for (j = 0; j < styles.length; j += 1) {
+								if (styles[j]) {
+									var style = styles[j].split(':');
+
+									switch (style[0]) {
+										case 'text-align':
+											break;
+										default:
+											node.style[style[0]] = '';
+											if (this.debug) console.log(node, 'style: ' + style[0]);
+											sanitized = false;
+											break;
+									}
+								}
+							}
 						}
 
 						//Remove the class attribute
@@ -908,6 +920,20 @@ Command																 | Mac Shortcut																			 | Windows Shortcut
 								node.outerHTML = '<p>' + node.innerHTML + '</p>';
 								if (this.debug) console.log(node, 'div');
 								sanitized = false;
+								break;
+							//Replace STRIKE with S
+							case 'STRIKE':
+								node.outerHTML = '<s>' + node.innerHTML + '</s>';
+								if (this.debug) console.log(node, 'strike');
+								sanitized = false;
+								break;
+						}
+
+						//Make sure tagName is allowed
+						if (node.tagName && this.allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
+							node.outerHTML = node.innerHTML;
+							if (this.debug) console.log(node, 'invalid tagName');
+							sanitized = false;
 						}
 					}
 				}

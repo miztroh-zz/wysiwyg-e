@@ -32,14 +32,14 @@
 			<span> (Shift + Alt + A)</span>
 		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
-		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
+		<paper-menu-button on-opened-changed="_paperDropdownOpenedChanged" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-link:icon"></iron-icon>
 			</paper-button>
 			<div style="padding: 8px 16px 18px 16px;">
-				<app-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}"></app-localize>
+				<app-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></app-localize>
 				<paper-input label="[[_localizedUrl]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
-				<app-localize language="[[language]]" resources="[[resources]]" string-key="Target" localized="{{_localizedTarget}}"></app-localize>
+				<app-localize language="[[language]]" resources="[[resources]]" string-key="Target" localized="{{_localizedTarget}}" hidden></app-localize>
 				<paper-dropdown-menu label="[[_localizedTarget]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
 					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
 						<paper-item target="_blank">_blank</paper-item>
@@ -65,11 +65,11 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var target = Polymer.dom(event).rootTarget;
+						var target = event.path[0];
 						if (!this.target.contains(target)) return;
 						event.preventDefault();
 	
-						this.async(
+						setTimeout(
 							function () {
 								var path = this.commonAncestorPath, selectedLink = null;
 	
@@ -86,7 +86,7 @@
 									if (this.mode !== 'read') return;
 									window.open(selectedLink.href);
 								}
-							},
+							}.bind(this),
 							100
 						);
 					}.bind(this);
@@ -137,12 +137,12 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var linkUrl = this.linkUrl, linkTarget = this.linkTarget, target = Polymer.dom(event).rootTarget;
+				var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
 
-				if (this.$.updateInsert.contains(target)) {
+				if (Array.prototype.indexOf.call(event.path, this.$.updateInsert) >= 0) {
 					this.$.dropdown.close();
 
-					this.async(
+					setTimeout(
 						function () {
 							if (this.selectedLink) {
 								this.selectedLink.href = linkUrl;
@@ -150,26 +150,26 @@
 							} else {
 								document.execCommand('createLink', false, linkUrl);
 
-								this.async(
+								setTimeout(
 									function () {
 										if (this.selectedLink) this.selectedLink.target = linkTarget;
-									},
+									}.bind(this),
 									10
 								);
 							}
-						},
+						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(target)) {
+				} else if (Array.prototype.indexOf.call(event.path, this.$.remove) >= 0) {
 					if (this.selectedLink) {
 						this.selectedLink.outerHTML = this.selectedLink.innerHTML;
 						this._setSelectedLink(null);
 					}
 
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(target)) {
+				} else if (Array.prototype.indexOf.call(event.path, this.$.close) >= 0) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(target)) {
+				} else if (Array.prototype.indexOf.call(event.path, this.$.button) >= 0) {
 					if (this.selectedLink) {
 						this.linkUrl = this.selectedLink.href;
 						this.linkTarget = this.selectedLink.target || '_self';
@@ -180,10 +180,10 @@
 
 					this.$.dropdown.open();
 
-					this.async(
+					setTimeout(
 						function () {
 							this.$.url.focus();
-						},
+						}.bind(this),
 						100
 					);
 				}
@@ -223,8 +223,8 @@
 				}
 			}
 
-			_paperDropdownClose (event) {
-				if (event.target !== this.$.dropdown) return;
+			_paperDropdownOpenedChanged (event) {
+				if (this.$.dropdown.opened) return;
 				this.linkUrl = '';
 				this.linkTarget = '_self';
 				this.dispatchEvent(new CustomEvent('restore-selection'));

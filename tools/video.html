@@ -56,7 +56,7 @@
 			attached () {
 			  if (!this._handler) {
 			    this._handler = function (event) {
-						var target = Polymer.dom(event).rootTarget, selectedVideo = null;
+						var target = event.path[0], selectedVideo = null;
 						if (!this.target.contains(target)) return;
 	
 						if (target.tagName === 'VIDEO-WRAPPER') {
@@ -110,12 +110,12 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;'), target = Polymer.dom(event).rootTarget;
+				var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.path[0];
 
 				if (this.$.updateInsert.contains(target)) {
 					this.$.dropdown.close();
 
-					this.async(
+					setTimeout(
 						function () {
 							if (this.selectedVideo) {
 								this.selectedVideo.src = videoUrl;
@@ -123,7 +123,7 @@
 								var html = '<p><br><video-wrapper><video src="' + videoUrl + '" controls></video></video-wrapper><br></p>';
 								document.execCommand('insertHTML', false, html);
 							}
-						},
+						}.bind(this),
 						10
 					);
 				} else if (this.$.remove.contains(target)) {
@@ -140,10 +140,10 @@
 
 					this.$.dropdown.open();
 
-					this.async(
+					setTimeout(
 						function () {
 							this.$.url.focus();
-						},
+						}.bind(this),
 						100
 					);
 				}

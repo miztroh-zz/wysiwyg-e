@@ -133,8 +133,7 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return false;
-
-				var target = Polymer.dom(event).rootTarget;
+				var target = event.path[0];
 
 				if (this.$.left.contains(target)) {
 					this._left();
@@ -196,7 +195,7 @@
 
 				this.$.dropdown.close();
 
-				this.async(
+				setTimeout(
 					function () {
 						var command = 'justify' + justification.charAt(0).toUpperCase() + justification.slice(1);
 
@@ -205,7 +204,7 @@
 						} else {
 							document.execCommand(command);
 						}
-					},
+					}.bind(this),
 					10
 				);
 			}

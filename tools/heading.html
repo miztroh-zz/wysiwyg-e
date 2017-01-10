@@ -152,8 +152,7 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return false;
-
-				var target = Polymer.dom(event).rootTarget;
+				var target = event.path[0];
 
 				if (this.$.p.contains(target)) {
 					this._heading(0);
@@ -273,14 +272,14 @@
 
 				this.$.dropdown.close();
 
-				this.async(
+				setTimeout(
 					function () {
 						if (heading || level === 0) {
 							document.execCommand('formatBlock', null, 'P');
 						} else {
 							document.execCommand('formatBlock', null, 'H' + level);
 						}
-					},
+					}.bind(this),
 					10
 				);
 			}

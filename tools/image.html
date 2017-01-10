@@ -70,7 +70,7 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var target = Polymer.dom(event).rootTarget;
+						var target = event.path[0];
 						if (!this.target.contains(target)) return;
 						event.preventDefault();
 	
@@ -133,12 +133,12 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = Polymer.dom(event).rootTarget;
+				var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = event.path[0];
 
 				if (this.$.updateInsert.contains(target)) {
 					this.$.dropdown.close();
 
-					this.async(
+					setTimeout(
 						function () {
 							if (this.selectedImage) {
 								this.selectedImage.src = imageUrl;
@@ -146,14 +146,14 @@
 							} else {
 								document.execCommand('insertImage', false, imageUrl);
 
-								this.async(
+								setTimeout(
 									function () {
 										if (this.selectedImage) this.selectedImage.style.float = imageFloat;
-									},
+									}.bind(this),
 									10
 								);
 							}
-						},
+						}.bind(this),
 						10
 					);
 				} else if (this.$.remove.contains(target)) {
@@ -176,10 +176,10 @@
 
 					this.$.dropdown.open();
 
-					this.async(
+					setTimeout(
 						function () {
 							this.$.url.focus();
-						},
+						}.bind(this),
 						100
 					);
 				}

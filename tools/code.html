@@ -35,13 +35,15 @@
 				if (this.disabled || !this.range0) return;
 
 				if (!this.active) {
-					document.execCommand('insertHTML', false, '<pre><code><br></code></pre>');
+					var text = this.range0.toString();
+					document.execCommand('delete', false);
+					document.execCommand('insertHTML', false, '<code>' + (this.htmlentities(text) || '<br>') + '</code>');
 				} else  {
 					var path = this.commonAncestorPath;
 
 					if (path) {
 						for (var i = 0; i < path.length - 1; i += 1) {
-							if (['PRE', 'CODE'].indexOf(path[i].tagName) >= 0) {
+							if (path[i].tagName === 'CODE') {
 								path[i].outerHTML = path[i].innerHTML;
 							}
 						}
@@ -58,7 +60,7 @@
 
 				if (path) {
 					for (var i = 0; i < path.length; i += 1) {
-						if (['PRE', 'CODE'].indexOf(path[i].tagName) >= 0) return true;
+						if (path[i].tagName === 'CODE') return true;
 					}
 				}
 
