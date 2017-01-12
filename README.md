@@ -29,8 +29,57 @@
 ```
 <custom-element-demo>
   <template>
-    <link rel="import" href="demo/wysiwyg-demo.html">
-    <wysiwyg-demo></wysiwyg-demo>
+    <link rel="import" href="wysiwyg-e.html">
+    <link rel="import" href="tools/bold.html">
+		<link rel="import" href="tools/italic.html">
+		<link rel="import" href="tools/underline.html">
+		<link rel="import" href="tools/strike.html">
+		<link rel="import" href="tools/clear.html">
+		<link rel="import" href="tools/code.html">
+		<link rel="import" href="tools/link.html">
+		<link rel="import" href="tools/image.html">
+		<link rel="import" href="tools/audio.html">
+		<link rel="import" href="tools/video.html">
+		<link rel="import" href="tools/ordered.html">
+		<link rel="import" href="tools/unordered.html">
+		<link rel="import" href="tools/indent.html">
+		<link rel="import" href="tools/outdent.html">
+		<link rel="import" href="tools/justify.html">
+		<link rel="import" href="tools/heading.html">
+		<link rel="import" href="tools/blockquote.html">
+		<link rel="import" href="../iron-ajax/iron-ajax.html">
+		<link rel="import" href="../marked-element/marked-import.html">
+		<wysiwyg-e style="width: 100vw; height: 100vh;" id="wysiwygE">
+			<wysiwyg-tool-bold></wysiwyg-tool-bold>
+			<wysiwyg-tool-italic></wysiwyg-tool-italic>
+			<wysiwyg-tool-underline></wysiwyg-tool-underline>
+			<wysiwyg-tool-strike></wysiwyg-tool-strike>
+			<wysiwyg-tool-clear></wysiwyg-tool-clear>
+			<wysiwyg-tool-code></wysiwyg-tool-code>
+			<wysiwyg-tool-link></wysiwyg-tool-link>
+			<wysiwyg-tool-image></wysiwyg-tool-image>
+			<wysiwyg-tool-audio></wysiwyg-tool-audio>
+			<wysiwyg-tool-video></wysiwyg-tool-video>
+			<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+			<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+			<wysiwyg-tool-indent></wysiwyg-tool-indent>
+			<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+			<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+			<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+			<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+		</wysiwyg-e>
+		<iron-ajax url="../README.md" handle-as="text" id="ajax"></iron-ajax>
+		<script>
+			var ironAjax = document.querySelector('iron-ajax'), wysiwygE = document.querySelector('wysiwyg-e');
+			ironAjax.addEventListener(
+				'response',
+				function () {
+					var value = marked(this.lastResponse);
+					wysiwygE.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
+				}
+			);
+			ironAjax.generateRequest();
+		</script>
   </template>
 </custom-element-demo>
 ```
