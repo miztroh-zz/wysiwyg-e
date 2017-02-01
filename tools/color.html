@@ -52,8 +52,12 @@
 			execCommand() {
 				// Do nothing without a valid selection or picker color
 				if (this.disabled || !this.range0 || !this.$.picker.color) return;
+				// Use CSS when setting the color
+				document.execCommand('styleWithCSS', false, true);
 				// Set the color on the current selection
 				document.execCommand(this.command, false, this.$.picker.color);
+				// Revert to default
+				document.execCommand('styleWithCSS', false, false);
 				// Clear the picker color to keep its icon the same color as other tools
 				this.$.picker.color = '';
 			}
