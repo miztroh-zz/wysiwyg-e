@@ -38,10 +38,11 @@
 		"paper-item": "PolymerElements/paper-item#latest",
 		"paper-listbox": "PolymerElements/paper-listbox#latest",
 		"paper-menu-button": "PolymerElements/paper-menu-button#latest",
+		"paper-swatch-picker": "PolymerElements/paper-swatch-picker#latest",
 		"paper-tooltip": "PolymerElements/paper-tooltip#latest",
 		"iron-component-page": "PolymerElements/iron-component-page#latest",
-		"selection-mgr": "miztroh/selection-mgr#latest",
-		"undo-mgr": "miztroh/undo-mgr#latest",
+		"selection-mgr": "miztroh/selection-mgr#2.0-preview",
+		"undo-mgr": "miztroh/undo-mgr#2.0-preview",
 		"keyboardevent-key-polyfill": "cvan/keyboardevent-key-polyfill"
 	}
 }

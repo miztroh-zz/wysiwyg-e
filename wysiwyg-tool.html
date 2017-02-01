@@ -90,6 +90,7 @@
 	
 				if (!this._clickHandler) {
 					this._clickHandler = function (event) {
+						document.execCommand('styleWithCSS', false, true);
 						this.execCommand(event);
 					}.bind(this);
 				}

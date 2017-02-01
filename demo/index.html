@@ -26,6 +26,7 @@
 		<link rel="import" href="../tools/justify.html">
 		<link rel="import" href="../tools/heading.html">
 		<link rel="import" href="../tools/blockquote.html">
+		<link rel="import" href="../tools/color.html">
 		<!-- The imports below are just for use with this demo -->
 		<link rel="import" href="../../iron-ajax/iron-ajax.html">
 		<link rel="import" href="../../marked-element/marked-import.html">
@@ -49,6 +50,7 @@
 			<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
 			<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
 			<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+			<wysiwyg-tool-color></wysiwyg-tool-color>
 		</wysiwyg-e>
 		<iron-ajax url="../README.md" handle-as="text" id="ajax"></iron-ajax>
 		<script>
@@ -58,6 +60,7 @@
 				'response',
 				function () {
 					var value = marked(this.lastResponse);
+					value = '<p>Hello, world!</p>';
 					wysiwygE.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
 				}
 			);
