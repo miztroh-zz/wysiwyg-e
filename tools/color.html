@@ -1,0 +1,64 @@
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-swatch-picker/paper-swatch-picker.html">
+<link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
+<dom-module id="wysiwyg-tool-color">
+	<template>
+		<style include="wysiwyg-tool"></style>
+		<style>
+			#picker {
+				width: 40px;
+				height: 40px;
+				overflow: hidden;
+			}
+		</style>
+		<paper-button disabled="[[disabled]]" id="button">
+			<paper-swatch-picker noink id="picker" on-color-changed="execCommand"></paper-swatch-picker>
+		</paper-button>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Bold"></app-localize>
+			<span> ([[modifier.tooltip]] + B)</span>
+		</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+b" on-keys-pressed="execCommand"></iron-a11y-keys>
+	</template>
+	<script>
+		class WysiwygToolColor extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-color' }
+
+			ready () {
+				super.ready();
+				this._setCommand('foreColor');
+
+				this.resources = {
+					'en': {
+						'Color': 'Color'
+					},
+					'fr': {
+						'Color': 'Couleur'
+					}
+				};
+
+				// Until a Polymer 2.x version is released, we manually fix the slot for the dropdown trigger
+				this.$.picker.$.iconButton.setAttribute('slot', 'dropdown-trigger');
+				// Dynamically align the picker's menu dropdown to the viewport
+				this.$.picker.$.iconButton.parentNode.dynamicAlign = true;
+				// Get rid of padding on the picker's menu button
+				this.$.picker.$.iconButton.parentNode.style.padding = '0';
+			}
+
+			execCommand() {
+				// Do nothing without a valid selection or picker color
+				if (this.disabled || !this.range0 || !this.$.picker.color) return;
+				// Set the color on the current selection
+				document.execCommand(this.command, false, this.$.picker.color);
+				// Clear the picker color to keep its icon the same color as other tools
+				this.$.picker.color = '';
+			}
+		}
+
+		customElements.define(WysiwygToolColor.is, WysiwygToolColor);
+	</script>
+</dom-module>
