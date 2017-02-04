@@ -144,9 +144,12 @@ Command                                 | Mac Shortcut                          
 `Italic`                                | Cmd + I                                            | Ctrl + I
 `Underline`                             | Cmd + U                                            | Ctrl + U
 `Strikethrough`                         | Shift + Alt + D                                    | Shift + Alt + D
+`Color`                                 | Shift + Alt + P                                    | Shift + Alt + P
 `Remove Format`                         | Cmd + Space                                        | Ctrl + Space
 `Link`                                  | Shift + Alt + A                                    | Shift + Alt + A
 `Image`                                 | Shift + Alt + M                                    | Shift + Alt + M
+`Audio`                                 | Shift + Alt + S                                    | Shift + Alt + S
+`Video`                                 | Shift + Alt + V                                    | Shift + Alt + V
 `Ordered List`                          | Shift + Alt + O                                    | Shift + Alt + O
 `Bullet List`                           | Shift + Alt + U                                    | Shift + Alt + U
 `Indent`                                | Tab                                                | Tab
@@ -804,6 +807,7 @@ Command                                 | Mac Shortcut                          
 			// Sanitize DOM changes
 			//
 			sanitize(mutations) {
+				return true;
 				if (!mutations) return true;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
 

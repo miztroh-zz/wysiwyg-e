@@ -192,7 +192,7 @@
 			queryCommandEnabled () {
 				if (this.selectedLink) return true;
 				if (!this.range0) return false;
-				return this.range0.endOffset > this.range0.startOffset;
+				return this.range0.startContainer !== this.range0.endContainer || this.range0.endOffset > this.range0.startOffset;
 			}
 
 			queryCommandState () {
