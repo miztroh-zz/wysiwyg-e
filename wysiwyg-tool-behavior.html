@@ -2,6 +2,9 @@
 <script>
 	WYSIWYG = window.WYSIWYG || {};
 
+  /**
+   * @polymerBehavior
+   */
   WYSIWYG.ToolBehavior = [
     Polymer.AppLocalizeBehavior,
     {
@@ -73,7 +76,7 @@
   				type: Object,
   				value: function () {
   					var isMac = navigator.platform.indexOf('Mac') >= 0;
-  
+
   					return {
   						key: isMac ? 'meta' : 'ctrl',
   						tooltip: isMac ? '⌘' : 'Ctrl'
@@ -124,7 +127,7 @@
   		},
   		queryCommandState: function () {
   			if (!this.range0) return false;
-  
+
   			try {
   				return document.queryCommandState(this.command);
   			} catch (ignore) {
