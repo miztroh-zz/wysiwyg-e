@@ -54,18 +54,22 @@
 		</wysiwyg-e>
 		<iron-ajax url="../README.md" handle-as="text" id="ajax"></iron-ajax>
 		<script>
-			var ironAjax = document.querySelector('iron-ajax'), wysiwygE = document.querySelector('wysiwyg-e');
-
-			ironAjax.addEventListener(
-				'response',
+			HTMLImports.whenReady(
 				function () {
-					var value = marked(this.lastResponse);
-					value = '<p>Hello, world!</p>';
-					wysiwygE.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
+					var ironAjax = document.querySelector('iron-ajax'), wysiwygE = document.querySelector('wysiwyg-e');
+		
+					ironAjax.addEventListener(
+						'response',
+						function () {
+							var value = marked(this.lastResponse);
+							value = '<p>Hello, world!</p>';
+							wysiwygE.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
+						}
+					);
+		
+					ironAjax.generateRequest();
 				}
 			);
-
-			ironAjax.generateRequest();
 		</script>
 	</body>
 </html>

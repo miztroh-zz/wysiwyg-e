@@ -101,33 +101,31 @@
 		class WysiwygToolHeading extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-heading' }
 
-			static get config () {
+			static get properties () {
 				return {
-					properties: {
-						h1: {
-							type: Boolean,
-							value: false
-						},
-						h2: {
-							type: Boolean,
-							value: false
-						},
-						h3: {
-							type: Boolean,
-							value: false
-						},
-						h4: {
-							type: Boolean,
-							value: false
-						},
-						h5: {
-							type: Boolean,
-							value: false
-						},
-						h6: {
-							type: Boolean,
-							value: false
-						}
+					h1: {
+						type: Boolean,
+						value: false
+					},
+					h2: {
+						type: Boolean,
+						value: false
+					},
+					h3: {
+						type: Boolean,
+						value: false
+					},
+					h4: {
+						type: Boolean,
+						value: false
+					},
+					h5: {
+						type: Boolean,
+						value: false
+					},
+					h6: {
+						type: Boolean,
+						value: false
 					}
 				};
 			}

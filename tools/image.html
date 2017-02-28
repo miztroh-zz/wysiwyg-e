@@ -95,38 +95,36 @@
 				document.removeEventListener('click', this._handler);
 			}
 
-			static get config () {
+			static get properties () {
 				return {
-					properties: {
-						imageFloat: {
-							type: String,
-							value: 'none',
-							observer: '_imageFloatChanged'
-						},
-						imageUrl: {
-							type: String,
-							value: ''
-						},
-						selectedImage: {
-							type: Object,
-							value: null,
-							readOnly: true,
-							observer: '_selectedImageChanged'
-						},
-						active: {
-							type: Boolean,
-							value: false,
-							computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
-							reflectToAttribute: true,
-							observer: '_activeChanged'
-						},
-						disabled: {
-							type: Boolean,
-							value: true,
-							computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
-							reflectToAttribute: true,
-							observer: '_disabledChanged'
-						}
+					imageFloat: {
+						type: String,
+						value: 'none',
+						observer: '_imageFloatChanged'
+					},
+					imageUrl: {
+						type: String,
+						value: ''
+					},
+					selectedImage: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_selectedImageChanged'
+					},
+					active: {
+						type: Boolean,
+						value: false,
+						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
+						reflectToAttribute: true,
+						observer: '_activeChanged'
+					},
+					disabled: {
+						type: Boolean,
+						value: true,
+						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
+						reflectToAttribute: true,
+						observer: '_disabledChanged'
 					}
 				};
 			}

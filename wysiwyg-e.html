@@ -526,264 +526,264 @@ Command                                 | Mac Shortcut                          
 				);
 			}
 
-			static get config() {
-				return {
-					observers: [
-						'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug, modifier)'
-					],
+			static get observers() {
+				return [
+					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug, modifier)'
+				];
+			}
 
-					properties: {
-						//
-						// Array of tagNames allowed by the sanitize method
-						//
-						allowedTagNames: {
-							type: Array,
-							value: function () {
-								return [
-									'a',
-									'abbr',
-									'address',
-									'area',
-									'article',
-									'aside',
-									'audio',
-									'b',
-									'base',
-									'bdi',
-									'bdo',
-									'blockquote',
-									'br',
-									'button',
-									'canvas',
-									'caption',
-									'cite',
-									'code',
-									'col',
-									'colgroup',
-									'data',
-									'datalist',
-									'dd',
-									'del',
-									'details',
-									'dfn',
-									'div',
-									'dl',
-									'dt',
-									'element',
-									'em',
-									'embed',
-									'fieldset',
-									'figcaption',
-									'figure',
-									'footer',
-									'form',
-									'h1',
-									'h2',
-									'h3',
-									'h4',
-									'h5',
-									'h6',
-									'header',
-									'hgroup',
-									'hr',
-									'i',
-									'img',
-									'input',
-									'ins',
-									'kbd',
-									'label',
-									'legend',
-									'li',
-									'main',
-									'map',
-									'mark',
-									'meter',
-									'nav',
-									'noframes',
-									'noscript',
-									'object',
-									'ol',
-									'optgroup',
-									'option',
-									'output',
-									'p',
-									'param',
-									'progress',
-									'q',
-									'rp',
-									'rt',
-									'rtc',
-									'ruby',
-									's',
-									'samp',
-									'section',
-									'select',
-									'small',
-									'source',
-									'span',
-									'strong',
-									'sub',
-									'summary',
-									'sup',
-									'table',
-									'tbody',
-									'td',
-									'template',
-									'textarea',
-									'tfoot',
-									'th',
-									'thead',
-									'time',
-									'tr',
-									'track',
-									'u',
-									'ul',
-									'var',
-									'video',
-									'wbr'
-								];
-							}
-						},
-						//
-						// If true, tools can scroll up.	Computed.
-						//
-						canScrollPrevious: {
-							type: Boolean,
-							computed: '_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
-						},
-						//
-						// If true, tools can scroll down.	Computed.
-						//
-						canScrollNext: {
-							type: Boolean,
-							computed: '_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
-						},
-						//
-						// If true, console.log debug messages.
-						//
-						debug: {
-							type: Boolean,
-							value: false
-						},
-						//
-						// If true, force narrow view with vertical toolbar.	Defaults to false.
-						//
-						forceNarrow: {
-							type: Boolean,
-							value: false
-						},
-						//
-						// Two-letter language code for use with Polymer.AppLocalizeBehavior.	Defaults to 'en'.
-						//
-						language: {
-							type: String,
-							value: 'en'
-						},
-						//
-						// Tracks viewport with.	Managed by iron-media-query
-						//
-						minWidth768px: {
-							type: Boolean,
-							observer: '_minWidth768pxChanged'
-						},
-						modifier: {
-							type: Object,
-							value: function () {
-								var isMac = navigator.platform.indexOf('Mac') >= 0;
-			
-								return {
-									key: isMac ? 'meta' : 'ctrl',
-									tooltip: isMac ? '⌘' : 'Ctrl'
-								};
-							}
-						},
-						//
-						// Hide the redo button and prevent redo operations
-						//
-						noRedo: {
-							type: Boolean,
-							value: false
-						},
-						//
-						// Hide the undo button and prevent undo operations
-						//
-						noUndo: {
-							type: Boolean,
-							value: false
-						},
-						//
-						// Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
-						//
-						resources: {
-							type: Object,
-							value: function () {
-								return {
-									'en': {
-										'Undo': 'Undo',
-										'Redo': 'Redo'
-									},
-									'fr': {
-										'Undo': 'Annuler',
-										'Redo': 'Rétablir'
-									}
-								};
-							}
-						},
-						//
-						// Delay for scheduling of scroll jobs for the tool container.	Defaults to 1.
-						//
-						scrollDelay: {
-							type: Number,
-							value: 1
-						},
-						//
-						// Amount in pixels by which to scroll the tool container up or down.	Defaults to 10.
-						//
-						scrollStep: {
-							type: Number,
-							value: 10
-						},
-						//
-						// Height of tool scroll container.	Read-only.
-						//
-						scrollHeight: {
-							type: Number,
-							value: 0,
-							readOnly: true
-						},
-						//
-						// Left offset of tool scroll container.	Read-only.
-						//
-						scrollLeft: {
-							type: Number,
-							value: 0,
-							readOnly: true
-						},
-						//
-						// Top offset of tool scroll container.	Read-only.
-						//
-						scrollTop: {
-							type: Number,
-							value: 0,
-							readOnly: true
-						},
-						//
-						// Width of tool scroll container.	Read-only.
-						//
-						scrollWidth: {
-							type: Number,
-							value: 0,
-							readOnly: true
-						},
-						//
-						// Computed based on ``minWidth768px``
-						//
-						tooltipPosition: {
-							type: String,
-							computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
+			static get properties() {
+				return {
+					//
+					// Array of tagNames allowed by the sanitize method
+					//
+					allowedTagNames: {
+						type: Array,
+						value: function () {
+							return [
+								'a',
+								'abbr',
+								'address',
+								'area',
+								'article',
+								'aside',
+								'audio',
+								'b',
+								'base',
+								'bdi',
+								'bdo',
+								'blockquote',
+								'br',
+								'button',
+								'canvas',
+								'caption',
+								'cite',
+								'code',
+								'col',
+								'colgroup',
+								'data',
+								'datalist',
+								'dd',
+								'del',
+								'details',
+								'dfn',
+								'div',
+								'dl',
+								'dt',
+								'element',
+								'em',
+								'embed',
+								'fieldset',
+								'figcaption',
+								'figure',
+								'footer',
+								'form',
+								'h1',
+								'h2',
+								'h3',
+								'h4',
+								'h5',
+								'h6',
+								'header',
+								'hgroup',
+								'hr',
+								'i',
+								'img',
+								'input',
+								'ins',
+								'kbd',
+								'label',
+								'legend',
+								'li',
+								'main',
+								'map',
+								'mark',
+								'meter',
+								'nav',
+								'noframes',
+								'noscript',
+								'object',
+								'ol',
+								'optgroup',
+								'option',
+								'output',
+								'p',
+								'param',
+								'progress',
+								'q',
+								'rp',
+								'rt',
+								'rtc',
+								'ruby',
+								's',
+								'samp',
+								'section',
+								'select',
+								'small',
+								'source',
+								'span',
+								'strong',
+								'sub',
+								'summary',
+								'sup',
+								'table',
+								'tbody',
+								'td',
+								'template',
+								'textarea',
+								'tfoot',
+								'th',
+								'thead',
+								'time',
+								'tr',
+								'track',
+								'u',
+								'ul',
+								'var',
+								'video',
+								'wbr'
+							];
 						}
+					},
+					//
+					// If true, tools can scroll up.	Computed.
+					//
+					canScrollPrevious: {
+						type: Boolean,
+						computed: '_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
+					},
+					//
+					// If true, tools can scroll down.	Computed.
+					//
+					canScrollNext: {
+						type: Boolean,
+						computed: '_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
+					},
+					//
+					// If true, console.log debug messages.
+					//
+					debug: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// If true, force narrow view with vertical toolbar.	Defaults to false.
+					//
+					forceNarrow: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// Two-letter language code for use with Polymer.AppLocalizeBehavior.	Defaults to 'en'.
+					//
+					language: {
+						type: String,
+						value: 'en'
+					},
+					//
+					// Tracks viewport with.	Managed by iron-media-query
+					//
+					minWidth768px: {
+						type: Boolean,
+						observer: '_minWidth768pxChanged'
+					},
+					modifier: {
+						type: Object,
+						value: function () {
+							var isMac = navigator.platform.indexOf('Mac') >= 0;
+		
+							return {
+								key: isMac ? 'meta' : 'ctrl',
+								tooltip: isMac ? '⌘' : 'Ctrl'
+							};
+						}
+					},
+					//
+					// Hide the redo button and prevent redo operations
+					//
+					noRedo: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// Hide the undo button and prevent undo operations
+					//
+					noUndo: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
+					//
+					resources: {
+						type: Object,
+						value: function () {
+							return {
+								'en': {
+									'Undo': 'Undo',
+									'Redo': 'Redo'
+								},
+								'fr': {
+									'Undo': 'Annuler',
+									'Redo': 'Rétablir'
+								}
+							};
+						}
+					},
+					//
+					// Delay for scheduling of scroll jobs for the tool container.	Defaults to 1.
+					//
+					scrollDelay: {
+						type: Number,
+						value: 1
+					},
+					//
+					// Amount in pixels by which to scroll the tool container up or down.	Defaults to 10.
+					//
+					scrollStep: {
+						type: Number,
+						value: 10
+					},
+					//
+					// Height of tool scroll container.	Read-only.
+					//
+					scrollHeight: {
+						type: Number,
+						value: 0,
+						readOnly: true
+					},
+					//
+					// Left offset of tool scroll container.	Read-only.
+					//
+					scrollLeft: {
+						type: Number,
+						value: 0,
+						readOnly: true
+					},
+					//
+					// Top offset of tool scroll container.	Read-only.
+					//
+					scrollTop: {
+						type: Number,
+						value: 0,
+						readOnly: true
+					},
+					//
+					// Width of tool scroll container.	Read-only.
+					//
+					scrollWidth: {
+						type: Number,
+						value: 0,
+						readOnly: true
+					},
+					//
+					// Computed based on ``minWidth768px``
+					//
+					tooltipPosition: {
+						type: String,
+						computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
 					}
-				}
+				};
 			}
 			//
 			// Stop observing with selectionObserver and undoObserver

@@ -99,38 +99,36 @@
 				document.removeEventListener('click', this._handler);
 			}
 
-			static get config () {
+			static get properties () {
 				return {
-					properties: {
-						linkTarget: {
-							type: String,
-							value: '_self',
-							observer: '_linkTargetChanged'
-						},
-						linkUrl: {
-							type: String,
-							value: ''
-						},
-						selectedLink: {
-							type: Object,
-							value: null,
-							readOnly: true,
-							observer: '_selectedLinkChanged'
-						},
-						active: {
-							type: Boolean,
-							value: false,
-							computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
-							reflectToAttribute: true,
-							observer: '_activeChanged'
-						},
-						disabled: {
-							type: Boolean,
-							value: true,
-							computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
-							reflectToAttribute: true,
-							observer: '_disabledChanged'
-						}
+					linkTarget: {
+						type: String,
+						value: '_self',
+						observer: '_linkTargetChanged'
+					},
+					linkUrl: {
+						type: String,
+						value: ''
+					},
+					selectedLink: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_selectedLinkChanged'
+					},
+					active: {
+						type: Boolean,
+						value: false,
+						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
+						reflectToAttribute: true,
+						observer: '_activeChanged'
+					},
+					disabled: {
+						type: Boolean,
+						value: true,
+						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
+						reflectToAttribute: true,
+						observer: '_disabledChanged'
 					}
 				};
 			}

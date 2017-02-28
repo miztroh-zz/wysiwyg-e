@@ -76,33 +76,31 @@
 				document.removeEventListener('keydown', this._handler);
 			}
 
-			static get config () {
+			static get properties () {
 				return {
-					properties: {
-						audioUrl: {
-							type: String,
-							value: ''
-						},
-						selectedAudio: {
-							type: Object,
-							value: null,
-							readOnly: true,
-							observer: '_selectedAudioChanged'
-						},
-						active: {
-							type: Boolean,
-							value: false,
-							computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
-							reflectToAttribute: true,
-							observer: '_activeChanged'
-						},
-						disabled: {
-							type: Boolean,
-							value: true,
-							computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
-							reflectToAttribute: true,
-							observer: '_disabledChanged'
-						}
+					audioUrl: {
+						type: String,
+						value: ''
+					},
+					selectedAudio: {
+						type: Object,
+						value: null,
+						readOnly: true,
+						observer: '_selectedAudioChanged'
+					},
+					active: {
+						type: Boolean,
+						value: false,
+						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
+						reflectToAttribute: true,
+						observer: '_activeChanged'
+					},
+					disabled: {
+						type: Boolean,
+						value: true,
+						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
+						reflectToAttribute: true,
+						observer: '_disabledChanged'
 					}
 				};
 			}

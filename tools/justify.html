@@ -90,21 +90,19 @@
 		class WysiwygToolJustify extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-justify' }
 
-			static get config() {
+			static get properties() {
 				return {
-					properties: {
-						right: {
-							type: Boolean,
-							value: false
-						},
-						center: {
-							type: Boolean,
-							value: false
-						},
-						full: {
-							type: Boolean,
-							value: false
-						}
+					right: {
+						type: Boolean,
+						value: false
+					},
+					center: {
+						type: Boolean,
+						value: false
+					},
+					full: {
+						type: Boolean,
+						value: false
 					}
 				};
 			}
