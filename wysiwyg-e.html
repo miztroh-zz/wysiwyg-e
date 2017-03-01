@@ -187,60 +187,60 @@ Command                                 | Mac Shortcut                          
 				background: var(--wysiwyg-toolbar-background, #2A9AF2);
 				user-select: none;
 				color: var(--wysiwyg-toolbar-color, white);
-				@apply(--wysiwyg-toolbar);
+				@apply --wysiwyg-toolbar;
 			}
 
 			#editable {
 				padding: 20px;
 				outline: none;
-				@apply(--wysiwyg-editable);
-				@apply(--layout-flex);
+				@apply --wysiwyg-editable;
+				@apply --layout-flex;
 			}
 
 			#editable :first-child {
 				margin-top: 0;
-				@apply(--wysiwyg-editable-first-child);
+				@apply --wysiwyg-editable-first-child;
 			}
 
 			#editable :last-child {
 				margin-bottom: 0;
-				@apply(--wysiwyg-editable-last-child);
+				@apply --wysiwyg-editable-last-child;
 			}
 
 			#editable ::selection {
 				color: white;
 				background: #2A9AF2;
-				@apply(--wysiwyg-editable-selection);
+				@apply --wysiwyg-editable-selection;
 			}
 
 			#editable ol {
 				padding-left: 30px;
-				@apply(--wysiwyg-editable-ol);
+				@apply --wysiwyg-editable-ol;
 			}
 
 			#editable ul {
 				padding-left: 30px;
-				@apply(--wysiwyg-editable-ul);
+				@apply --wysiwyg-editable-ul;
 			}
 
 			#editable li {
-				@apply(--wysiwyg-editable-li);
+				@apply --wysiwyg-editable-li;
 			}
 
 			#editable a {
 				color: #2A9AF2;
-				@apply(--wysiwyg-editable-a);
+				@apply --wysiwyg-editable-a;
 			}
 
 			#editable img {
-				@apply(--wysiwyg-editable-img);
+				@apply --wysiwyg-editable-img;
 			}
 
 			#editable blockquote {
 				padding: 15px;
 				margin: 0;
 				border-left: 5px solid #eee;
-				@apply(--wysiwyg-editable-blockquote);
+				@apply --wysiwyg-editable-blockquote;
 			}
 
 			#editable code {
@@ -250,51 +250,55 @@ Command                                 | Mac Shortcut                          
 				background-color: #f7f7f7;
 				border-radius: 3px;
 				white-space: pre-wrap;
-				@apply(--wysiwyg-editable-pre);
+				@apply --wysiwyg-editable-pre;
+			}
+
+			#editable p:first-child {
+				margin-top: 0;
 			}
 
 			#editable p {
-				@apply(--wysiwyg-editable-p);
+				@apply --wysiwyg-editable-p;
 			}
 
 			#editable h1 {
-				@apply(--wysiwyg-editable-h1);
+				@apply --wysiwyg-editable-h1;
 			}
 
 			#editable h2{
-				@apply(--wysiwyg-editable-h2);
+				@apply --wysiwyg-editable-h2;
 			}
 
 			#editable h3 {
-				@apply(--wysiwyg-editable-h3);
+				@apply --wysiwyg-editable-h3;
 			}
 
 			#editable h4 {
-				@apply(--wysiwyg-editable-h4);
+				@apply --wysiwyg-editable-h4;
 			}
 
 			#editable h5 {
-				@apply(--wysiwyg-editable-h5);
+				@apply --wysiwyg-editable-h5;
 			}
 
 			#editable h6 {
-				@apply(--wysiwyg-editable-h6);
+				@apply --wysiwyg-editable-h6;
 			}
 
 			#editable b {
-				@apply(--wysiwyg-editable-b);
+				@apply --wysiwyg-editable-b;
 			}
 
 			#editable u {
-				@apply(--wysiwyg-editable-u);
+				@apply --wysiwyg-editable-u;
 			}
 
 			#editable i {
-				@apply(--wysiwyg-editable-i);
+				@apply --wysiwyg-editable-i;
 			}
 
 			#editable strike {
-				@apply(--wysiwyg-editable-strike);
+				@apply --wysiwyg-editable-strike;
 			}
 
 			#editable audio-wrapper,
@@ -305,23 +309,6 @@ Command                                 | Mac Shortcut                          
 			:host #editable audio,
 			:host #editable video {
 				pointer-events: none;
-			}
-
-			#html {
-				padding: 0 20px 20px 20px;
-				@apply(--wysiwyg-html);
-				@apply(--layout-flex);
-			}
-
-			#html pre {
-				margin: 0;
-				@apply(--wysiwyg-html-pre);
-			}
-
-			#html code {
-				display: block;
-				word-wrap: break-word;
-				@apply(--wysiwyg-html-code);
 			}
 
 			paper-button {
@@ -341,28 +328,28 @@ Command                                 | Mac Shortcut                          
 
 			@media (min-width: 768px) {
 				#layout {
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 				}
 
 				#toolbar {
-					@apply(--layout-horizontal);
+					@apply --layout-horizontal;
 				}
 
 				#toolbarLayout {
 					height: 40px;
-					@apply(--layout-horizontal);
-					@apply(--layout-flex);
+					@apply --layout-horizontal;
+					@apply --layout-flex;
 					flex-wrap: nowrap;
 					overflow-x: hidden;
 				}
 
 				#layout[force-narrow] {
-					@apply(--layout-horizontal);
+					@apply --layout-horizontal;
 				}
 
 				#layout[force-narrow] #toolbarLayout {
 					height: auto;
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 					width: 40px;
 					max-height: calc(100% - 80px);
 					overflow-y: hidden;
@@ -371,15 +358,15 @@ Command                                 | Mac Shortcut                          
 
 			@media (max-width: 767.9px) {
 				#layout {
-					@apply(--layout-horizontal);
+					@apply --layout-horizontal;
 				}
 
 				#toolbar {
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 				}
 
 				#toolbarLayout {
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 					width: 40px;
 					max-height: calc(100% - 80px);
 					overflow-y: hidden;
@@ -388,8 +375,8 @@ Command                                 | Mac Shortcut                          
 
 			#content {
 				overflow-y: auto;
-				@apply(--layout-flex);
-				@apply(--layout-vertical);
+				@apply --layout-flex;
+				@apply --layout-vertical;
 			}
 		</style>
 		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
