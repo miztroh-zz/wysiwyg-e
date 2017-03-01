@@ -65,8 +65,7 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var target = event.path[0];
-						if (!this.target.contains(target)) return;
+						if (!this.target.contains(event.target)) return;
 						event.preventDefault();
 	
 						setTimeout(
@@ -137,7 +136,7 @@
 				if (this.disabled || !this.range0) return;
 				var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
 
-				if (Array.prototype.indexOf.call(event.path, this.$.updateInsert) >= 0) {
+				if (this.$.updateInsert.contains(event.target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -158,16 +157,16 @@
 						}.bind(this),
 						10
 					);
-				} else if (Array.prototype.indexOf.call(event.path, this.$.remove) >= 0) {
+				} else if (this.$.remove.contains(event.target)) {
 					if (this.selectedLink) {
 						this.selectedLink.outerHTML = this.selectedLink.innerHTML;
 						this._setSelectedLink(null);
 					}
 
 					this.$.dropdown.close();
-				} else if (Array.prototype.indexOf.call(event.path, this.$.close) >= 0) {
+				} else if (this.$.close.contains(event.target)) {
 					this.$.dropdown.close();
-				} else if (Array.prototype.indexOf.call(event.path, this.$.button) >= 0) {
+				} else if (this.$.button.contains(event.target)) {
 					if (this.selectedLink) {
 						this.linkUrl = this.selectedLink.href;
 						this.linkTarget = this.selectedLink.target || '_self';

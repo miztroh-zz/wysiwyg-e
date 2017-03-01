@@ -56,11 +56,11 @@
 			attached () {
 			  if (!this._handler) {
 			    this._handler = function (event) {
-						var target = event.path[0], selectedVideo = null;
-						if (!this.target.contains(target)) return;
+						var selectedVideo = null;
+						if (!this.target.contains(event.target)) return;
 	
-						if (target.tagName === 'VIDEO-WRAPPER') {
-							var video = target.querySelector('video');
+						if (event.target.tagName === 'VIDEO-WRAPPER') {
+							var video = event.target.querySelector('video');
 							if (video) selectedVideo = video;
 						}
 	
@@ -108,9 +108,9 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.path[0];
+				var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-				if (this.$.updateInsert.contains(target)) {
+				if (this.$.updateInsert.contains(event.target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -124,12 +124,12 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(target)) {
+				} else if (this.$.remove.contains(event.target)) {
 					if (this.selectedVideo) this.selectedVideo.parentNode.removeChild(this.selectedVideo);
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(target)) {
+				} else if (this.$.close.contains(event.target)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(target)) {
+				} else if (this.$.button.contains(event.target)) {
 					if (this.selectedVideo) {
 						this.videoUrl = this.selectedVideo.src;
 					} else {

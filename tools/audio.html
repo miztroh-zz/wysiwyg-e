@@ -55,11 +55,11 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var target = event.path[0], selectedAudio = null;
-						if (!this.target.contains(target)) return;
+						var selectedAudio = null;
+						if (!this.target.contains(event.target)) return;
 		
-						if (target.tagName === 'AUDIO-WRAPPER') {
-							var audio = target.querySelector('audio');
+						if (event.target.tagName === 'AUDIO-WRAPPER') {
+							var audio = event.target.querySelector('audio');
 							if (audio) selectedAudio = audio;
 						}
 		
@@ -107,9 +107,9 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.path[0];
+				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-				if (this.$.updateInsert.contains(target)) {
+				if (this.$.updateInsert.contains(event.target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -123,12 +123,12 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(target)) {
+				} else if (this.$.remove.contains(event.target)) {
 					if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(target)) {
+				} else if (this.$.close.contains(event.target)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(target)) {
+				} else if (this.$.button.contains(event.target)) {
 					if (this.selectedAudio) {
 						this.audioUrl = this.selectedAudio.src;
 					} else {

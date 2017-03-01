@@ -12,7 +12,6 @@
 <link rel="import" href="../undo-mgr/mixin.html">
 <link rel="import" href="wysiwyg-tool.html">
 <link rel="import" href="app-localize.html">
-<script src="../keyboardevent-key-polyfill/index.js"></script>
 <iron-iconset-svg size="24" name="wysiwyg">
 	<svg>
 		<defs>
@@ -430,8 +429,6 @@ Command                                 | Mac Shortcut                          
 		</div>
 	</template>
 	<script>
-		keyboardeventKeyPolyfill.polyfill();
-
 		class WysiwygE extends SelectionMgrMixin(UndoMgrMixin(Polymer.Element)) {
 			static get is() { return 'wysiwyg-e' }
 
@@ -449,7 +446,6 @@ Command                                 | Mac Shortcut                          
 
 				if (!this._keydownHandler) {
 					this._keydownHandler = function (event) {
-						if (event.path.indexOf(this.target) === -1) return;
 						//Prevent default delete behavior
 						if (event.key === 'Delete') event.preventDefault();
 						//Prevent default backspace behavior
@@ -807,7 +803,6 @@ Command                                 | Mac Shortcut                          
 			// Sanitize DOM changes
 			//
 			sanitize(mutations) {
-				return true;
 				if (!mutations) return true;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
 

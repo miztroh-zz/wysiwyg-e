@@ -131,15 +131,14 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return false;
-				var target = event.path[0];
 
-				if (this.$.left.contains(target)) {
+				if (this.$.left.contains(event.target)) {
 					this._left();
-				} else if (this.$.right.contains(target)) {
+				} else if (this.$.right.contains(event.target)) {
 					this._right();
-				} else if (this.$.center.contains(target)) {
+				} else if (this.$.center.contains(event.target)) {
 					this._center();
-				} else if (this.$.full.contains(target)) {
+				} else if (this.$.full.contains(event.target)) {
 					this._full();
 				}
 			}

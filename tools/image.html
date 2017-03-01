@@ -70,16 +70,15 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var target = event.path[0];
-						if (!this.target.contains(target)) return;
+						if (!this.target.contains(event.target)) return;
 						event.preventDefault();
 	
-						if (target.tagName === 'IMG') {
-							this._setSelectedImage(target);
+						if (event.target.tagName === 'IMG') {
+							this._setSelectedImage(event.target);
 							var selection = this.selectionRoot.getSelection();
 							selection.removeAllRanges();
 							var range = document.createRange();
-							range.selectNode(target);
+							range.selectNode(event.target);
 							selection.addRange(range);
 							this._setRange0(range);
 						} else {
@@ -131,9 +130,9 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = event.path[0];
+				var imageUrl = this.imageUrl, imageFloat = this.imageFloat;
 
-				if (this.$.updateInsert.contains(target)) {
+				if (this.$.updateInsert.contains(event.target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -154,16 +153,16 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(target)) {
+				} else if (this.$.remove.contains(event.target)) {
 					if (this.selectedImage) {
 						this.selectedImage.parentNode.removeChild(this.selectedImage);
 						this._setSelectedImage(null);
 					}
 
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(target)) {
+				} else if (this.$.close.contains(event.target)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(target)) {
+				} else if (this.$.button.contains(event.target)) {
 					if (this.selectedImage) {
 						this.imageUrl = this.selectedImage.src;
 						this.imageFloat = this.selectedImage.style.float || 'none';

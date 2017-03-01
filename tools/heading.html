@@ -150,21 +150,20 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return false;
-				var target = event.path[0];
 
-				if (this.$.p.contains(target)) {
+				if (this.$.p.contains(event.target)) {
 					this._heading(0);
-				} else if (this.$.h1.contains(target)) {
+				} else if (this.$.h1.contains(event.target)) {
 					this._heading(1);
-				} else if (this.$.h2.contains(target)) {
+				} else if (this.$.h2.contains(event.target)) {
 					this._heading(2);
-				} else if (this.$.h3.contains(target)) {
+				} else if (this.$.h3.contains(event.target)) {
 					this._heading(3);
-				} else if (this.$.h4.contains(target)) {
+				} else if (this.$.h4.contains(event.target)) {
 					this._heading(4);
-				} else if (this.$.h5.contains(target)) {
+				} else if (this.$.h5.contains(event.target)) {
 					this._heading(5);
-				} else if (this.$.h6.contains(target)) {
+				} else if (this.$.h6.contains(event.target)) {
 					this._heading(6);
 				}
 			}
