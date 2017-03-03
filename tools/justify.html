@@ -224,7 +224,7 @@
 
 			_paperDropdownClose (event) {
 				if (event.target !== this.$.dropdown) return;
-				this.dispatchEvent(new CustomEvent('restore-selection'));
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
 		}
 

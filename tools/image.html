@@ -224,7 +224,7 @@
 				if (event.target !== this.$.dropdown) return;
 				this.imageUrl = '';
 				this.imageFloat = 'none';
-				this.dispatchEvent(new CustomEvent('restore-selection'));
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
 
 			_selectedImageChanged () {}

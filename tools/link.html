@@ -224,7 +224,7 @@
 				if (this.$.dropdown.opened) return;
 				this.linkUrl = '';
 				this.linkTarget = '_self';
-				this.dispatchEvent(new CustomEvent('restore-selection'));
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
 
 			_selectedLinkChanged (event) {}

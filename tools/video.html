@@ -173,7 +173,7 @@
 			_paperDropdownClose (event) {
 				if (event.target !== this.$.dropdown) return;
 				this.videoUrl = '';
-				this.dispatchEvent(new CustomEvent('restore-selection'));
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
 
 			_selectedVideoChanged () {}
