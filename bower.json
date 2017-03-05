@@ -29,7 +29,7 @@
 		"iron-ajax": "PolymerElements/iron-ajax#latest",
 		"iron-flex-layout": "PolymerElements/iron-flex-layout#latest",
 		"iron-icon": "PolymerElements/iron-icon#latest",
-		"iron-iconset-svg": "PolymerElements/iron-iconset-svg#latest",
+		"iron-icons": "PolymerElements/iron-icons#latest",
 		"iron-media-query": "PolymerElements/iron-media-query#latest",
 		"iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#latest",
 		"paper-button": "PolymerElements/paper-button#latest",
@@ -43,6 +43,7 @@
 		"paper-tooltip": "PolymerElements/paper-tooltip#latest",
 		"prism-element": "PolymerElements/prism-element#latest",
 		"marked-element": "PolymerElements/marked-element#latest",
+		"iron-ajax": "PolymerElements/iron-ajax#latest",
 		"iron-component-page": "PolymerElements/iron-component-page#latest",
 		"selection-mgr": "miztroh/selection-mgr#latest",
 		"undo-mgr": "miztroh/undo-mgr#latest"
