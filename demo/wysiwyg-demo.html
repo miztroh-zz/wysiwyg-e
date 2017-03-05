@@ -1,0 +1,161 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../font-roboto/roboto.html">
+<link rel="import" href="../../iron-ajax/iron-ajax.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-overlay-behavior/iron-overlay-behavior.html">
+<link rel="import" href="../../marked-element/marked-import.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-material/paper-material.html">
+<link rel="import" href="../wysiwyg-e.html">
+<link rel="import" href="../tools/bold.html">
+<link rel="import" href="../tools/italic.html">
+<link rel="import" href="../tools/underline.html">
+<link rel="import" href="../tools/strike.html">
+<link rel="import" href="../tools/clear.html">
+<link rel="import" href="../tools/code.html">
+<link rel="import" href="../tools/link.html">
+<link rel="import" href="../tools/image.html">
+<link rel="import" href="../tools/audio.html">
+<link rel="import" href="../tools/video.html">
+<link rel="import" href="../tools/ordered.html">
+<link rel="import" href="../tools/unordered.html">
+<link rel="import" href="../tools/indent.html">
+<link rel="import" href="../tools/outdent.html">
+<link rel="import" href="../tools/heading.html">
+<link rel="import" href="../tools/justify.html">
+<link rel="import" href="../tools/blockquote.html">
+<link rel="import" href="../tools/undo.html">
+<link rel="import" href="../tools/redo.html">
+<dom-module id="wysiwyg-demo">
+	<template>
+		<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning"></style>
+		<style>
+			:host {
+				display: block;
+				width: calc(100vw - 60px);
+				height: calc(100vh - 60px);
+				font-family: Roboto;
+			}
+
+			@media (max-width: 767px) {
+				:host {
+					width: 100vw;
+					height: 100vh;
+				}
+			}
+
+			paper-button {
+				width: 100%;
+				border-radius: 0;
+				margin: 0;
+				background: #2A9AF2;
+				color: white;
+			}
+
+			paper-material {
+				background: white;
+			}
+		</style>
+		<iron-ajax url="../README.md" handle-as="text" last-response="{{readme}}" auto on-response="_readmeOrValue"></iron-ajax>
+		<paper-material class="fit vertical layout" elevation="5">
+			<wysiwyg-e class="flex" value="{{value}}" id="wysiwygE">
+				<wysiwyg-tool-bold></wysiwyg-tool-bold>
+				<wysiwyg-tool-italic></wysiwyg-tool-italic>
+				<wysiwyg-tool-underline></wysiwyg-tool-underline>
+				<wysiwyg-tool-strike></wysiwyg-tool-strike>
+				<wysiwyg-tool-clear></wysiwyg-tool-clear>
+				<wysiwyg-tool-code></wysiwyg-tool-code>
+				<wysiwyg-tool-link></wysiwyg-tool-link>
+				<wysiwyg-tool-image></wysiwyg-tool-image>
+				<wysiwyg-tool-audio></wysiwyg-tool-audio>
+				<wysiwyg-tool-video></wysiwyg-tool-video>
+				<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+				<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+				<wysiwyg-tool-indent></wysiwyg-tool-indent>
+				<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+				<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+				<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+				<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+				<wysiwyg-tool-undo></wysiwyg-tool-undo>
+				<wysiwyg-tool-redo></wysiwyg-tool-redo>
+			</wysiwyg-e>
+			<div class="horizontal layout">
+				<a href="?value=[[urlencode(value)]]" target="_blank" class="flex" style="text-decoration: none; min-height: 41px;">
+					<paper-button>Shareable Testing Link</paper-button>
+				</a>
+			</div>
+		</paper-material>
+	</template>
+	<script>
+		window.addEventListener(
+			'WebComponentsReady',
+			function () {
+				Polymer(
+					{
+						is: 'wysiwyg-demo',
+						behaviors: [
+							Polymer.IronOverlayBehavior
+						],
+						hostAttributes: {
+							opened: true,
+							'with-backdrop': '',
+							'no-cancel-on-outside-click': '',
+							'no-cancel-on-esc-key': ''
+						},
+						properties: {
+							readme: {
+								type: String,
+								value: ''
+							},
+							value: {
+								type: String
+							}
+						},
+						// http://phpjs.org/functions/urldecode/
+						urldecode: function (string) {
+							return decodeURIComponent((string + '')
+								.replace(/%(?![\da-f]{2})/gi, function() {
+									// PHP tolerates poorly formed escape sequences
+									return '%25';
+								})
+								.replace(/\+/g, '%20'));
+						},
+						// http://phpjs.org/functions/urlencode/
+						urlencode: function (string) {
+							return encodeURIComponent(string + '')
+								.replace(/!/g, '%21')
+								.replace(/'/g, '%27')
+								.replace(/\(/g, '%28')
+								.replace(/\)/g, '%29')
+								.replace(/\*/g, '%2A')
+								.replace(/%20/g, '+');
+						},
+						marked: function (string) {
+							return marked(string);
+						},
+						_readmeOrValue: function () {
+							this.$.wysiwygE.clearHistory();
+							var value, search = document.location.search.substring(1);
+
+								if (search) {
+									var pairs = search.split('&');
+
+									for (var i = 0; i < pairs.length; i += 1) {
+										var pair = pairs[i].split('=');
+
+										if (pair[0] === 'value' && pair.length === 2) {
+											value = this.urldecode(pair[1]);
+											break;
+										}
+									}
+								}
+
+								if (!value) value = this.marked(this.readme);
+								this.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
+							}
+						}
+					);
+				}
+		);
+	</script>
+</dom-module>
