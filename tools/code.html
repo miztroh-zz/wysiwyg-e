@@ -4,8 +4,8 @@
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-code">
   <svg>
     <defs>
@@ -17,62 +17,70 @@
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-code">
 	<template>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="wysiwyg-tool-code:icon"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Code')]] ([[modifier.tooltip]] + Z)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Code"></app-localize>
+			<span> ([[modifier.tooltip]] + Z)</span>
+		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-code',
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				execCommand: function () {
-					if (this.disabled || !this.range0) return;
+		class WysiwygToolCode extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-code' }
 
-					if (!this.active) {
-						document.execCommand('insertHTML', false, '<pre><code><br></code></pre>');
-					} else  {
-						var path = this.commonAncestorPath;
+			execCommand() {
+				if (this.disabled || !this.range0) return;
 
-						if (path) {
-							for (var i = 0; i < path.length - 1; i += 1) {
-								if (['PRE', 'CODE'].indexOf(path[i].tagName) >= 0) {
-									path[i].outerHTML = path[i].innerHTML;
-								}
-							}
-						}
-					}
-				},
-				queryCommandEnabled: function () {
-					return this.range0;
-				},
-				queryCommandState: function () {
+				if (!this.active) {
+					var text = this.range0.toString();
+					document.execCommand('delete', false);
+					document.execCommand('insertHTML', false, '<code>' + (this.htmlentities(text) || '<br>') + '</code>');
+				} else  {
 					var path = this.commonAncestorPath;
 
 					if (path) {
-						for (var i = 0; i < path.length; i += 1) {
-							if (['PRE', 'CODE'].indexOf(path[i].tagName) >= 0) return true;
+						for (var i = 0; i < path.length - 1; i += 1) {
+							if (path[i].tagName === 'CODE') {
+								path[i].outerHTML = path[i].innerHTML;
+							}
 						}
 					}
-
-					return false;
-				},
-				ready: function () {
-					this.resources = {
-						'en': {
-							'Code': 'Code'
-						},
-						'fr': {
-							'Code': 'Code'
-						}
-					};
 				}
 			}
-		);
+
+			queryCommandEnabled() {
+				return this.range0;
+			}
+
+			queryCommandState() {
+				var path = this.commonAncestorPath;
+
+				if (path) {
+					for (var i = 0; i < path.length; i += 1) {
+						if (path[i].tagName === 'CODE') return true;
+					}
+				}
+
+				return false;
+			}
+
+			ready() {
+				super.ready();
+
+				this.resources = {
+					'en': {
+						'Code': 'Code'
+					},
+					'fr': {
+						'Code': 'Code'
+					}
+				};
+			}
+		}
+
+		customElements.define(WysiwygToolCode.is, WysiwygToolCode);
 	</script>
 </dom-module>

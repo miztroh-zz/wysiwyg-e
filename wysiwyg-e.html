@@ -1,5 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
@@ -8,33 +7,34 @@
 <link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../paper-item/paper-item.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../prism-element/prism-import.html">
-<link rel="import" href="../selection-mgr/behavior.html">
-<link rel="import" href="../undo-mgr/behavior.html">
+<link rel="import" href="../selection-mgr/mixin.html">
+<link rel="import" href="../undo-mgr/mixin.html">
+<link rel="import" href="wysiwyg-tool.html">
+<link rel="import" href="app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg">
-  <svg>
-    <defs>
-      <g id="scroll-down">
-        <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
+	<svg>
+		<defs>
+			<g id="scroll-down">
+				<path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"></path>
+			</g>
+			<g id="scroll-left">
+				<path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path>
+			</g>
+			<g id="scroll-right">
+				<path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path>
+			</g>
+			<g id="scroll-up">
+				<path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path>
+			</g>
+      <g id="undo">
+        <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"></path>
       </g>
-      <g id="scroll-left">
-        <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path>
+      <g id="redo">
+        <path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"></path>
       </g>
-      <g id="scroll-right">
-        <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path>
-      </g>
-      <g id="scroll-up">
-        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path>
-      </g>
-      <g id="settings">
-        <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
-      </g>
-    </defs>
-  </svg>
+		</defs>
+	</svg>
 </iron-iconset-svg>
 
 <!--
@@ -47,25 +47,24 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 
 ```html
 <wysiwyg-e>
-	<wysiwyg-tool-bold></wysiwyg-tool-bold>
-	<wysiwyg-tool-italic></wysiwyg-tool-italic>
-	<wysiwyg-tool-underline></wysiwyg-tool-underline>
-	<wysiwyg-tool-strike></wysiwyg-tool-strike>
-	<wysiwyg-tool-clear></wysiwyg-tool-clear>
-	<wysiwyg-tool-code></wysiwyg-tool-code>
-	<wysiwyg-tool-link></wysiwyg-tool-link>
-	<wysiwyg-tool-image></wysiwyg-tool-image>
-	<wysiwyg-tool-audio></wysiwyg-tool-audio>
-	<wysiwyg-tool-video></wysiwyg-tool-video>
-	<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
-	<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
-	<wysiwyg-tool-indent></wysiwyg-tool-indent>
-	<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
-	<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
-	<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-	<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-	<wysiwyg-tool-undo></wysiwyg-tool-undo>
-	<wysiwyg-tool-redo></wysiwyg-tool-redo>
+  <wysiwyg-tool-bold></wysiwyg-tool-bold>
+  <wysiwyg-tool-italic></wysiwyg-tool-italic>
+  <wysiwyg-tool-underline></wysiwyg-tool-underline>
+  <wysiwyg-tool-strike></wysiwyg-tool-strike>
+  <wysiwyg-tool-clear></wysiwyg-tool-clear>
+  <wysiwyg-tool-code></wysiwyg-tool-code>
+  <wysiwyg-tool-link></wysiwyg-tool-link>
+  <wysiwyg-tool-image></wysiwyg-tool-image>
+  <wysiwyg-tool-audio></wysiwyg-tool-audio>
+  <wysiwyg-tool-video></wysiwyg-tool-video>
+  <wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+  <wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+  <wysiwyg-tool-indent></wysiwyg-tool-indent>
+  <wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+  <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+  <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+  <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+  <wysiwyg-tool-color></wysiwyg-tool-color>
 </wysiwyg-e>
 ```
 
@@ -83,8 +82,8 @@ Custom property                         | Description                           
 
 Custom property                         | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-toolbar-background-color`    | Toolbar background color                           | `#2A9AF2`
-`--wysiwyg-toolbar-color`               | Toolbar foreground color                           | `white`
+`--wysiwyg-toolbar-background`          | Toolbar background style                           | `#2A9AF2`
+`--wysiwyg-toolbar-color`               | Toolbar text color                                 | `white`
 
 #### Tools
 
@@ -144,9 +143,12 @@ Command                                 | Mac Shortcut                          
 `Italic`                                | Cmd + I                                            | Ctrl + I
 `Underline`                             | Cmd + U                                            | Ctrl + U
 `Strikethrough`                         | Shift + Alt + D                                    | Shift + Alt + D
+`Color`                                 | Shift + Alt + P                                    | Shift + Alt + P
 `Remove Format`                         | Cmd + Space                                        | Ctrl + Space
 `Link`                                  | Shift + Alt + A                                    | Shift + Alt + A
 `Image`                                 | Shift + Alt + M                                    | Shift + Alt + M
+`Audio`                                 | Shift + Alt + S                                    | Shift + Alt + S
+`Video`                                 | Shift + Alt + V                                    | Shift + Alt + V
 `Ordered List`                          | Shift + Alt + O                                    | Shift + Alt + O
 `Bullet List`                           | Shift + Alt + U                                    | Shift + Alt + U
 `Indent`                                | Tab                                                | Tab
@@ -185,60 +187,60 @@ Command                                 | Mac Shortcut                          
 				background: var(--wysiwyg-toolbar-background, #2A9AF2);
 				user-select: none;
 				color: var(--wysiwyg-toolbar-color, white);
-				@apply(--wysiwyg-toolbar);
+				@apply --wysiwyg-toolbar;
 			}
 
 			#editable {
 				padding: 20px;
 				outline: none;
-				@apply(--wysiwyg-editable);
-				@apply(--layout-flex);
+				@apply --wysiwyg-editable;
+				@apply --layout-flex;
 			}
 
 			#editable :first-child {
 				margin-top: 0;
-				@apply(--wysiwyg-editable-first-child);
+				@apply --wysiwyg-editable-first-child;
 			}
 
 			#editable :last-child {
 				margin-bottom: 0;
-				@apply(--wysiwyg-editable-last-child);
+				@apply --wysiwyg-editable-last-child;
 			}
 
 			#editable ::selection {
 				color: white;
 				background: #2A9AF2;
-				@apply(--wysiwyg-editable-selection);
+				@apply --wysiwyg-editable-selection;
 			}
 
 			#editable ol {
 				padding-left: 30px;
-				@apply(--wysiwyg-editable-ol);
+				@apply --wysiwyg-editable-ol;
 			}
 
 			#editable ul {
 				padding-left: 30px;
-				@apply(--wysiwyg-editable-ul);
+				@apply --wysiwyg-editable-ul;
 			}
 
 			#editable li {
-				@apply(--wysiwyg-editable-li);
+				@apply --wysiwyg-editable-li;
 			}
 
 			#editable a {
 				color: #2A9AF2;
-				@apply(--wysiwyg-editable-a);
+				@apply --wysiwyg-editable-a;
 			}
 
 			#editable img {
-				@apply(--wysiwyg-editable-img);
+				@apply --wysiwyg-editable-img;
 			}
 
 			#editable blockquote {
 				padding: 15px;
 				margin: 0;
 				border-left: 5px solid #eee;
-				@apply(--wysiwyg-editable-blockquote);
+				@apply --wysiwyg-editable-blockquote;
 			}
 
 			#editable code {
@@ -247,51 +249,56 @@ Command                                 | Mac Shortcut                          
 				line-height: 1.5;
 				background-color: #f7f7f7;
 				border-radius: 3px;
-				@apply(--wysiwyg-editable-pre);
+				white-space: pre-wrap;
+				@apply --wysiwyg-editable-pre;
+			}
+
+			#editable p:first-child {
+				margin-top: 0;
 			}
 
 			#editable p {
-				@apply(--wysiwyg-editable-p);
+				@apply --wysiwyg-editable-p;
 			}
 
 			#editable h1 {
-				@apply(--wysiwyg-editable-h1);
+				@apply --wysiwyg-editable-h1;
 			}
 
 			#editable h2{
-				@apply(--wysiwyg-editable-h2);
+				@apply --wysiwyg-editable-h2;
 			}
 
 			#editable h3 {
-				@apply(--wysiwyg-editable-h3);
+				@apply --wysiwyg-editable-h3;
 			}
 
 			#editable h4 {
-				@apply(--wysiwyg-editable-h4);
+				@apply --wysiwyg-editable-h4;
 			}
 
 			#editable h5 {
-				@apply(--wysiwyg-editable-h5);
+				@apply --wysiwyg-editable-h5;
 			}
 
 			#editable h6 {
-				@apply(--wysiwyg-editable-h6);
+				@apply --wysiwyg-editable-h6;
 			}
 
 			#editable b {
-				@apply(--wysiwyg-editable-b);
+				@apply --wysiwyg-editable-b;
 			}
 
 			#editable u {
-				@apply(--wysiwyg-editable-u);
+				@apply --wysiwyg-editable-u;
 			}
 
 			#editable i {
-				@apply(--wysiwyg-editable-i);
+				@apply --wysiwyg-editable-i;
 			}
 
 			#editable strike {
-				@apply(--wysiwyg-editable-strike);
+				@apply --wysiwyg-editable-strike;
 			}
 
 			#editable audio-wrapper,
@@ -299,26 +306,9 @@ Command                                 | Mac Shortcut                          
 				display: block;
 			}
 
-			:host([mode="edit"]) #editable audio,
-			:host([mode="edit"]) #editable video {
+			:host #editable audio,
+			:host #editable video {
 				pointer-events: none;
-			}
-
-			#html {
-				padding: 0 20px 20px 20px;
-				@apply(--wysiwyg-html);
-				@apply(--layout-flex);
-			}
-
-			#html pre {
-				margin: 0;
-				@apply(--wysiwyg-html-pre);
-			}
-
-			#html code {
-				display: block;
-				word-wrap: break-word;
-				@apply(--wysiwyg-html-code);
 			}
 
 			paper-button {
@@ -332,60 +322,51 @@ Command                                 | Mac Shortcut                          
 				text-transform: none;
 			}
 
-			paper-menu-button {
-				padding: 0;
-			}
-
-			paper-item:hover {
-				cursor: pointer;
-			}
-
-			:host([mode="read"]) ::content .wysiwyg-tool,
-			:host([mode="html"]) ::content .wysiwyg-tool {
-				visibility: hidden;
+			paper-button[disabled] {
+				color: rgba(255, 255, 255, 0.5);
 			}
 
 			@media (min-width: 768px) {
 				#layout {
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 				}
 
 				#toolbar {
-					@apply(--layout-horizontal);
+					@apply --layout-horizontal;
 				}
 
 				#toolbarLayout {
 					height: 40px;
-					@apply(--layout-horizontal);
-					@apply(--layout-flex);
+					@apply --layout-horizontal;
+					@apply --layout-flex;
 					flex-wrap: nowrap;
 					overflow-x: hidden;
 				}
 
 				#layout[force-narrow] {
-					@apply(--layout-horizontal);
+					@apply --layout-horizontal;
 				}
 
 				#layout[force-narrow] #toolbarLayout {
 					height: auto;
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 					width: 40px;
 					max-height: calc(100% - 80px);
 					overflow-y: hidden;
 				}
 			}
 
-			@media (max-width: 767px) {
+			@media (max-width: 767.9px) {
 				#layout {
-					@apply(--layout-horizontal);
+					@apply --layout-horizontal;
 				}
 
 				#toolbar {
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 				}
 
 				#toolbarLayout {
-					@apply(--layout-vertical);
+					@apply --layout-vertical;
 					width: 40px;
 					max-height: calc(100% - 80px);
 					overflow-y: hidden;
@@ -394,428 +375,617 @@ Command                                 | Mac Shortcut                          
 
 			#content {
 				overflow-y: auto;
-				@apply(--layout-flex);
-				@apply(--layout-vertical);
-			}
-
-			#scrollPrevious,
-			#scrollNext {
-				border-radius: 0;
-			}
-
-			#scrollPrevious[disabled],
-			#scrollNext[disabled] {
-				color: rgba(255, 255, 255, 0.5);
+				@apply --layout-flex;
+				@apply --layout-vertical;
 			}
 		</style>
 		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+z" on-keys-pressed="undo"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+y" on-keys-pressed="redo"></iron-a11y-keys>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
 		<div class="fit" id="layout" force-narrow$="[[forceNarrow]]">
 			<div id="toolbar" on-tap="updateTools">
-				<paper-button id="scrollPrevious" on-up="_onScrollButtonUp" on-down="_onScrollPrevious"  disabled="[[!canScrollPrevious]]">
+				<paper-button id="scrollPrevious" on-up="_onScrollButtonUp" on-down="_onScrollPrevious"	disabled="[[!canScrollPrevious]]">
 					<iron-icon icon="[[_scrollPreviousIcon(minWidth768px, forceNarrow)]]"></iron-icon>
 				</paper-button>
-				<div id="toolbarLayout" on-undo="undo" on-redo="redo" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
-					<paper-menu-button id="settings" hidden$="[[hideSettings]]" dynamic-align>
-						<paper-button class="dropdown-trigger">
-							<iron-icon icon="wysiwyg:settings"></iron-icon>
-						</paper-button>
-						<paper-listbox class="dropdown-content" selected="{{mode}}" attr-for-selected="mode">
-							<paper-item mode="edit">[[localize('Edit')]]</paper-item>
-							<paper-item mode="read">[[localize('Read-only')]]</paper-item>
-							<paper-item mode="html">[[localize('View HTML')]]</paper-item>
-						</paper-listbox>
-					</paper-menu-button>
-					<paper-tooltip id="tooltip" for="settings" position="[[tooltipPosition]]" offset="5">[[localize('Settings')]]</paper-tooltip>
-					<content select="[wysiwyg-tool]" id="tools"></content>
+				<div id="toolbarLayout" scroll-top="[[scrollTop]]" scroll-left="[[scrollLeft]]">
+					<slot id="tools"></slot>
+					<paper-button id="undo" on-tap="undo" disabled="[[!canUndo]]" hidden="[[noUndo]]">
+						<iron-icon icon="wysiwyg:undo"></iron-icon>
+					</paper-button>
+					<paper-tooltip for="undo" position="[[tooltipPosition]]" offset="5">
+						<app-localize language="[[language]]" resources="[[resources]]" string-key="Undo"></app-localize>
+						<span> ([[modifier.tooltip]] + Z)</span>
+					</paper-tooltip>
+					<paper-button id="redo" on-tap="redo" disabled="[[!canRedo]]" hidden="[[noRedo]]">
+						<iron-icon icon="wysiwyg:redo"></iron-icon>
+					</paper-button>
+					<paper-tooltip for="redo" position="[[tooltipPosition]]" offset="5">
+						<app-localize language="[[language]]" resources="[[resources]]" string-key="Redo"></app-localize>
+						<span> ([[modifier.tooltip]] + Y)</span>
+					</paper-tooltip>
 				</div>
 				<paper-button id="scrollNext" on-up="_onScrollButtonUp" on-down="_onScrollNext" disabled="[[!canScrollNext]]">
 					<iron-icon icon="[[_scrollNextIcon(minWidth768px, forceNarrow)]]"></iron-icon>
 				</paper-button>
 			</div>
 			<div id="content">
-				<div id="editable" contenteditable$="[[_edit(mode)]]" hidden$="[[_html(mode)]]"></div>
-				<div id="html" hidden$="[[!_html(mode)]]">
-					<pre>
-						<code inner-h-t-m-l="[[_prismHighlight(value)]]"></code>
-					</pre>
-				</div>
+				<div id="editable" contenteditable></div>
 			</div>
 		</div>
 	</template>
-
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-e',
+		class WysiwygE extends SelectionMgrMixin(UndoMgrMixin(Polymer.Element)) {
+			static get is() { return 'wysiwyg-e' }
 
-				attached: function () {
-					if (!this._handler) {
-						this._handler = function () {
-							this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
-							this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
-						}.bind(this);
-					}
+			connectedCallback() {
+				super.connectedCallback();
 
-					Polymer.dom(this.$.tools).observeNodes(this.updateTools);
-					window.addEventListener('resize', this._handler);
-					this.async(this._handler, 100);
-				},
+				if (!this._resizeHandler) {
+					this._resizeHandler = function () {
+						this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
+						this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
+					}.bind(this);
+				}
 
-				behaviors: [
-					Polymer.AppLocalizeBehavior,
-					SelectionMgrBehavior,
-					UndoMgrBehavior
-				],
+				window.removeEventListener('resize', this._resizeHandler);
 
-				detached: function () {
-					Polymer.dom(this.$.tools).unobserveNodes(this.updateTools);
-					window.removeEventListener('resize', this._handler);
-				},
+				if (!this._keydownHandler) {
+					this._keydownHandler = function (event) {
+						//Prevent default delete behavior
+						if (event.key === 'Delete') event.preventDefault();
+						//Prevent default backspace behavior
+						if (event.key === 'Backspace') event.preventDefault();
+						//Allow input without alt, ctrl, or meta
+						if (!event.altKey && !event.ctrlKey && !event.metaKey) return;
+						//Allow select all, refresh, print, paste, copy, cut
+						if (!event.altKey && !event.shiftKey && ['a', 'r', 'p', 'v', 'c', 'x'].indexOf(event.key) >= 0 && (event.ctrlKey || event.metaKey)) return;
+						event.preventDefault();
+					}.bind(this);
+				}
 
-				listeners: {
-					keydown: '_keydown',
-					'restore-selection': 'restoreSelection',
-					'select-element': '_selectElement',
-					paste: '_paste'
-				},
+				this.addEventListener('keydown', this._keydownHandler);
 
-				observers: [
-					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, mode, language)'
-				],
+				if (!this._restoreSelectionHandler) {
+					this._restoreSelectionHandler = function () {
+						console.log('restore-selection');
+						this.restoreSelection();
+					}.bind(this);
+				}
+					
+				this.$.toolbar.addEventListener('restore-selection', this._restoreSelectionHandler);
 
-				properties: {
-					/**
-					 * If true, tools can scroll up.	Computed.
-					*/
+				if (!this._selectElementHandler) {
+					this._selectElementHandler = function (event) {
+						this.selectElement(event.detail.element);
+					}.bind(this);
+				}
+
+				this.addEventListener('select-element', this._selectElementHandler);
+
+				if (!this._pasteHandler) {
+					this._pasteHandler = function (event) {
+						event.preventDefault();
+						var data = event.clipboardData.getData('text/html');
+						// If paste does not contain HTML, fall back to plain text
+						if (!data.length) data = event.clipboardData.getData('text');
+						document.execCommand('insertHTML', false, data);
+					}.bind(this);
+				}
+
+				this.addEventListener('paste', this._pasteHandler);
+
+				if (!this._slotchangeHandler) {
+					this._slotchangeHandler = function () {
+						this.updateTools();
+					}.bind(this);
+				}
+
+				this.$.tools.addEventListener('slotchange', this._slotchangeHandler);
+			}
+
+			disconnectedCallback() {
+				super.disconnectedCallback();
+				window.removeEventListener('resize', this._resizeHandler);
+				this.removeEventListener('keydown', this._keydownHandler);
+				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
+				this.removeEventListener('select-element', this._selectElementHandler);
+				this.removeEventListener('paste', this._pasteHandler);
+				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
+			}
+
+			ready() {
+				super.ready();
+				this.target = this.$.editable;
+				this.sanitize();
+
+				setTimeout(
+					function () {
+						this._resizeHandler();
+						this.updateTools();
+					}.bind(this),
+					100
+				);
+			}
+
+			static get observers() {
+				return [
+					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug, modifier)'
+				];
+			}
+
+			static get properties() {
+				return {
+					//
+					// Array of tagNames allowed by the sanitize method
+					//
+					allowedTagNames: {
+						type: Array,
+						value: function () {
+							return [
+								'a',
+								'abbr',
+								'address',
+								'area',
+								'article',
+								'aside',
+								'audio',
+								'b',
+								'base',
+								'bdi',
+								'bdo',
+								'blockquote',
+								'br',
+								'button',
+								'canvas',
+								'caption',
+								'cite',
+								'code',
+								'col',
+								'colgroup',
+								'data',
+								'datalist',
+								'dd',
+								'del',
+								'details',
+								'dfn',
+								'div',
+								'dl',
+								'dt',
+								'element',
+								'em',
+								'embed',
+								'fieldset',
+								'figcaption',
+								'figure',
+								'footer',
+								'form',
+								'h1',
+								'h2',
+								'h3',
+								'h4',
+								'h5',
+								'h6',
+								'header',
+								'hgroup',
+								'hr',
+								'i',
+								'img',
+								'input',
+								'ins',
+								'kbd',
+								'label',
+								'legend',
+								'li',
+								'main',
+								'map',
+								'mark',
+								'meter',
+								'nav',
+								'noframes',
+								'noscript',
+								'object',
+								'ol',
+								'optgroup',
+								'option',
+								'output',
+								'p',
+								'param',
+								'progress',
+								'q',
+								'rp',
+								'rt',
+								'rtc',
+								'ruby',
+								's',
+								'samp',
+								'section',
+								'select',
+								'small',
+								'source',
+								'span',
+								'strong',
+								'sub',
+								'summary',
+								'sup',
+								'table',
+								'tbody',
+								'td',
+								'template',
+								'textarea',
+								'tfoot',
+								'th',
+								'thead',
+								'time',
+								'tr',
+								'track',
+								'u',
+								'ul',
+								'var',
+								'video',
+								'wbr'
+							];
+						}
+					},
+					//
+					// If true, tools can scroll up.	Computed.
+					//
 					canScrollPrevious: {
 						type: Boolean,
 						computed: '_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
 					},
-					/**
-					 * If true, tools can scroll down.	Computed.
-					*/
+					//
+					// If true, tools can scroll down.	Computed.
+					//
 					canScrollNext: {
 						type: Boolean,
 						computed: '_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
 					},
-					/**
-					 * If true, force narrow view with vertical toolbar.	Defaults to false.
-					*/
+					//
+					// If true, console.log debug messages.
+					//
+					debug: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// If true, force narrow view with vertical toolbar.	Defaults to false.
+					//
 					forceNarrow: {
 						type: Boolean,
 						value: false
 					},
-					/**
-					 * Option to hide the built-in settings tool.	Defaults to false.
-					*/
-					hideSettings: {
-						type: Boolean,
-						value: false
-					},
-					/**
-					 * Two-letter language code for use with Polymer.AppLocalizeBehavior.	Defaults to 'en'.
-					*/
+					//
+					// Two-letter language code for use with Polymer.AppLocalizeBehavior.	Defaults to 'en'.
+					//
 					language: {
 						type: String,
 						value: 'en'
 					},
-					/**
-					 * Tracks viewport with.	Managed by iron-media-query
-					*/
+					//
+					// Tracks viewport with.	Managed by iron-media-query
+					//
 					minWidth768px: {
 						type: Boolean,
 						observer: '_minWidth768pxChanged'
 					},
-					/**
-					 * Set view mode to 'edit', 'read', or 'html'. Defaults to 'edit'.
-					*/
-					mode: {
-						type: String,
-						value: 'edit',
-						observer: '_modeChanged',
-						reflectToAttribute: true
+					modifier: {
+						type: Object,
+						value: function () {
+							var isMac = navigator.platform.indexOf('Mac') >= 0;
+		
+							return {
+								key: isMac ? 'meta' : 'ctrl',
+								tooltip: isMac ? '⌘' : 'Ctrl'
+							};
+						}
 					},
-					/**
-					 * Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
-					*/
+					//
+					// Hide the redo button and prevent redo operations
+					//
+					noRedo: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// Hide the undo button and prevent undo operations
+					//
+					noUndo: {
+						type: Boolean,
+						value: false
+					},
+					//
+					// Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
+					//
 					resources: {
 						type: Object,
 						value: function () {
 							return {
 								'en': {
-									'Settings': 'Settings',
-									'Edit': 'Edit',
-									'Read-only': 'Read-only',
-									'View HTML': 'View HTML'
+									'Undo': 'Undo',
+									'Redo': 'Redo'
 								},
-							'fr': {
-								'Settings': 'Réglages',
-								'Edit': 'Editer',
-								'Read-only': 'Lecture-seul',
-								'View HTML': 'Vue HTML'
-							}
+								'fr': {
+									'Undo': 'Annuler',
+									'Redo': 'Rétablir'
+								}
 							};
 						}
 					},
-					/**
-					 * Delay for scheduling of scroll jobs for the tool container.	Defaults to 1.
-					*/
+					//
+					// Delay for scheduling of scroll jobs for the tool container.	Defaults to 1.
+					//
 					scrollDelay: {
 						type: Number,
 						value: 1
 					},
-					/**
-					 * Amount in pixels by which to scroll the tool container up or down.	Defaults to 10.
-					*/
+					//
+					// Amount in pixels by which to scroll the tool container up or down.	Defaults to 10.
+					//
 					scrollStep: {
 						type: Number,
 						value: 10
 					},
-					/**
-					 * Height of tool scroll container.	Read-only.
-					*/
+					//
+					// Height of tool scroll container.	Read-only.
+					//
 					scrollHeight: {
 						type: Number,
 						value: 0,
 						readOnly: true
 					},
-					/**
-					 * Left offset of tool scroll container.	Read-only.
-					*/
+					//
+					// Left offset of tool scroll container.	Read-only.
+					//
 					scrollLeft: {
 						type: Number,
 						value: 0,
 						readOnly: true
 					},
-					/**
-					 * Top offset of tool scroll container.	Read-only.
-					*/
+					//
+					// Top offset of tool scroll container.	Read-only.
+					//
 					scrollTop: {
 						type: Number,
 						value: 0,
 						readOnly: true
 					},
-					/**
-					 * Width of tool scroll container.	Read-only.
-					*/
+					//
+					// Width of tool scroll container.	Read-only.
+					//
 					scrollWidth: {
 						type: Number,
 						value: 0,
 						readOnly: true
 					},
-					/**
-					 * Target for use with selection-mgr and undo-mgr behaviors
-					*/
-					target: {
-						type: Object,
-						value: function () {
-							return this.$.editable;
-						},
-						observer: '_targetChanged'
-					},
-					/**
-					 * Computed based on ``minWidth768px``
-					*/
+					//
+					// Computed based on ``minWidth768px``
+					//
 					tooltipPosition: {
 						type: String,
 						computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
 					}
-				},
+				};
+			}
+			//
+			// Stop observing with selectionObserver and undoObserver
+			//
+			disconnect() {
+				super.disconnect();
+			}
+			//
+			// Start observing with selectionObserver and undoObserver
+			//
+			observe() {
+				super.observe();
+			}
+			//
+			// Revert an undo operation
+			//
+			redo() {
+				if (!this.noRedo) return super.redo();
+			}
+			//
+			// Sanitize DOM changes
+			//
+			sanitize(mutations) {
+				if (!mutations) return true;
+				var sanitized = true, nodes = [], i, j, k, p, pre;
 
-				/**
-				 * Stop observing with selectionObserver and undoObserver
-				*/
-				disconnect: function () {
-					UndoMgrBehavior.disconnect.apply(this, arguments);
-					SelectionMgrBehavior.disconnect.apply(this, arguments);
-				},
+				for (i = 0; i < mutations.length; i += 1) {
+					var mutation = mutations[i];
 
-				/**
-				 * Start observing with selectionObserver and undoObserver
-				*/
-				observe: function () {
-					UndoMgrBehavior.observe.apply(this, arguments);
-					SelectionMgrBehavior.observe.apply(this, arguments);
-				},
+					if (nodes.indexOf(mutation.target) === -1) {
+						nodes.push(mutation.target);
 
-				/**
-				 * Revert an undo operation
-				*/
-				redo: function () {
-					if (this.mode !== 'edit') return false;
-					return UndoMgrBehavior.redo.apply(this, arguments);
-				},
+						if (mutation.target.querySelectorAll) {
+							var subnodes = mutation.target.querySelectorAll('*');
 
-				/**
-				 * Sanitize DOM changes
-				*/
-				sanitize: function () {
-					//Wrap target's immediate child text nodes inside p node
-					var childNodes = this.target.childNodes;
+							for (k = 0; k < subnodes.length; k += 1) {
+								if (nodes.indexOf(subnodes[k]) === -1) nodes.push(subnodes[k]);
+							}
+						}
+					}
 
-					for (i = 0; i < childNodes.length; i += 1) {
-						if (childNodes[i].nodeType === 3) {
-							if (!childNodes[i].textContent.trim().length) continue;
+					for (j = 0; j < mutation.addedNodes.length; j += 1) {
+						var addedNode = mutation.addedNodes[j];
+
+						if (nodes.indexOf(addedNode) === -1) {
+							nodes.push(addedNode);
+
+							if (addedNode.querySelectorAll) {
+								var subnodes = addedNode.querySelectorAll('*');
+
+								for (k = 0; k < subnodes.length; k += 1) {
+									if (nodes.indexOf(subnodes[k]) === -1) nodes.push(subnodes[k]);
+								}
+							}
+						}
+					}
+				}
+
+				for (i = 0; i < nodes.length; i += 1) {
+					var node = nodes[i];
+
+					if (node !== this.target && this.target.contains(node)) {
+						//Remove the id attribute
+						if (node.hasAttribute && node.hasAttribute('id')) {
+							node.removeAttribute('id');
+							if (this.debug) console.log(node, 'id attribute');
+							sanitized = false;
+						}
+
+						//Remove the style attribute
+						if (node.hasAttribute && node.hasAttribute('style')) {
+							var styles = node.getAttribute('style').split(';'), validStyles = [];
+
+							for (j = 0; j < styles.length; j += 1) {
+								if (styles[j]) {
+									var style = styles[j].split(':');
+
+									switch (style[0]) {
+										case 'text-align':
+										case 'color':
+											break;
+										default:
+											node.style[style[0]] = '';
+											if (this.debug) console.log(node, 'style: ' + style[0]);
+											sanitized = false;
+											break;
+									}
+								}
+							}
+						}
+
+						//Remove the class attribute
+						if (node.hasAttribute && node.hasAttribute('class')) {
+							node.removeAttribute('class');
+							if (this.debug) console.log(node, 'class attribute');
+							sanitized = false;
+						}
+
+						//If node is a text node immediate child of target, wrap inside a P
+						if (node.parentNode === this.target && node.nodeType === 3) {
+							if (!node.textContent.trim().length) continue;
 							p = document.createElement('p');
-							this.target.insertBefore(p, childNodes[i].nextSibling);
-							p.appendChild(childNodes[i]);
-							if (this.logging) console.log('wrap top level text nodes inside p node');
-							return false;
-						}
-					}
-
-					//Move non-code nodes outside of pre nodes
-					var invalidPreChildren = this.target.querySelectorAll('pre > :not(code), code > p');
-
-					for (i = 0; i < invalidPreChildren.length; i += 1) {
-						invalidPreChildren[i].outerHTML = invalidPreChildren[i].innerHTML;
-						if (this.logging) console.log('invalid pre children 1');
-						return false;
-					}
-
-					pre = this.target.querySelectorAll('pre');
-
-					for (i = 0; i < pre.length; i += 1) {
-						var codes = 0, insertBefore = pre[i];
-						childNodes = Array.prototype.slice.call(pre[i].childNodes);
-
-						for (j = 0; j < childNodes.length; j += 1) {
-							if (childNodes[j].tagName !== 'CODE') {
-								p = document.createElement('p');
-								p.textContent = childNodes[j].textContent;
-								pre[i].removeChild(childNodes[j]);
-								pre[i].parentNode.insertBefore(p, insertBefore);
-								if (this.logging) console.log('invalid pre children 3');
-								return false;
-							}
-
-							codes += 1;
-
-							if (codes === 1) {
-								insertBefore = pre[i].nextSibling;
-							} else if (codes > 1) {
-								var newPre = document.createElement('pre');
-								newPre.appendChild(childNodes[j]);
-								pre[i].parentNode.insertBefore(newPre, insertBefore);
-								insertBefore = newPre.nextSibling;
-								if (this.logging) console.log('invalid pre children 3');
-								return false;
-							}
-						}
-					}
-
-					//Replace strong with b
-					var strong = this.target.querySelectorAll('strong');
-
-					for (i = 0; i < strong.length; i += 1) {
-						strong[i].outerHTML = '<b>' + strong[i].innerHTML + '</b>';
-						if (this.logging) console.log('strong');
-						return false;
-					}
-
-					//Replace em with i
-					var em = this.target.querySelectorAll('em');
-
-					for (i = 0; i < em.length; i += 1) {
-						em[i].outerHTML = '<i>' + em[i].innerHTML + '</i>';
-						if (this.logging) console.log('em');
-						return false;
-					}
-
-					//Replace DIVs with Ps
-					var divs = this.target.querySelectorAll('div');
-
-					for (i = 0; i < divs.length; i += 1) {
-						divs[i].outerHTML = '<p>' + divs[i].innerHTML + '</p>';
-						if (this.logging) console.log('div');
-						return false;
-					}
-
-					//Remove P children of Ps
-					var Ps = this.target.querySelectorAll('p');
-					
-					for (i = 0; i < Ps.length; i += 1) {
-						var childPs = Ps[i].querySelectorAll('p');
-						
-						for (j = 0; j < childPs.length; j += 1) {
-							childPs[j].outerHTML = childPs[j].textContent;
-							if (this.logging) console.log('p child of p');
-							return false;
-						}
-					}
-
-					//Strip all classes except style-scope and wysiwyg-e
-					var classes = this.target.querySelectorAll('*');
-
-					for (i = 0; i < classes.length; i += 1) {
-						for (j = 0; j < classes[i].classList.length; j += 1) {
-							if (['style-scope', 'wysiwyg-e'].indexOf(classes[i].classList[j]) === -1) {
-								classes[i].classList.remove(classes[i].classList[j]);
-								if (this.logging) console.log('remove invalid class');
-								return false;
-							}
+							this.target.insertBefore(p, node.nextSibling);
+							p.appendChild(node);
+							if (this.debug) console.log(node, 'wrap top level text nodes inside p node');
+							sanitized = false;
 						}
 
-						if (!classes[i].classList.contains('style-scope')) {
-							classes[i].classList.add('style-scope');
-							if (this.logging) console.log('add style-scope class', classes[i]);
-							return false;
+						switch (node.tagName) {
+							//Remove invalid CODE children
+							case 'CODE':
+								var childNodes = Array.prototype.slice.call(node.childNodes);
+			
+								for (j = 0; j < childNodes.length; j += 1) {
+									if (childNodes[j].tagName === 'P') {
+										node.outerHTML = node.innerHTML;
+										if (this.debug) console.log(node, 'invalid code child');
+										sanitized = false;
+									}
+								}
+
+								break;
+							//Replace STRONG with B
+							case 'STRONG':
+								node.outerHTML = '<b>' + node.innerHTML + '</b>';
+								if (this.debug) console.log(node, 'strong');
+								sanitized = false;
+								break;
+							//Replace EM with I
+							case 'EM':
+								node.outerHTML = '<i>' + node.innerHTML + '</i>';
+								if (this.debug) console.log(node, 'em');
+								sanitized = false;
+								break;
+							//Replace DIV with P
+							case 'DIV':
+								node.outerHTML = '<p>' + node.innerHTML + '</p>';
+								if (this.debug) console.log(node, 'div');
+								sanitized = false;
+								break;
+							//Replace STRIKE with S
+							case 'STRIKE':
+								node.outerHTML = '<s>' + node.innerHTML + '</s>';
+								if (this.debug) console.log(node, 'strike');
+								sanitized = false;
+								break;
 						}
 
-						if (!classes[i].classList.contains('wysiwyg-e')) {
-							classes[i].classList.add('wysiwyg-e');
-							if (this.logging) console.log('add wysiwyg-e class', classes[i]);
-							return false;
+						//Make sure tagName is allowed
+						if (node.tagName && this.allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
+							node.outerHTML = node.innerHTML;
+							if (this.debug) console.log(node, 'invalid tagName');
+							sanitized = false;
 						}
 					}
+				}
 
-					//Guard against improper values
-					if (!this.target.children.length) {
-						p = document.createElement('p');
-						var br = document.createElement('br');
-						p.appendChild(br);
-						this.target.appendChild(p);
-						if (this.logging) console.log('improper value');
-						return false;
-					}
+				//Guard against improper values
+				if (!this.target.children.length) {
+					p = document.createElement('p');
+					var br = document.createElement('br');
+					p.appendChild(br);
+					this.target.appendChild(p);
+					if (this.debug) console.log('improper value');
+					sanitized = false;
+				}
 
-					return true;
-				},
+				return sanitized;
+			}
+			//
+			// Perform an undo operation
+			//
+			undo() {
+				if (!this.noUndo) return super.undo();
+			}
+			//
+			// Update tools properties
+			//
+			updateTools() {
+				var now = new Date();
 
-				/**
-				 * Perform an undo operation
-				*/
-				undo: function () {
-					if (this.mode !== 'edit') return false;
-					return UndoMgrBehavior.undo.apply(this, arguments);
-				},
+				if (this._toolUpdateTimeout) {
+					delete this._toolUpdateTimeout;
+					clearTimeout(this._toolUpdateTimeout);
+				}
 
-				/**
-				 * Update tools properties
-				*/
-				updateTools: function () {
-					if (!this.$) return;
-					var tools = Polymer.dom(this.$.tools).getDistributedNodes();
+				if (this._lastToolUpdate && now - this._lastToolUpdate < 250) {
+					this._toolUpdateTimeout = setTimeout(this.updateTools.bind(this), 250 - (now - this._lastToolUpdate));
+					return;
+				}
 
-					for (var i = 0; i < tools.length; i += 1) {
-						tools[i]._setRange0(this.range0);
-						tools[i]._setSelectionRoot(this.shadowRoot || document);
-						tools[i]._setCanRedo(this.canRedo);
-						tools[i]._setCanUndo(this.canUndo);
-						tools[i]._setValue(this.value);
-						tools[i]._setCommonAncestorPath(this.commonAncestorPath);
-						tools[i]._setTarget(this.target);
-						tools[i]._setMinWidth768px(this.minWidth768px);
-						tools[i]._setForceNarrow(this.forceNarrow);
-						tools[i]._setTooltipPosition(this.tooltipPosition);
-						tools[i]._setMode(this.mode);
-						tools[i].language = this.language;
-					}
-				},
+				this._lastToolUpdate = now;
+				if (!this.$) return;
+				var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
 
-				_backspace: function () {
+				for (var i = 0; i < tools.length; i += 1) {
+					if (!(tools[i] instanceof WysiwygTool)) continue;
+					tools[i]._setRange0(this.range0);
+					tools[i]._setSelectionRoot(this.shadowRoot || document);
+					tools[i]._setCanRedo(this.canRedo);
+					tools[i]._setCanUndo(this.canUndo);
+					tools[i]._setValue(this.value);
+					tools[i]._setCommonAncestorPath(this.commonAncestorPath);
+					tools[i]._setTarget(this.target);
+					tools[i]._setMinWidth768px(this.minWidth768px);
+					tools[i]._setForceNarrow(this.forceNarrow);
+					tools[i]._setTooltipPosition(this.tooltipPosition);
+					tools[i]._setLanguage(this.language);
+					tools[i]._setDebug(this.debug);
+					tools[i]._setModifier(this.modifier);
+				}
+			}
+
+			_backspace(event) {
+				if (!this.range0) return;
+				var keyboardEvent = event.detail.keyboardEvent;
+				if (keyboardEvent.altKey || keyboardEvent.shiftKey) return;
+
+				var singleBackspace = function () {
 					if (this.target.children.length > 1) {
 						document.execCommand('delete');
 					} else if (this.target.children.length === 1) {
@@ -825,195 +995,141 @@ Command                                 | Mac Shortcut                          
 							document.execCommand('formatBlock', null, 'P');
 						}
 					}
-				},
+				}.bind(this);
 
-				_computeCanScrollNext: function (minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
-					if (minWidth768px && !forceNarrow) return scrollLeft < scrollWidth;
-					return scrollTop < scrollHeight;
-				},
+				var wholeWordBackspace = function (lastWord, lastWordPosition) {
+					this.range0.collapse(true);
+					this.range0.setStart(this.range0.commonAncestorContainer, lastWordPosition);
+					this.range0.setEnd(this.range0.commonAncestorContainer, this.range0.commonAncestorContainer.textContent.length < lastWordPosition + lastWord.length + 1 ? this.range0.commonAncestorContainer : lastWordPosition + lastWord.length + 1);
+					this.range0.deleteContents();
+				}.bind(this);
 
-				_computeCanScrollPrevious: function (minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
-					if (minWidth768px && !forceNarrow) return scrollLeft > 0;
-					return scrollTop > 0;
-				},
+				if (keyboardEvent.ctrlKey || keyboardEvent.metaKey) {
+					var range = this.range0.cloneRange();
+					range.collapse();
+					range.setStart(this.range0.commonAncestorContainer, 0);
+					var preceding = range.toString();
 
-				_computeTooltipPosition: function (minWidth768px, forceNarrow) {
-					if (minWidth768px && !forceNarrow) return 'bottom';
-					return 'right';
-				},
-
-				_delete: function () {
-					document.execCommand('forwardDelete');
-				},
-
-				_edit: function () {
-					return this.mode === 'edit';
-				},
-
-				_html: function () {
-					return this.mode === 'html';
-				},
-
-				_keydown: function (event) {
-					if (!this.target.contains(event.target)) return;
-					//Prevent default delete behavior
-					if (event.key === 'Delete') event.preventDefault();
-					//Prevent default backspace behavior
-					if (event.key === 'Backspace') event.preventDefault();
-					//Allow input without alt, ctrl, or meta
-					if (!event.altKey && !event.ctrlKey && !event.metaKey) return;
-					//Allow select all, refresh, print, paste, copy, cut
-					if (!event.altKey && !event.shiftKey && ['a', 'r', 'p', 'v', 'c', 'x'].indexOf(event.key) >= 0 && (event.ctrlKey || event.metaKey)) return;
-					event.preventDefault();
-				},
-
-				_minWidth768pxChanged: function () {
-					this._setScrollTop(0);
-					this._setScrollLeft(0);
-				},
-
-				_modeChanged: function () {
-					if (['edit', 'read', 'html'].indexOf(this.mode) === -1) {
-						this.mode = 'edit';
-						return;
-					}
-
-					if (this.target && this.mode !== 'read') {
-						var AVs = this.target.querySelectorAll('audio, video');
-						if (!AVs) return;
-
-						for (var i = 0; i < AVs.length; i += 1) {
-							AVs[i].paused = true;
-						}
-					}
-				},
-
-				_onScrollButtonUp: function () {
-					clearInterval(this._scrollJob);
-					this._scrollJob = null;
-				},
-
-				_onScrollNext: function () {
-					this._scrollNext();
-					this._scrollJob = setInterval(this._scrollNext.bind(this), this.scrollDelay);
-				},
-
-				_onScrollPrevious: function () {
-					this._scrollPrevious();
-					this._scrollJob = setInterval(this._scrollPrevious.bind(this), this.scrollDelay);
-				},
-
-				_panelMode: function () {
-					if (this.mode !== 'edit') return 'seamed';
-					return 'waterfall';
-				},
-
-				_paste: function (event) {
-					event.preventDefault();
-					var data = event.clipboardData.getData('text/html');
-					// If paste does not contain HTML, fall back to plain text
-					if (!data.length) data = event.clipboardData.getData('text');
-					document.execCommand('insertHTML', false, data);
-				},
-
-				_prismHighlight: function (value) {
-					// process and format functions from
-					// http://stackoverflow.com/questions/26360414/javascript-how-to-correct-indentation-in-html-string
-
-					function process (str) {
-						if (typeof str !== 'string') str = '';
-						var div = document.createElement('div');
-						div.innerHTML = str.trim();
-						return format(div, 0).innerHTML;
-					}
-
-					function format (node, level) {
-						var indentBefore = new Array(level++ + 1).join('	'), indentAfter	= new Array(level - 1).join('	'), textNode;
-
-						for (var i = 0; i < node.children.length; i += 1) {
-							textNode = document.createTextNode('\n' + indentBefore);
-							node.insertBefore(textNode, node.children[i]);
-							format(node.children[i], level);
-
-							if (node.lastElementChild == node.children[i]) {
-								textNode = document.createTextNode('\n' + indentAfter);
-								node.appendChild(textNode);
-							}
-						}
-
-						return node;
-					}
-
-					return Prism.highlight(process(value), Prism.languages.markup);
-				},
-
-				_scroll: function (dx) {
-					if (this.minWidth768px) {
-						this._setScrollLeft(this.scrollLeft + dx);
-					} else {
-						this._setScrollTop(this.scrollTop + dx);
-					}
-				},
-
-				_scrollNext: function () {
-					if (this.minWidth768px) {
-						if (this.scrollLeft + this.scrollStep > this.scrollWidth) {
-							this._scroll(this.scrollWidth - this.scrollLeft);
-							this._onScrollButtonUp();
+					if (preceding.length) {
+						var match = preceding.match(/(?:\s|^)([\S]+)$/i);
+	
+						if (match) {
+							wholeWordBackspace(match.slice(-1)[0], match.index);
+						} else if (preceding.trim().split(' ').length === 1) {
+							wholeWordBackspace(preceding.split(' ')[0], 0);
 						} else {
-							this._scroll(this.scrollStep);
+							singleBackspace();
 						}
 					} else {
-						if (this.scrollTop + this.scrollStep > this.scrollHeight) {
-							this._scroll(this.scrollHeight - this.scrollTop);
-							this._onScrollButtonUp();
-						} else {
-							this._scroll(this.scrollStep);
-						}
+						singleBackspace();
 					}
-				},
-
-				_scrollNextIcon: function (minWidth768px, forceNarrow) {
-					if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-right';
-					return 'wysiwyg:scroll-down';
-				},
-
-				_scrollPrevious: function () {
-					if (this.minWidth768px) {
-						if (this.scrollLeft - this.scrollStep < 0) {
-							this._scroll(-this.scrollLeft);
-							this._onScrollButtonUp();
-						} else {
-							this._scroll(-this.scrollStep);
-						}
-					} else {
-						if (this.scrollTop - this.scrollStep < 0) {
-							this._scroll(-this.scrollTop);
-							this._onScrollButtonUp();
-						} else {
-							this._scroll(-this.scrollStep);
-						}
-					}
-				},
-
-				_scrollPreviousIcon: function (minWidth768px, forceNarrow) {
-					if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-left';
-					return 'wysiwyg:scroll-up';
-				},
-
-				_selectElement: function (event) {
-					this.selectElement(event.detail.element);
-				},
-
-				_targetChanged: function () {
-					UndoMgrBehavior._targetChanged.apply(this, arguments);
-					SelectionMgrBehavior._targetChanged.apply(this, arguments);
-				},
-
-				_valueChanged: function () {
-					UndoMgrBehavior._valueChanged.apply(this, arguments);
+				} else {
+					singleBackspace();
 				}
 			}
-		);
+
+			_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
+				if (minWidth768px && !forceNarrow) return scrollLeft < scrollWidth;
+				return scrollTop < scrollHeight;
+			}
+
+			_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
+				if (minWidth768px && !forceNarrow) return scrollLeft > 0;
+				return scrollTop > 0;
+			}
+
+			_computeTooltipPosition(minWidth768px, forceNarrow) {
+				if (minWidth768px && !forceNarrow) return 'bottom';
+				return 'right';
+			}
+
+			_delete() {
+				document.execCommand('forwardDelete');
+			}
+
+			_minWidth768pxChanged() {
+				this._setScrollTop(0);
+				this._setScrollLeft(0);
+			}
+
+			_onScrollButtonUp() {
+				clearInterval(this._scrollJob);
+				this._scrollJob = null;
+			}
+
+			_onScrollNext() {
+				this._scrollNext();
+				this._scrollJob = setInterval(this._scrollNext.bind(this), this.scrollDelay);
+			}
+
+			_onScrollPrevious() {
+				this._scrollPrevious();
+				this._scrollJob = setInterval(this._scrollPrevious.bind(this), this.scrollDelay);
+			}
+
+			_scroll(dx) {
+				if (this.minWidth768px) {
+					this._setScrollLeft(this.scrollLeft + dx);
+				} else {
+					this._setScrollTop(this.scrollTop + dx);
+				}
+			}
+
+			_scrollNext() {
+				if (this.minWidth768px) {
+					if (this.scrollLeft + this.scrollStep > this.scrollWidth) {
+						this._scroll(this.scrollWidth - this.scrollLeft);
+						this._onScrollButtonUp();
+					} else {
+						this._scroll(this.scrollStep);
+					}
+				} else {
+					if (this.scrollTop + this.scrollStep > this.scrollHeight) {
+						this._scroll(this.scrollHeight - this.scrollTop);
+						this._onScrollButtonUp();
+					} else {
+						this._scroll(this.scrollStep);
+					}
+				}
+			}
+
+			_scrollNextIcon(minWidth768px, forceNarrow) {
+				if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-right';
+				return 'wysiwyg:scroll-down';
+			}
+
+			_scrollPrevious() {
+				if (this.minWidth768px) {
+					if (this.scrollLeft - this.scrollStep < 0) {
+						this._scroll(-this.scrollLeft);
+						this._onScrollButtonUp();
+					} else {
+						this._scroll(-this.scrollStep);
+					}
+				} else {
+					if (this.scrollTop - this.scrollStep < 0) {
+						this._scroll(-this.scrollTop);
+						this._onScrollButtonUp();
+					} else {
+						this._scroll(-this.scrollStep);
+					}
+				}
+			}
+
+			_scrollPreviousIcon(minWidth768px, forceNarrow) {
+				if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-left';
+				return 'wysiwyg:scroll-up';
+			}
+
+			_targetChanged() {
+				super._targetChanged();
+			}
+
+			_valueChanged() {
+				super._valueChanged();
+			}
+		}
+
+		customElements.define(WysiwygE.is, WysiwygE);
 	</script>
 </dom-module>

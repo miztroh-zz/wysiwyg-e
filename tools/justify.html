@@ -6,8 +6,8 @@
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-justify">
   <svg>
     <defs>
@@ -19,7 +19,7 @@
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-justify">
 	<template>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<style>
 			:host {
 				font-family: Roboto;
@@ -43,35 +43,55 @@
 				background: #e4e4e4;
 			}
 		</style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Justify')]]</paper-tooltip>
-		<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">[[localize('Left')]] (Shift + Alt + L)</paper-tooltip>
-		<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">[[localize('Right')]] (Shift + Alt + R)</paper-tooltip>
-		<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">[[localize('Center')]] (Shift + Alt + E)</paper-tooltip>
-		<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">[[localize('Full')]] (Shift + Alt + J)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Justify"></app-localize>
+		</paper-tooltip>
+		<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Left"></app-localize>
+			<span> (Shift + Alt + L)</span>
+		</paper-tooltip>
+		<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Right"></app-localize>
+			<span> (Shift + Alt + R)</span>
+		</paper-tooltip>
+		<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Center"></app-localize>
+			<span> (Shift + Alt + E)</span>
+		</paper-tooltip>
+		<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Full"></app-localize>
+			<span> (Shift + Alt + J)</span>
+		</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+l" on-keys-pressed="_left"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+r" on-keys-pressed="_right"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+c" on-keys-pressed="_center"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+j" on-keys-pressed="_full"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
-			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon id="icon" icon="wysiwyg-tool-justify:icon"></iron-icon>
 			</paper-button>
-			<div class="dropdown-content">
-				<paper-item id="left">[[localize('Left')]]</paper-item>
-				<paper-item id="right" hidden$="{{!right}}">[[localize('Right')]]</paper-item>
-				<paper-item id="center" hidden$="{{!center}}">[[localize('Center')]]</paper-item>
-				<paper-item id="full" hidden$="{{!full}}">[[localize('Full')]]</paper-item>
+			<div>
+				<paper-item id="left">
+					<app-localize language="[[language]]" resources="[[resources]]" string-key="Left"></app-localize>
+				</paper-item>
+				<paper-item id="right" hidden$="{{!right}}">
+					<app-localize language="[[language]]" resources="[[resources]]" string-key="Right"></app-localize>
+				</paper-item>
+				<paper-item id="center" hidden$="{{!center}}">
+					<app-localize language="[[language]]" resources="[[resources]]" string-key="Center"></app-localize>
+				</paper-item>
+				<paper-item id="full" hidden$="{{!full}}">
+					<app-localize language="[[language]]" resources="[[resources]]" string-key="Full"></app-localize>
+				</paper-item>
 			</div>
 		</paper-menu-button>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-justify',
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				properties: {
+		class WysiwygToolJustify extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-justify' }
+
+			static get properties() {
+				return {
 					right: {
 						type: Boolean,
 						value: false
@@ -84,120 +104,130 @@
 						type: Boolean,
 						value: false
 					}
-				},
-				ready: function () {
-					this._setCommand('formatBlock');
+				};
+			}
 
-					this.resources = {
-						'en': {
-							'Justify': 'Justify',
-							'Left': 'Left',
-							'Right': 'Right',
-							'Center': 'Center',
-							'Full': 'Full'
-						},
-						'fr': {
-							'Justify': 'Justifier',
-							'Left': 'Gauche',
-							'Right': 'Droite',
-							'Center': 'Centrer',
-							'Full': 'Entier'
-						}
-					};
-				},
-				execCommand: function (event) {
-					if (this.disabled || !this.range0) return false;
+			ready () {
+				super.ready();
+				this._setCommand('formatBlock');
 
-					var target = Polymer.dom(event).rootTarget;
-
-					if (this.$.left.contains(target)) {
-						this._left();
-					} else if (this.$.right.contains(target)) {
-						this._right();
-					} else if (this.$.center.contains(target)) {
-						this._center();
-					} else if (this.$.full.contains(target)) {
-						this._full();
+				this.resources = {
+					'en': {
+						'Justify': 'Justify',
+						'Left': 'Left',
+						'Right': 'Right',
+						'Center': 'Center',
+						'Full': 'Full'
+					},
+					'fr': {
+						'Justify': 'Justifier',
+						'Left': 'Gauche',
+						'Right': 'Droite',
+						'Center': 'Centrer',
+						'Full': 'Entier'
 					}
-				},
-				queryCommandState: function () {
-					if (this.range0) {
-						var left = document.queryCommandState('justifyLeft');
+				};
+			}
 
-						if (left) {
-							this.$.left.setAttribute('active', '');
-							this.$.icon.icon = 'editor:format-align-left';
-						} else {
-							this.$.left.removeAttribute('active');
-						}
+			execCommand (event) {
+				if (this.disabled || !this.range0) return false;
 
-						var right = document.queryCommandState('justifyRight');
-
-						if (right) {
-							this.$.right.setAttribute('active', '');
-							this.$.icon.icon = 'editor:format-align-right';
-						} else {
-							this.$.right.removeAttribute('active');
-						}
-
-						var center = document.queryCommandState('justifyCenter');
-
-						if (center) {
-							this.$.center.setAttribute('active', '');
-							this.$.icon.icon = 'editor:format-align-center';
-						} else {
-							this.$.center.removeAttribute('active');
-						}
-
-						var full = document.queryCommandState('justifyFull');
-
-						if (full) {
-							this.$.full.setAttribute('active', '');
-							this.$.icon.icon = 'editor:format-align-justify';
-						} else {
-							this.$.full.removeAttribute('active');
-						}
-
-						if (right || center || full) return true;
-					}
-
-					return false;
-				},
-				_justify: function (justification) {
-					if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
-
-					this.$.dropdown.close();
-
-					this.async(
-						function () {
-							var command = 'justify' + justification.charAt(0).toUpperCase() + justification.slice(1);
-
-							if (document.queryCommandState(command)) {
-								document.execCommand('justifyLeft');
-							} else {
-								document.execCommand(command);
-							}
-						},
-						10
-					);
-				},
-				_left: function () {
-					this._justify('left');
-				},
-				_right: function () {
-					this._justify('right');
-				},
-				_center: function () {
-					this._justify('center');
-				},
-				_full: function () {
-					this._justify('full');
-				},
-				_paperDropdownClose: function (event) {
-					if (event.target !== this.$.dropdown) return;
-					this.fire('restore-selection');
+				if (this.$.left.contains(event.target)) {
+					this._left();
+				} else if (this.$.right.contains(event.target)) {
+					this._right();
+				} else if (this.$.center.contains(event.target)) {
+					this._center();
+				} else if (this.$.full.contains(event.target)) {
+					this._full();
 				}
 			}
-		);
+
+			queryCommandState () {
+				if (this.range0) {
+					var left = document.queryCommandState('justifyLeft');
+
+					if (left) {
+						this.$.left.setAttribute('active', '');
+						this.$.icon.icon = 'editor:format-align-left';
+					} else {
+						this.$.left.removeAttribute('active');
+					}
+
+					var right = document.queryCommandState('justifyRight');
+
+					if (right) {
+						this.$.right.setAttribute('active', '');
+						this.$.icon.icon = 'editor:format-align-right';
+					} else {
+						this.$.right.removeAttribute('active');
+					}
+
+					var center = document.queryCommandState('justifyCenter');
+
+					if (center) {
+						this.$.center.setAttribute('active', '');
+						this.$.icon.icon = 'editor:format-align-center';
+					} else {
+						this.$.center.removeAttribute('active');
+					}
+
+					var full = document.queryCommandState('justifyFull');
+
+					if (full) {
+						this.$.full.setAttribute('active', '');
+						this.$.icon.icon = 'editor:format-align-justify';
+					} else {
+						this.$.full.removeAttribute('active');
+					}
+
+					if (right || center || full) return true;
+				}
+
+				return false;
+			}
+
+			_justify (justification) {
+				if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
+
+				this.$.dropdown.close();
+
+				setTimeout(
+					function () {
+						var command = 'justify' + justification.charAt(0).toUpperCase() + justification.slice(1);
+
+						if (document.queryCommandState(command)) {
+							document.execCommand('justifyLeft');
+						} else {
+							document.execCommand(command);
+						}
+					}.bind(this),
+					10
+				);
+			}
+
+			_left () {
+				this._justify('left');
+			}
+
+			_right () {
+				this._justify('right');
+			}
+
+			_center () {
+				this._justify('center');
+			}
+
+			_full () {
+				this._justify('full');
+			}
+
+			_paperDropdownClose (event) {
+				if (event.target !== this.$.dropdown) return;
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+			}
+		}
+
+		customElements.define(WysiwygToolJustify.is, WysiwygToolJustify);
 	</script>
 </dom-module>

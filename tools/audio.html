@@ -12,9 +12,8 @@
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
-<link rel="import" href="../wysiwyg-tool-icons.html">
+<link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-audio">
 	<svg>
 		<defs>
@@ -27,14 +26,17 @@
 <dom-module id="wysiwyg-tool-audio">
 	<template>
 		<style include="iron-flex"></style>
-		<style include="wysiwyg-tool-styles"></style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Audio')]] (Shift + Alt + A)</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<style include="wysiwyg-tool"></style>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Audio"></app-localize>
+			<span> (Shift + Alt + S)</span>
+		</paper-tooltip>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+s" on-keys-pressed="execCommand"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
-			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-audio:icon"></iron-icon>
 			</paper-button>
-			<div class="dropdown-content vertical layout" style="padding: 8px 16px 18px 16px;">
+			<div class="vertical layout" style="padding: 8px 16px 18px 16px;">
 				<paper-input label="URL" always-float-label value="{{audioUrl}}" id="url"></paper-input>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
@@ -47,35 +49,35 @@
 		</paper-menu-button>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-audio',
-				attached: function () {
-					if (!this._handler) {
-						this._handler = function (event) {
-							var target = Polymer.dom(event).rootTarget, selectedAudio = null;
-							if (!this.target.contains(target)) return;
-			
-							if (target.tagName === 'AUDIO-WRAPPER') {
-								var audio = target.querySelector('audio');
-								if (audio) selectedAudio = audio;
-							}
-			
-							this._setSelectedAudio(selectedAudio);
-						}.bind(this);
-					}
+		class WysiwygToolAudio extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-audio' }
 
-					document.addEventListener('click', this._handler);
-					document.addEventListener('keydown', this._handler);
-				},
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				detached: function () {
-					document.removeEventListener('click', this._handler);
-					document.removeEventListener('keydown', this._handler);
-				},
-				properties: {
+			attached () {
+				if (!this._handler) {
+					this._handler = function (event) {
+						var selectedAudio = null;
+						if (!this.target.contains(event.target)) return;
+		
+						if (event.target.tagName === 'AUDIO-WRAPPER') {
+							var audio = event.target.querySelector('audio');
+							if (audio) selectedAudio = audio;
+						}
+		
+						this._setSelectedAudio(selectedAudio);
+					}.bind(this);
+				}
+
+				document.addEventListener('click', this._handler);
+				document.addEventListener('keydown', this._handler);
+			}
+
+			detached () {
+				document.removeEventListener('click', this._handler);
+				document.removeEventListener('keydown', this._handler);
+			}
+
+			static get properties () {
+				return {
 					audioUrl: {
 						type: String,
 						value: ''
@@ -100,73 +102,84 @@
 						reflectToAttribute: true,
 						observer: '_disabledChanged'
 					}
-				},
-				execCommand: function (event) {
-					if (this.disabled || !this.range0) return;
-					var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = Polymer.dom(event).rootTarget;
+				};
+			}
 
-					if (this.$.updateInsert.contains(target)) {
-						this.$.dropdown.close();
+			execCommand (event) {
+				if (this.disabled || !this.range0) return;
+				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-						this.async(
-							function () {
-								if (this.selectedAudio) {
-									this.selectedAudio.src = audioUrl;
-								} else {
-									var html = '<p><br><audio-wrapper><audio src="' + audioUrl + '" controls></audio></audio-wrapper><br></p>';
-									document.execCommand('insertHTML', false, html);
-								}
-							},
-							10
-						);
-					} else if (this.$.remove.contains(target)) {
-						if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
-						this.$.dropdown.close();
-					} else if (this.$.close.contains(target)) {
-						this.$.dropdown.close();
-					} else if (this.$.button.contains(target)) {
-						if (this.selectedAudio) {
-							this.audioUrl = this.selectedAudio.src;
-						} else {
-							this.audioUrl = '';
-						}
+				if (this.$.updateInsert.contains(event.target)) {
+					this.$.dropdown.close();
 
-						this.$.dropdown.open();
-
-						this.async(
-							function () {
-								this.$.url.focus();
-							},
-							100
-						);
+					setTimeout(
+						function () {
+							if (this.selectedAudio) {
+								this.selectedAudio.src = audioUrl;
+							} else {
+								var html = '<p><br><audio-wrapper><audio src="' + audioUrl + '" controls></audio></audio-wrapper><br></p>';
+								document.execCommand('insertHTML', false, html);
+							}
+						}.bind(this),
+						10
+					);
+				} else if (this.$.remove.contains(event.target)) {
+					if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
+					this.$.dropdown.close();
+				} else if (this.$.close.contains(event.target)) {
+					this.$.dropdown.close();
+				} else if (this.$.button.contains(event.target)) {
+					if (this.selectedAudio) {
+						this.audioUrl = this.selectedAudio.src;
+					} else {
+						this.audioUrl = '';
 					}
-				},
-				queryCommandEnabled: function () {
-					return this.range0;
-				},
-				queryCommandState: function () {
-					return this.selectedAudio;
-				},
-				ready: function () {
-					this.resources = {
-						'en': {
-							'Audio': 'Audio'
-						},
-						'fr': {
-							'Audio': 'Audio'
-						}
-					};
-				},
-				_paperDropdownClose: function (event) {
-					if (event.target !== this.$.dropdown) return;
-					this.audioUrl = '';
-					this.fire('restore-selection');
-				},
-				_selectedAudioChanged: function () {},
-				_stopPropagation: function (event) {
-					event.stopPropagation();
+
+					this.$.dropdown.open();
+
+					setTimeout(
+						function () {
+							this.$.url.focus();
+						}.bind(this),
+						100
+					);
 				}
 			}
-		);
+
+			queryCommandEnabled () {
+				return this.range0;
+			}
+
+			queryCommandState () {
+				return this.selectedAudio;
+			}
+
+			ready () {
+				super.ready();
+
+				this.resources = {
+					'en': {
+						'Audio': 'Audio'
+					},
+					'fr': {
+						'Audio': 'Audio'
+					}
+				};
+			}
+
+			_paperDropdownClose (event) {
+				if (event.target !== this.$.dropdown) return;
+				this.audioUrl = '';
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+			}
+
+			_selectedAudioChanged () {}
+
+			_stopPropagation (event) {
+				event.stopPropagation();
+			}
+		}
+
+		customElements.define(WysiwygToolAudio.is, WysiwygToolAudio);
 	</script>
 </dom-module>

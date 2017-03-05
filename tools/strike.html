@@ -4,8 +4,8 @@
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
+<link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-strike">
   <svg>
     <defs>
@@ -17,33 +17,35 @@
 </iron-iconset-svg>
 <dom-module id="wysiwyg-tool-strike">
 	<template>
-		<style include="wysiwyg-tool-styles"></style>
+		<style include="wysiwyg-tool"></style>
 		<paper-button disabled="[[disabled]]" id="button">
 			<iron-icon icon="wysiwyg-tool-strike:icon"></iron-icon>
 		</paper-button>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Strikethrough')]] (Shift + Alt + D)</paper-tooltip>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Strikethrough"></app-localize>
+			<span> (Shift + Alt + D)</span>
+		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+d" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-strike',
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				ready: function () {
-					this._setCommand('strikeThrough');
+		class WysiwygToolStrike extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-strike' }
 
-					this.resources = {
-						'en': {
-							'Strikethrough': 'Strikethrough'
-						},
-						'fr': {
-							'Strikethrough': 'Barrer'
-						}
-					};
-				}
+			ready() {
+				super.ready();
+				this._setCommand('strikeThrough');
+
+				this.resources = {
+					'en': {
+						'Strikethrough': 'Strikethrough'
+					},
+					'fr': {
+						'Strikethrough': 'Barrer'
+					}
+				};
 			}
-		);
+		}
+
+		customElements.define(WysiwygToolStrike.is, WysiwygToolStrike);
 	</script>
 </dom-module>

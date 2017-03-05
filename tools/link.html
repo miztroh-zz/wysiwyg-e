@@ -12,9 +12,8 @@
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../wysiwyg-tool-behavior.html">
-<link rel="import" href="../wysiwyg-tool-styles.html">
-<link rel="import" href="../wysiwyg-tool-icons.html">
+<link rel="import" href="../wysiwyg-tool.html">
+<link rel="import" href="../app-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-link">
 	<svg>
 		<defs>
@@ -27,16 +26,21 @@
 <dom-module id="wysiwyg-tool-link">
 	<template>
 		<style include="iron-flex"></style>
-		<style include="wysiwyg-tool-styles"></style>
-		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">[[localize('Link')]] (Shift + Alt + A)</paper-tooltip>
+		<style include="wysiwyg-tool"></style>
+		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
+			<app-localize language="[[language]]" resources="[[resources]]" string-key="Link"></app-localize>
+			<span> (Shift + Alt + A)</span>
+		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
-		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
-			<paper-button disabled="[[disabled]]" id="button" class="dropdown-trigger">
+		<paper-menu-button on-opened-changed="_paperDropdownOpenedChanged" id="dropdown" disabled="[[disabled]]" dynamic-align>
+			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-link:icon"></iron-icon>
 			</paper-button>
-			<div class="dropdown-content" style="padding: 8px 16px 18px 16px;">
-				<paper-input label="[[localize('URL')]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
-				<paper-dropdown-menu label="[[localize('Target')]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
+			<div style="padding: 8px 16px 18px 16px;">
+				<app-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></app-localize>
+				<paper-input label="[[_localizedUrl]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
+				<app-localize language="[[language]]" resources="[[resources]]" string-key="Target" localized="{{_localizedTarget}}" hidden></app-localize>
+				<paper-dropdown-menu label="[[_localizedTarget]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
 					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
 						<paper-item target="_blank">_blank</paper-item>
 						<paper-item target="_self">_self</paper-item>
@@ -55,48 +59,47 @@
 		</paper-menu-button>
 	</template>
 	<script>
-		Polymer(
-			{
-				is: 'wysiwyg-tool-link',
-				attached: function () {
-					if (!this._handler) {
-						this._handler = function (event) {
-							var target = Polymer.dom(event).rootTarget;
-							if (!this.target.contains(target)) return;
-							event.preventDefault();
-		
-							this.async(
-								function () {
-									var path = this.commonAncestorPath, selectedLink = null;
-		
-									for (var i = 0; i < path.length; i += 1) {
-										if (path[i].tagName === 'A') {
-											selectedLink = path[i];
-											break;
-										}
-									}
-		
-									this._setSelectedLink(selectedLink);
-		
-									if (selectedLink) {
-										if (this.mode !== 'read') return;
-										window.open(selectedLink.href);
-									}
-								},
-								100
-							);
-						}.bind(this);
-					}
+		class WysiwygToolLink extends WysiwygTool {
+			static get is() { return 'wysiwyg-tool-link' }
 
-					document.addEventListener('click', this._handler);
-				},
-				behaviors: [
-					WYSIWYG.ToolBehavior
-				],
-				detached: function () {
-					document.removeEventListener('click', this._handler);
-				},
-				properties: {
+			attached () {
+				if (!this._handler) {
+					this._handler = function (event) {
+						if (!this.target.contains(event.target)) return;
+						event.preventDefault();
+	
+						setTimeout(
+							function () {
+								var path = this.commonAncestorPath, selectedLink = null;
+	
+								for (var i = 0; i < path.length; i += 1) {
+									if (path[i].tagName === 'A') {
+										selectedLink = path[i];
+										break;
+									}
+								}
+	
+								this._setSelectedLink(selectedLink);
+	
+								if (selectedLink) {
+									if (this.mode !== 'read') return;
+									window.open(selectedLink.href);
+								}
+							}.bind(this),
+							100
+						);
+					}.bind(this);
+				}
+
+				document.addEventListener('click', this._handler);
+			}
+
+			detached () {
+				document.removeEventListener('click', this._handler);
+			}
+
+			static get properties () {
+				return {
 					linkTarget: {
 						type: String,
 						value: '_self',
@@ -126,99 +129,111 @@
 						reflectToAttribute: true,
 						observer: '_disabledChanged'
 					}
-				},
-				execCommand: function (event) {
-					if (this.disabled || !this.range0) return;
-					var linkUrl = this.linkUrl, linkTarget = this.linkTarget, target = Polymer.dom(event).rootTarget;
+				};
+			}
 
-					if (this.$.updateInsert.contains(target)) {
-						this.$.dropdown.close();
+			execCommand (event) {
+				if (this.disabled || !this.range0) return;
+				var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
 
-						this.async(
-							function () {
-								if (this.selectedLink) {
-									this.selectedLink.href = linkUrl;
-									this.selectedLink.target = linkTarget;
-								} else {
-									document.execCommand('createLink', false, linkUrl);
+				if (this.$.updateInsert.contains(event.target)) {
+					this.$.dropdown.close();
 
-									this.async(
-										function () {
-											if (this.selectedLink) this.selectedLink.target = linkTarget;
-										},
-										10
-									);
-								}
-							},
-							10
-						);
-					} else if (this.$.remove.contains(target)) {
-						if (this.selectedLink) {
-							this.selectedLink.outerHTML = this.selectedLink.innerHTML;
-							this._setSelectedLink(null);
-						}
+					setTimeout(
+						function () {
+							if (this.selectedLink) {
+								this.selectedLink.href = linkUrl;
+								this.selectedLink.target = linkTarget;
+							} else {
+								document.execCommand('createLink', false, linkUrl);
 
-						this.$.dropdown.close();
-					} else if (this.$.close.contains(target)) {
-						this.$.dropdown.close();
-					} else if (this.$.button.contains(target)) {
-						if (this.selectedLink) {
-							this.linkUrl = this.selectedLink.href;
-							this.linkTarget = this.selectedLink.target || '_self';
-						} else {
-							this.linkUrl = '';
-							this.linkTarget = '_self';
-						}
-
-						this.$.dropdown.open();
-
-						this.async(
-							function () {
-								this.$.url.focus();
-							},
-							100
-						);
+								setTimeout(
+									function () {
+										if (this.selectedLink) this.selectedLink.target = linkTarget;
+									}.bind(this),
+									10
+								);
+							}
+						}.bind(this),
+						10
+					);
+				} else if (this.$.remove.contains(event.target)) {
+					if (this.selectedLink) {
+						this.selectedLink.outerHTML = this.selectedLink.innerHTML;
+						this._setSelectedLink(null);
 					}
-				},
-				queryCommandEnabled: function () {
-					if (this.selectedLink) return true;
-					if (!this.range0) return false;
-					return this.range0.endOffset > this.range0.startOffset;
-				},
-				queryCommandState: function () {
-					return this.selectedLink;
-				},
-				ready: function () {
-					this.resources = {
-						'en': {
-							'Link': 'Link',
-							'URL': 'URL',
-							'Target': 'Target'
-						},
-						'fr': {
-							'Link': 'Lien',
-							'URL': 'URL',
-							'Target': 'Cible'
-						}
-					};
-				},
-				_linkTargetChanged: function () {
-					if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
+
+					this.$.dropdown.close();
+				} else if (this.$.close.contains(event.target)) {
+					this.$.dropdown.close();
+				} else if (this.$.button.contains(event.target)) {
+					if (this.selectedLink) {
+						this.linkUrl = this.selectedLink.href;
+						this.linkTarget = this.selectedLink.target || '_self';
+					} else {
+						this.linkUrl = '';
 						this.linkTarget = '_self';
-						return;
 					}
-				},
-				_paperDropdownClose: function (event) {
-					if (event.target !== this.$.dropdown) return;
-					this.linkUrl = '';
-					this.linkTarget = '_self';
-					this.fire('restore-selection');
-				},
-				_selectedLinkChanged: function (event) {},
-				_stopPropagation: function (event) {
-					event.stopPropagation();
+
+					this.$.dropdown.open();
+
+					setTimeout(
+						function () {
+							this.$.url.focus();
+						}.bind(this),
+						100
+					);
 				}
 			}
-		);
+
+			queryCommandEnabled () {
+				if (this.selectedLink) return true;
+				if (!this.range0) return false;
+				return this.range0.startContainer !== this.range0.endContainer || this.range0.endOffset > this.range0.startOffset;
+			}
+
+			queryCommandState () {
+				return this.selectedLink;
+			}
+
+			ready () {
+				super.ready();
+
+				this.resources = {
+					'en': {
+						'Link': 'Link',
+						'URL': 'URL',
+						'Target': 'Target'
+					},
+					'fr': {
+						'Link': 'Lien',
+						'URL': 'URL',
+						'Target': 'Cible'
+					}
+				};
+			}
+
+			_linkTargetChanged () {
+				if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
+					this.linkTarget = '_self';
+					return;
+				}
+			}
+
+			_paperDropdownOpenedChanged (event) {
+				if (this.$.dropdown.opened) return;
+				this.linkUrl = '';
+				this.linkTarget = '_self';
+				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+			}
+
+			_selectedLinkChanged (event) {}
+
+			_stopPropagation (event) {
+				event.stopPropagation();
+			}
+		}
+
+		customElements.define(WysiwygToolLink.is, WysiwygToolLink);
 	</script>
 </dom-module>

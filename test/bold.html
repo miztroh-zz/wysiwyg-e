@@ -25,7 +25,7 @@
 					setup(
 						function() {
 							wysiwygE = fixture('wysiwyg-e-fixture');
-							tool = Polymer.dom(wysiwygE).querySelector('wysiwyg-tool-bold');
+							tool = wysiwygE.querySelector('wysiwyg-tool-bold');
 						}
 					);
 
@@ -34,19 +34,19 @@
 						function (done) {
 							wysiwygE.selectAll();
 
-							wysiwygE.async(
+							setTimeout(
 								function () {
 									tool.execCommand();
 
-									wysiwygE.async(
+									setTimeout(
 										function () {
-											assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><b>Hello, world!</b></p>');
+											assert.equal(wysiwygE.value, '<p><b>Hello, world!</b></p>');
 											done();
-										},
-										1000
+										}.bind(wysiwygE),
+										250
 									);
-								},
-								100
+								}.bind(wysiwygE),
+								250
 							);
 						}
 					);
@@ -56,19 +56,19 @@
 						function (done) {
 							wysiwygE.selectAll();
 
-							wysiwygE.async(
+							setTimeout(
 								function () {
 									tool.dispatchEvent(new Event('click'));
 
-									wysiwygE.async(
+									setTimeout(
 										function () {
-											assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p><b>Hello, world!</b></p>');
+											assert.equal(wysiwygE.value, '<p><b>Hello, world!</b></p>');
 											done();
-										},
-										1000
+										}.bind(wysiwygE),
+										250
 									);
-								},
-								100
+								}.bind(wysiwygE),
+								250
 							);
 						}
 					);

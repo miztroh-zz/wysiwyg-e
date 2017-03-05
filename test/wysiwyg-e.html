@@ -28,11 +28,11 @@
 					test(
 						'initial content',
 						function (done) {
-							wysiwygE.async(
+							setTimeout(
 								function () {
-									assert.equal(wysiwygE.value.replace(new RegExp(' class="style-scope wysiwyg-e"', 'g'), ''), '<p>Hello, world!</p>');
+									assert.equal(wysiwygE.value, '<p>Hello, world!</p>');
 									done();
-								},
+								}.bind(wysiwygE),
 								100
 							);
 						}
