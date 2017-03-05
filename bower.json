@@ -1,8 +1,9 @@
 {
 	"name": "wysiwyg-e",
+	"version": "2.0.0-preview",
 	"homepage": "https://github.com/miztroh/wysiwyg-e",
 	"authors": [
-		"Jonathan Cox <miztroh@gmail.com>"
+		"Jonathan Cox <jonathan@teamcox.family>"
 	],
 	"description": "A what-you-see-is-what-you-get editor created with Polymer",
 	"main": "wysiwyg-e.html",
@@ -23,29 +24,25 @@
 	],
 	"dependencies": {
 		"polymer": "polymer/polymer#latest",
-		"app-localize-behavior": "PolymerElements/app-localize-behavior#2.0-preview",
+		"app-localize-behavior": "PolymerElements/app-localize-behavior#latest",
 		"font-roboto": "PolymerElements/font-roboto#latest",
 		"iron-a11y-keys": "PolymerElements/iron-a11y-keys#latest",
-		"iron-ajax": "PolymerElements/iron-ajax#2.0-preview",
-		"iron-flex-layout": "PolymerElements/iron-flex-layout#2.0-preview",
-		"iron-icon": "PolymerElements/iron-icon#2.0-preview",
-		"iron-iconset-svg": "PolymerElements/iron-iconset-svg#2.0-preview",
-		"iron-media-query": "PolymerElements/iron-media-query#2.0-preview",
-		"paper-button": "PolymerElements/paper-button#2.0-preview",
-		"paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#2.0-preview",
-		"paper-icon-button": "PolymerElements/paper-icon-button#2.0-preview",
-		"paper-input": "PolymerElements/paper-input#2.0-preview",
-		"paper-item": "PolymerElements/paper-item#2.0-preview",
-		"paper-listbox": "PolymerElements/paper-listbox#2.0-preview",
-		"paper-menu-button": "PolymerElements/paper-menu-button#2.0-preview",
+		"iron-ajax": "PolymerElements/iron-ajax#latest",
+		"iron-flex-layout": "PolymerElements/iron-flex-layout#latest",
+		"iron-icon": "PolymerElements/iron-icon#latest",
+		"iron-iconset-svg": "PolymerElements/iron-iconset-svg#latest",
+		"iron-media-query": "PolymerElements/iron-media-query#latest",
+		"paper-button": "PolymerElements/paper-button#latest",
+		"paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#latest",
+		"paper-icon-button": "PolymerElements/paper-icon-button#latest",
+		"paper-input": "PolymerElements/paper-input#latest",
+		"paper-item": "PolymerElements/paper-item#latest",
+		"paper-listbox": "PolymerElements/paper-listbox#latest",
+		"paper-menu-button": "PolymerElements/paper-menu-button#latest",
 		"paper-swatch-picker": "PolymerElements/paper-swatch-picker#latest",
-		"paper-tooltip": "PolymerElements/paper-tooltip#2.0-preview",
-		"iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-		"selection-mgr": "miztroh/selection-mgr#2.0-preview",
-		"undo-mgr": "miztroh/undo-mgr#2.0-preview"
-	},
-  "resolutions": {
-    "polymer": "2.0-preview",
-    "webcomponentsjs": "v1"
-  }
+		"paper-tooltip": "PolymerElements/paper-tooltip#latest",
+		"iron-component-page": "PolymerElements/iron-component-page#latest",
+		"selection-mgr": "miztroh/selection-mgr#latest",
+		"undo-mgr": "miztroh/undo-mgr#latest"
+	}
 }
