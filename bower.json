@@ -23,7 +23,7 @@
 		"tests"
 	],
 	"dependencies": {
-		"polymer": "polymer/polymer#latest",
+		"polymer": "polymer/polymer#master",
 		"app-localize-behavior": "PolymerElements/app-localize-behavior#latest",
 		"font-roboto": "PolymerElements/font-roboto#latest",
 		"iron-a11y-keys": "PolymerElements/iron-a11y-keys#latest",
