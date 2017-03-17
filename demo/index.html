@@ -4,8 +4,8 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>WYSIWYG-E Demo</title>
-		<!-- Web Components polyfill: Make sure you include this once per page -->
-		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<!-- Web Components polyfills: Make sure you include this once per page -->
+		<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
 		<!-- Import this to use the editor.  You'll want at least one of the tools below -->
 		<link rel="import" href="../wysiwyg-e.html">
 		<!-- Import one or more of the following tools -->
@@ -54,7 +54,8 @@
 		</wysiwyg-e>
 		<iron-ajax url="../README.md" handle-as="text" id="ajax"></iron-ajax>
 		<script>
-			HTMLImports.whenReady(
+			window.addEventListener(
+				'WebComponentsReady',
 				function () {
 					var ironAjax = document.querySelector('iron-ajax'), wysiwygE = document.querySelector('wysiwyg-e');
 		
