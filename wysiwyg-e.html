@@ -198,6 +198,14 @@ Command                                 | Mac Shortcut                          
 				@apply --layout-flex;
 			}
 
+			#editable[show-placeholder]:before {
+				content: attr(placeholder);
+				display: block;
+				position: absolute;
+				font-style: italic;
+				@apply --wysiwyg-editable-placeholder;
+			}
+
 			#editable :first-child {
 				margin-top: 0;
 				@apply --wysiwyg-editable-first-child;
@@ -412,7 +420,7 @@ Command                                 | Mac Shortcut                          
 				</paper-button>
 			</div>
 			<div id="content">
-				<div id="editable" contenteditable></div>
+				<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>
 			</div>
 		</div>
 	</template>
@@ -450,7 +458,6 @@ Command                                 | Mac Shortcut                          
 
 				if (!this._restoreSelectionHandler) {
 					this._restoreSelectionHandler = function () {
-						console.log('restore-selection');
 						this.restoreSelection();
 					}.bind(this);
 				}
@@ -697,6 +704,13 @@ Command                                 | Mac Shortcut                          
 						value: false
 					},
 					//
+					// Text to show when target's trimmed textContent is blank
+					//
+					placeholder: {
+						type: String,
+						value: 'Edit your content here...'
+					},
+					//
 					// Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
 					//
 					resources: {
@@ -761,6 +775,12 @@ Command                                 | Mac Shortcut                          
 						readOnly: true
 					},
 					//
+					// Whether placeholder should be shown.  Computed.
+					//
+					showPlaceholder: {
+						type: Boolean,
+						computed: '_computeShowPlaceholder(lastMutation)'
+					},
 					// Computed based on ``minWidth768px``
 					//
 					tooltipPosition: {
@@ -1039,6 +1059,10 @@ Command                                 | Mac Shortcut                          
 				return scrollTop > 0;
 			}
 
+			_computeShowPlaceholder(value) {
+				return this.target && !this.target.textContent.trim().length;
+			}
+
 			_computeTooltipPosition(minWidth768px, forceNarrow) {
 				if (minWidth768px && !forceNarrow) return 'bottom';
 				return 'right';
@@ -1120,14 +1144,6 @@ Command                                 | Mac Shortcut                          
 			_scrollPreviousIcon(minWidth768px, forceNarrow) {
 				if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-left';
 				return 'wysiwyg:scroll-up';
-			}
-
-			_targetChanged() {
-				super._targetChanged();
-			}
-
-			_valueChanged() {
-				super._valueChanged();
 			}
 		}
 

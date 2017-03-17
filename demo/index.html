@@ -62,8 +62,7 @@
 					ironAjax.addEventListener(
 						'response',
 						function () {
-							var value = marked(this.lastResponse || '<p>Hello, world!</p>');
-							value = '<p>Hello, world!</p>';
+							var value = marked(this.lastResponse);
 							wysiwygE.value = value.replace(new RegExp('https://miztroh.github.io/bower_components/wysiwyg-e/', 'g'), '../');
 						}
 					);
