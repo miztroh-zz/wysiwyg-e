@@ -1,4 +1,4 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
@@ -13,7 +13,7 @@
 <link rel="import" href="../../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../wysiwyg-tool.html">
-<link rel="import" href="../app-localize.html">
+<link rel="import" href="../wysiwyg-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-video">
   <svg>
     <defs>
@@ -28,7 +28,7 @@
 		<style include="iron-flex"></style>
 		<style include="wysiwyg-tool"></style>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Video"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Video"></wysiwyg-localize>
 			<span> (Shift + Alt + V)</span>
 		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+v" on-keys-pressed="execCommand"></iron-a11y-keys>
@@ -37,7 +37,7 @@
 				<iron-icon icon="wysiwyg-tool-video:icon"></iron-icon>
 			</paper-button>
 			<div class="dropdown-content vertical layout" style="padding: 8px 16px 18px 16px;">
-				<app-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}"></app-localize>
+				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}"></wysiwyg-localize>
 				<paper-input label="[[_localizedUrl]]" always-float-label value="{{videoUrl}}" id="url"></paper-input>
 				<div class="horizontal layout">
 					<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>

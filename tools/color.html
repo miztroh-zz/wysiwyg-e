@@ -4,7 +4,7 @@
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../wysiwyg-tool.html">
-<link rel="import" href="../app-localize.html">
+<link rel="import" href="../wysiwyg-localize.html">
 <dom-module id="wysiwyg-tool-color">
 	<template>
 		<style include="wysiwyg-tool"></style>
@@ -23,7 +23,7 @@
 			<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}"></paper-swatch-picker>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Color"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Color"></wysiwyg-localize>
 			<span> (Shift + Alt + P)</span>
 		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+p" on-keys-pressed="execCommand"></iron-a11y-keys>

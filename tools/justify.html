@@ -1,4 +1,4 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
@@ -7,7 +7,7 @@
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../wysiwyg-tool.html">
-<link rel="import" href="../app-localize.html">
+<link rel="import" href="../wysiwyg-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-justify">
   <svg>
     <defs>
@@ -44,22 +44,22 @@
 			}
 		</style>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Justify"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Justify"></wysiwyg-localize>
 		</paper-tooltip>
 		<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Left"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Left"></wysiwyg-localize>
 			<span> (Shift + Alt + L)</span>
 		</paper-tooltip>
 		<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Right"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
 			<span> (Shift + Alt + R)</span>
 		</paper-tooltip>
 		<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Center"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
 			<span> (Shift + Alt + E)</span>
 		</paper-tooltip>
 		<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Full"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
 			<span> (Shift + Alt + J)</span>
 		</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+l" on-keys-pressed="_left"></iron-a11y-keys>
@@ -72,16 +72,16 @@
 			</paper-button>
 			<div>
 				<paper-item id="left">
-					<app-localize language="[[language]]" resources="[[resources]]" string-key="Left"></app-localize>
+					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Left"></wysiwyg-localize>
 				</paper-item>
 				<paper-item id="right" hidden$="{{!right}}">
-					<app-localize language="[[language]]" resources="[[resources]]" string-key="Right"></app-localize>
+					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
 				</paper-item>
 				<paper-item id="center" hidden$="{{!center}}">
-					<app-localize language="[[language]]" resources="[[resources]]" string-key="Center"></app-localize>
+					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
 				</paper-item>
 				<paper-item id="full" hidden$="{{!full}}">
-					<app-localize language="[[language]]" resources="[[resources]]" string-key="Full"></app-localize>
+					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
 				</paper-item>
 			</div>
 		</paper-menu-button>

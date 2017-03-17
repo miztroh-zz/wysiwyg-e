@@ -1,4 +1,4 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
@@ -7,7 +7,7 @@
 <link rel="import" href="../../font-roboto/roboto.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../wysiwyg-tool.html">
-<link rel="import" href="../app-localize.html">
+<link rel="import" href="../wysiwyg-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-heading">
   <svg>
     <defs>
@@ -43,37 +43,37 @@
 				background: #e4e4e4;
 			}
 		</style>
-		<app-localize id="localize"></app-localize>
+		<wysiwyg-localize id="localize"></wysiwyg-localize>
 		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Paragraph"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Paragraph"></wysiwyg-localize>
 			<span> (Shift + Alt + 0)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="1"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="1"></wysiwyg-localize>
 			<span> (Shift + Alt + 1)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="2"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="2"></wysiwyg-localize>
 			<span> (Shift + Alt + 2)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="3"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="3"></wysiwyg-localize>
 			<span> (Shift + Alt + 3)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="4"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="4"></wysiwyg-localize>
 			<span> (Shift + Alt + 4)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="5"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="5"></wysiwyg-localize>
 			<span> (Shift + Alt + 5)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="6"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="6"></wysiwyg-localize>
 			<span> (Shift + Alt + 6)</span>
 		</paper-tooltip>
 		<paper-tooltip for="button" position="[[tooltipPosition]]" offset="5" slot="dropdown-trigger">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></wysiwyg-localize>
 		</paper-tooltip>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+0" on-keys-pressed="_p"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="shift+alt+1" on-keys-pressed="_h1"></iron-a11y-keys>

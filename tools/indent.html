@@ -1,11 +1,11 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../../iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../wysiwyg-tool.html">
-<link rel="import" href="../app-localize.html">
+<link rel="import" href="../wysiwyg-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg-tool-indent">
   <svg>
     <defs>
@@ -22,7 +22,7 @@
 			<iron-icon icon="wysiwyg-tool-indent:icon"></iron-icon>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
-			<app-localize language="[[language]]" resources="[[resources]]" string-key="Indent"></app-localize>
+			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Indent"></wysiwyg-localize>
 			<span> (Tab)</span>
 		</paper-tooltip>
 		<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>

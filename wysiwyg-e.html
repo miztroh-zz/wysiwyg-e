@@ -1,3 +1,4 @@
+<link rel="import" href="../shadycss/apply-shim.html">
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
@@ -11,7 +12,7 @@
 <link rel="import" href="../selection-mgr/mixin.html">
 <link rel="import" href="../undo-mgr/mixin.html">
 <link rel="import" href="wysiwyg-tool.html">
-<link rel="import" href="app-localize.html">
+<link rel="import" href="wysiwyg-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg">
 	<svg>
 		<defs>
@@ -395,14 +396,14 @@ Command                                 | Mac Shortcut                          
 						<iron-icon icon="wysiwyg:undo"></iron-icon>
 					</paper-button>
 					<paper-tooltip for="undo" position="[[tooltipPosition]]" offset="5">
-						<app-localize language="[[language]]" resources="[[resources]]" string-key="Undo"></app-localize>
+						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Undo"></wysiwyg-localize>
 						<span> ([[modifier.tooltip]] + Z)</span>
 					</paper-tooltip>
 					<paper-button id="redo" on-tap="redo" disabled="[[!canRedo]]" hidden="[[noRedo]]">
 						<iron-icon icon="wysiwyg:redo"></iron-icon>
 					</paper-button>
 					<paper-tooltip for="redo" position="[[tooltipPosition]]" offset="5">
-						<app-localize language="[[language]]" resources="[[resources]]" string-key="Redo"></app-localize>
+						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Redo"></wysiwyg-localize>
 						<span> ([[modifier.tooltip]] + Y)</span>
 					</paper-tooltip>
 				</div>
