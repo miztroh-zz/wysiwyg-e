@@ -10,6 +10,7 @@
 * Italic
 * Underline
 * Strikethrough
+* Color
 * Clear Formatting
 * Code
 * Link
@@ -21,7 +22,6 @@
 * Indent / Outdent
 * Heading (H1 - H6)
 * Blockquote
-* Undo / Redo
 
 ## Usage
 
@@ -41,6 +41,7 @@
   <wysiwyg-tool-italic></wysiwyg-tool-italic>
   <wysiwyg-tool-underline></wysiwyg-tool-underline>
   <wysiwyg-tool-strike></wysiwyg-tool-strike>
+  <wysiwyg-tool-color></wysiwyg-tool-color>
   <wysiwyg-tool-clear></wysiwyg-tool-clear>
   <wysiwyg-tool-code></wysiwyg-tool-code>
   <wysiwyg-tool-link></wysiwyg-tool-link>
@@ -54,8 +55,6 @@
   <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
   <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
   <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-  <wysiwyg-tool-undo></wysiwyg-tool-undo>
-  <wysiwyg-tool-redo></wysiwyg-tool-redo>
 </wysiwyg-e>
 ```
 
