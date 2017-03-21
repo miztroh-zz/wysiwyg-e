@@ -1,5 +1,5 @@
-<link rel="import" href="../../polymer/polymer-element.html">
-<link rel="import" href="../../app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
 <dom-module id="wysiwyg-localize">
 	<template>
 		<slot></slot>
@@ -26,7 +26,8 @@
 					},
 					localized: {
 						type: String,
-						readOnly: true,
+						value: '',
+						computed: '_computeLocalized(localize, stringKey, param1Name, param1Value)',
 						observer: '_localizedChanged',
 						notify: true
 					}
@@ -44,13 +45,9 @@
 				);
 			}
 
-			_localize () {
-				setTimeout(
-					function () {
-						this._setLocalized(this.localize(this.stringKey, this.param1Name, this.param1Value));
-					}.bind(this),
-					100
-				);
+			_computeLocalized () {
+				if (!this.localize) return '';
+				return this.localize(this.stringKey, this.param1Name, this.param1Value);
 			}
 
 			_localizedChanged() {
