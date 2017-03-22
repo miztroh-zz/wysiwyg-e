@@ -37,11 +37,11 @@
 				<iron-icon icon="wysiwyg-tool-image:icon"></iron-icon>
 			</paper-button>
 			<div style="padding: 8px 16px 18px 16px;">
-				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}"></wysiwyg-localize>
+				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></wysiwyg-localize>
 				<paper-input label="[[_localizedUrl]]" always-float-label value="{{imageUrl}}" id="url"></paper-input>
-				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Float" localized="{{_localizedFloat}}"></wysiwyg-localize>
+				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Float" localized="{{_localizedFloat}}" hidden></wysiwyg-localize>
 				<paper-dropdown-menu label="[[_localizedFloat]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-					<paper-listbox slot="content" selected="{{imageFloat}}" attr-for-selected="float">
+					<paper-listbox selected="{{imageFloat}}" attr-for-selected="float">
 						<paper-item float="none">
 							<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="none"></wysiwyg-localize>
 						</paper-item>
@@ -70,15 +70,16 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						if (!this.target.contains(event.target)) return;
+						var target = event.composedPath()[0];
+						if (!this.target.contains(target)) return;
 						event.preventDefault();
 	
-						if (event.target.tagName === 'IMG') {
-							this._setSelectedImage(event.target);
+						if (target.tagName === 'IMG') {
+							this._setSelectedImage(target);
 							var selection = this.selectionRoot.getSelection();
 							selection.removeAllRanges();
 							var range = document.createRange();
-							range.selectNode(event.target);
+							range.selectNode(target);
 							selection.addRange(range);
 							this._setRange0(range);
 						} else {
@@ -130,9 +131,9 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var imageUrl = this.imageUrl, imageFloat = this.imageFloat;
+				var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = event.composedPath()[0];
 
-				if (this.$.updateInsert.contains(event.target)) {
+				if (this.$.updateInsert === target || this.$.updateInsert.root.contains(target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -153,16 +154,16 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(event.target)) {
+				} else if (this.$.remove === target || this.$.remove.root.contains(target)) {
 					if (this.selectedImage) {
 						this.selectedImage.parentNode.removeChild(this.selectedImage);
 						this._setSelectedImage(null);
 					}
 
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(event.target)) {
+				} else if (this.$.close === target || this.$.close.root.contains(target)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(event.target)) {
+				} else if (this.$.button === target || this.$.button.root.contains(target)) {
 					if (this.selectedImage) {
 						this.imageUrl = this.selectedImage.src;
 						this.imageFloat = this.selectedImage.style.float || 'none';
@@ -221,7 +222,8 @@
 			}
 
 			_paperDropdownClose (event) {
-				if (event.target !== this.$.dropdown) return;
+				var target = event.composedPath()[0];
+				if (target !== this.$.dropdown) return;
 				this.imageUrl = '';
 				this.imageFloat = 'none';
 				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
