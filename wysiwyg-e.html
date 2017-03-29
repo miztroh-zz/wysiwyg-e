@@ -498,7 +498,7 @@ Command                                 | Mac Shortcut                          
 				super.disconnectedCallback();
 				window.removeEventListener('resize', this._resizeHandler);
 				this.removeEventListener('keydown', this._keydownHandler);
-				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
+				this.$.toolbar.removeEventListener('restore-selection', this._restoreSelectionHandler);
 				this.removeEventListener('select-element', this._selectElementHandler);
 				this.$.editable.removeEventListener('paste', this._pasteHandler);
 				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
