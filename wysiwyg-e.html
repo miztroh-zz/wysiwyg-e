@@ -483,7 +483,7 @@ Command                                 | Mac Shortcut                          
 					}.bind(this);
 				}
 
-				this.addEventListener('paste', this._pasteHandler);
+				this.$.editable.addEventListener('paste', this._pasteHandler);
 
 				if (!this._slotchangeHandler) {
 					this._slotchangeHandler = function () {
@@ -500,7 +500,7 @@ Command                                 | Mac Shortcut                          
 				this.removeEventListener('keydown', this._keydownHandler);
 				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
 				this.removeEventListener('select-element', this._selectElementHandler);
-				this.removeEventListener('paste', this._pasteHandler);
+				this.$.editable.removeEventListener('paste', this._pasteHandler);
 				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
 			}
 
