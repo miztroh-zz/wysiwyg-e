@@ -480,6 +480,7 @@ Command                                 | Mac Shortcut                          
 						// If paste does not contain HTML, fall back to plain text
 						if (!data.length) data = event.clipboardData.getData('text');
 						document.execCommand('insertHTML', false, data);
+						this.value = this.$.editable.innerHTML;
 					}.bind(this);
 				}
 
