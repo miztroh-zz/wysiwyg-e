@@ -48,24 +48,24 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 
 ```html
 <wysiwyg-e>
-	<wysiwyg-tool-bold></wysiwyg-tool-bold>
-	<wysiwyg-tool-italic></wysiwyg-tool-italic>
-	<wysiwyg-tool-underline></wysiwyg-tool-underline>
-	<wysiwyg-tool-strike></wysiwyg-tool-strike>
-	<wysiwyg-tool-color></wysiwyg-tool-color>
-	<wysiwyg-tool-clear></wysiwyg-tool-clear>
-	<wysiwyg-tool-code></wysiwyg-tool-code>
-	<wysiwyg-tool-link></wysiwyg-tool-link>
-	<wysiwyg-tool-image></wysiwyg-tool-image>
-	<wysiwyg-tool-audio></wysiwyg-tool-audio>
-	<wysiwyg-tool-video></wysiwyg-tool-video>
-	<wysiwyg-tool-ordered></wysiwyg-tool-ordered>
-	<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
-	<wysiwyg-tool-indent></wysiwyg-tool-indent>
-	<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
-	<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
-	<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-	<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
+  <wysiwyg-tool-bold></wysiwyg-tool-bold>
+  <wysiwyg-tool-italic></wysiwyg-tool-italic>
+  <wysiwyg-tool-underline></wysiwyg-tool-underline>
+  <wysiwyg-tool-strike></wysiwyg-tool-strike>
+  <wysiwyg-tool-color></wysiwyg-tool-color>
+  <wysiwyg-tool-clear></wysiwyg-tool-clear>
+  <wysiwyg-tool-code></wysiwyg-tool-code>
+  <wysiwyg-tool-link></wysiwyg-tool-link>
+  <wysiwyg-tool-image></wysiwyg-tool-image>
+  <wysiwyg-tool-audio></wysiwyg-tool-audio>
+  <wysiwyg-tool-video></wysiwyg-tool-video>
+  <wysiwyg-tool-ordered></wysiwyg-tool-ordered>
+  <wysiwyg-tool-unordered></wysiwyg-tool-unordered>
+  <wysiwyg-tool-indent></wysiwyg-tool-indent>
+  <wysiwyg-tool-outdent></wysiwyg-tool-outdent>
+  <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
+  <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+  <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
 </wysiwyg-e>
 ```
 
@@ -75,100 +75,100 @@ The following custom propeses and mixins are available for styling:
 
 #### Font
 
-Custom property												 | Description																				| Default
+Custom property                         | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-font`												| Font-family																				| `Roboto`
+`--wysiwyg-font`                        | Font-family                                        | `Roboto`
 
 #### Toolbar
 
-Custom property												 | Description																				| Default
+Custom property                         | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-toolbar-background`					| Toolbar background style													 | `#2A9AF2`
-`--wysiwyg-toolbar-color`							 | Toolbar text color																 | `white`
+`--wysiwyg-toolbar-background`          | Toolbar background style                           | `#2A9AF2`
+`--wysiwyg-toolbar-color`               | Toolbar text color                                 | `white`
 
 #### Tools
 
-Custom property												 | Description																				| Default
+Custom property                         | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-tool-icon-active-color`			| Tool close button color														| `rgba(0, 0, 0, 0.5)`
-`--wysiwyg-tool-icon-disabled-color`		| Tool close button color														| `rgba(255, 255, 255, 0.5)`
-`--wysiwyg-tool-button-close`					 | Tool close button color														| `rgba(0, 0, 0, 0.5)`
-`--wysiwyg-tool-button-remove`					| Tool remove button color													 | `#d23f31`
-`--wysiwyg-tool-button-updateinsert`		| Tool update / insert button color									| `#2a9af2`
-`--wysiwyg-tool-focus-color`						| Tool text input focus color												| `#2a9af2`
+`--wysiwyg-tool-icon-active-color`      | Tool close button color                            | `rgba(0, 0, 0, 0.5)`
+`--wysiwyg-tool-icon-disabled-color`    | Tool close button color                            | `rgba(255, 255, 255, 0.5)`
+`--wysiwyg-tool-button-close`           | Tool close button color                            | `rgba(0, 0, 0, 0.5)`
+`--wysiwyg-tool-button-remove`          | Tool remove button color                           | `#d23f31`
+`--wysiwyg-tool-button-updateinsert`    | Tool update / insert button color                  | `#2a9af2`
+`--wysiwyg-tool-focus-color`            | Tool text input focus color                        | `#2a9af2`
 
 #### Editable Content
 
-Custom property												 | Description																				| Default
+Custom property                         | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-editable`										| Mixin applied to the wysiwyg-e content						 | `{}`
-`--wysiwyg-editable-placeholder`				| Mixin applied to the content placeholder					 | `{}`
-`--wysiwyg-editable-blockquote`				 | Mixen applied to Blockquote `<blockquote>`				 | `{}`
-`--wysiwyg-editable-pre`								| Mixen applied to code `<code>`										 | `{}`
-`--wysiwyg-editable-p`									| Mixen applied to paragraph `<p>`									 | `{}`
-`--wysiwyg-editable-h1`								 | Mixen applied to H1 `<h1>`												 | `{}`
-`--wysiwyg-editable-h2`								 | Mixen applied to H2 `<h2>`												 | `{}`
-`--wysiwyg-editable-h3`								 | Mixen applied to H3 `<h3>`												 | `{}`
-`--wysiwyg-editable-h4`								 | Mixen applied to H4 `<h4>`												 | `{}`
-`--wysiwyg-editable-h5`								 | Mixen applied to H5 `<h5>`												 | `{}`
-`--wysiwyg-editable-h6`								 | Mixen applied to H6 `<h6>`												 | `{}`
-`--wysiwyg-editable-ol`								 | Ordered List `<ol>`																| `{padding-left: 30px;}`
-`--wysiwyg-editable-ul`								 | Unordered List `<ul>`															| `{padding-left: 30px;}`
-`--wysiwyg-editable-li`								 | Mixen applied to `<li>`														| `{}`
-`--wysiwyg-editable-a`									| Link	`<a>`																				| `{color: #2A9AF2;}`
-`--wysiwyg-editable-img`								| Mixen applied to `<img>`													 | `{}`
-`--wysiwyg-editable-b`									| Mixen applied to `<b>`														 | `{}`
-`--wysiwyg-editable-u`									| Mixen applied to `<u>`														 | `{}`
-`--wysiwyg-editable-i`									| Mixen applied to `<i>`														 | `{}`
-`--wysiwyg-editable-strike`						 | Mixen applied to `<strike>`												| `{}`
-`--wysiwyg-editable-first-child`				| Mixin applied to editable first child							| `{}`
-`--wysiwyg-editable-last-child`				 | Mixin applied to editable last child							 | `{}`
-`--wysiwyg-editable-selection`					| Editable selection																 | `{color: white; background: #2A9AF2;}`
-`--wysiwyg-html`												| Mixin applied to the wysiwyg-e html content				| `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`										| Html content `<pre>`															 | `{margin: 0;}`
-`--wysiwyg-html-code`									 | Html content `<code>`															| `{display: block; display: block;}`
+`--wysiwyg-editable`                    | Mixin applied to the wysiwyg-e content             | `{}`
+`--wysiwyg-editable-placeholder`        | Mixin applied to the content placeholder           | `{}`
+`--wysiwyg-editable-blockquote`         | Mixen applied to Blockquote `<blockquote>`         | `{}`
+`--wysiwyg-editable-pre`                | Mixen applied to code `<code>`                     | `{}`
+`--wysiwyg-editable-p`                  | Mixen applied to paragraph `<p>`                   | `{}`
+`--wysiwyg-editable-h1`                 | Mixen applied to H1 `<h1>`                         | `{}`
+`--wysiwyg-editable-h2`                 | Mixen applied to H2 `<h2>`                         | `{}`
+`--wysiwyg-editable-h3`                 | Mixen applied to H3 `<h3>`                         | `{}`
+`--wysiwyg-editable-h4`                 | Mixen applied to H4 `<h4>`                         | `{}`
+`--wysiwyg-editable-h5`                 | Mixen applied to H5 `<h5>`                         | `{}`
+`--wysiwyg-editable-h6`                 | Mixen applied to H6 `<h6>`                         | `{}`
+`--wysiwyg-editable-ol`                 | Ordered List `<ol>`                                | `{padding-left: 30px;}`
+`--wysiwyg-editable-ul`                 | Unordered List `<ul>`                              | `{padding-left: 30px;}`
+`--wysiwyg-editable-li`                 | Mixen applied to `<li>`                            | `{}`
+`--wysiwyg-editable-a`                  | Link  `<a>`                                        | `{color: #2A9AF2;}`
+`--wysiwyg-editable-img`                | Mixen applied to `<img>`                           | `{}`
+`--wysiwyg-editable-b`                  | Mixen applied to `<b>`                             | `{}`
+`--wysiwyg-editable-u`                  | Mixen applied to `<u>`                             | `{}`
+`--wysiwyg-editable-i`                  | Mixen applied to `<i>`                             | `{}`
+`--wysiwyg-editable-strike`             | Mixen applied to `<strike>`                        | `{}`
+`--wysiwyg-editable-first-child`        | Mixin applied to editable first child              | `{}`
+`--wysiwyg-editable-last-child`         | Mixin applied to editable last child               | `{}`
+`--wysiwyg-editable-selection`          | Editable selection                                 | `{color: white; background: #2A9AF2;}`
+`--wysiwyg-html`                        | Mixin applied to the wysiwyg-e html content        | `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`                    | Html content `<pre>`                               | `{margin: 0;}`
+`--wysiwyg-html-code`                   | Html content `<code>`                              | `{display: block; display: block;}`
 
 #### HTML View
 
-Custom property												 | Description																				| Default
+Custom property                         | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-html`												| Mixin applied to the wysiwyg-e html content				| `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`										| Html content `<pre>`															 | `{margin: 0;}`
-`--wysiwyg-html-code`									 | Html content `<code>`															| `{display: block; display: block;}`
+`--wysiwyg-html`                        | Mixin applied to the wysiwyg-e html content        | `{padding: 0 20px 20px 20px;}`
+`--wysiwyg-html-pre`                    | Html content `<pre>`                               | `{margin: 0;}`
+`--wysiwyg-html-code`                   | Html content `<code>`                              | `{display: block; display: block;}`
 
 ### Accessibility / Shortcut Keys
 `<wysiwyg-e>` implements key bindings to access commands.
 
-Command																 | Mac Shortcut																			 | Windows Shortcut
+Command                                 | Mac Shortcut                                       | Windows Shortcut
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`Bold`																	| Cmd + B																						| Ctrl + B
-`Italic`																| Cmd + I																						| Ctrl + I
-`Underline`														 | Cmd + U																						| Ctrl + U
-`Strikethrough`												 | Shift + Alt + D																		| Shift + Alt + D
-`Color`																 | Shift + Alt + P																		| Shift + Alt + P
-`Remove Format`												 | Cmd + Space																				| Ctrl + Space
-`Link`																	| Shift + Alt + A																		| Shift + Alt + A
-`Image`																 | Shift + Alt + M																		| Shift + Alt + M
-`Audio`																 | Shift + Alt + S																		| Shift + Alt + S
-`Video`																 | Shift + Alt + V																		| Shift + Alt + V
-`Ordered List`													| Shift + Alt + O																		| Shift + Alt + O
-`Bullet List`													 | Shift + Alt + U																		| Shift + Alt + U
-`Indent`																| Tab																								| Tab
-`Outdent`															 | Shift + Tab																				| Shift + Tab
-`Align Left`														| Shift + Alt + L																		| Shift + Alt + L
-`Align Right`													 | Shift + Alt + R																		| Shift + Alt + R
-`Align Center`													| Shift + Alt + C																		| Shift + Alt + C
-`Justify`															 | Shift + Alt + J																		| Shift + Alt + J
-`Paragraph`														 | Shift + Alt + 0																		| Shift + Alt + 0
-`H1`																		| Shift + Alt + 1																		| Shift + Alt + 1
-`H2`																		| Shift + Alt + 2																		| Shift + Alt + 2
-`H3`																		| Shift + Alt + 3																		| Shift + Alt + 2
-`H4`																		| Shift + Alt + 4																		| Shift + Alt + 3
-`H5`																		| Shift + Alt + 5																		| Shift + Alt + 3
-`H6`																		| Shift + Alt + 6																		| Shift + Alt + 6
-`Blockquote`														| Shift + Alt + Q																		| Shift + Alt + Q
-`Undo`																	| Cmd + Z																						| Ctrl + Z
-`Redo`																	| Cmd + Y																						| Ctrl + Y
+`Bold`                                  | Cmd + B                                            | Ctrl + B
+`Italic`                                | Cmd + I                                            | Ctrl + I
+`Underline`                             | Cmd + U                                            | Ctrl + U
+`Strikethrough`                         | Shift + Alt + D                                    | Shift + Alt + D
+`Color`                                 | Shift + Alt + P                                    | Shift + Alt + P
+`Remove Format`                         | Cmd + Space                                        | Ctrl + Space
+`Link`                                  | Shift + Alt + A                                    | Shift + Alt + A
+`Image`                                 | Shift + Alt + M                                    | Shift + Alt + M
+`Audio`                                 | Shift + Alt + S                                    | Shift + Alt + S
+`Video`                                 | Shift + Alt + V                                    | Shift + Alt + V
+`Ordered List`                          | Shift + Alt + O                                    | Shift + Alt + O
+`Bullet List`                           | Shift + Alt + U                                    | Shift + Alt + U
+`Indent`                                | Tab                                                | Tab
+`Outdent`                               | Shift + Tab                                        | Shift + Tab
+`Align Left`                            | Shift + Alt + L                                    | Shift + Alt + L
+`Align Right`                           | Shift + Alt + R                                    | Shift + Alt + R
+`Align Center`                          | Shift + Alt + C                                    | Shift + Alt + C
+`Justify`                               | Shift + Alt + J                                    | Shift + Alt + J
+`Paragraph`                             | Shift + Alt + 0                                    | Shift + Alt + 0
+`H1`                                    | Shift + Alt + 1                                    | Shift + Alt + 1
+`H2`                                    | Shift + Alt + 2                                    | Shift + Alt + 2
+`H3`                                    | Shift + Alt + 3                                    | Shift + Alt + 2
+`H4`                                    | Shift + Alt + 4                                    | Shift + Alt + 3
+`H5`                                    | Shift + Alt + 5                                    | Shift + Alt + 3
+`H6`                                    | Shift + Alt + 6                                    | Shift + Alt + 6
+`Blockquote`                            | Shift + Alt + Q                                    | Shift + Alt + Q
+`Undo`                                  | Cmd + Z                                            | Ctrl + Z
+`Redo`                                  | Cmd + Y                                            | Ctrl + Y
 
 @element wysiwyg-e
 @demo demo/index.html
