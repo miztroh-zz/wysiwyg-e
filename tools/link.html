@@ -36,7 +36,7 @@
 			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-link:icon"></iron-icon>
 			</paper-button>
-			<div style="padding: 8px 16px 18px 16px;">
+			<div style="padding: 8px 16px 18px 16px;" slot="dropdown-content">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></wysiwyg-localize>
 				<paper-input label="[[_localizedUrl]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Target" localized="{{_localizedTarget}}" hidden></wysiwyg-localize>
