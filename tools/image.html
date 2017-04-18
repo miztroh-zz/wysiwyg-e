@@ -41,7 +41,7 @@
 				<paper-input label="[[_localizedUrl]]" always-float-label value="{{imageUrl}}" id="url"></paper-input>
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Float" localized="{{_localizedFloat}}" hidden></wysiwyg-localize>
 				<paper-dropdown-menu label="[[_localizedFloat]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-					<paper-listbox selected="{{imageFloat}}" attr-for-selected="float">
+					<paper-listbox selected="{{imageFloat}}" attr-for-selected="float" slot="dropdown-content">
 						<paper-item float="none">
 							<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="none"></wysiwyg-localize>
 						</paper-item>

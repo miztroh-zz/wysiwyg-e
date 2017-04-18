@@ -41,7 +41,7 @@
 				<paper-input label="[[_localizedUrl]]" always-float-label value="{{linkUrl}}" id="url"></paper-input>
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Target" localized="{{_localizedTarget}}" hidden></wysiwyg-localize>
 				<paper-dropdown-menu label="[[_localizedTarget]]" always-float-label noink on-iron-select="_stopPropagation" on-click="_stopPropagation">
-					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target">
+					<paper-listbox class="dropdown-content" selected="{{linkTarget}}" attr-for-selected="target" slot="dropdown-content">
 						<paper-item target="_blank">_blank</paper-item>
 						<paper-item target="_self">_self</paper-item>
 						<paper-item target="_parent">_parent</paper-item>
