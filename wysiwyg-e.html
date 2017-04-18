@@ -328,6 +328,7 @@ Command                                 | Mac Shortcut                          
 				line-height: 40px;
 				border-radius: 0px;
 				min-width: 40px;
+				min-height: 40px;
 				background: transparent;
 				text-transform: none;
 			}
@@ -355,6 +356,10 @@ Command                                 | Mac Shortcut                          
 
 				#layout[force-narrow] {
 					@apply --layout-horizontal;
+				}
+
+				#layout[force-narrow] #toolbar {
+					@apply --layout-vertical;
 				}
 
 				#layout[force-narrow] #toolbarLayout {
@@ -439,7 +444,7 @@ Command                                 | Mac Shortcut                          
 					}.bind(this);
 				}
 
-				window.removeEventListener('resize', this._resizeHandler);
+				window.addEventListener('resize', this._resizeHandler);
 
 				if (!this._keydownHandler) {
 					this._keydownHandler = function (event) {
@@ -511,7 +516,6 @@ Command                                 | Mac Shortcut                          
 
 				setTimeout(
 					function () {
-						this._resizeHandler();
 						this.updateTools();
 					}.bind(this),
 					100
@@ -973,6 +977,7 @@ Command                                 | Mac Shortcut                          
 			// Update tools properties
 			//
 			updateTools() {
+			  if (this._resizeHandler) this._resizeHandler();
 				var now = new Date();
 
 				if (this._toolUpdateTimeout) {
@@ -1099,7 +1104,7 @@ Command                                 | Mac Shortcut                          
 			}
 
 			_scroll(dx) {
-				if (this.minWidth768px) {
+				if (!this.forceNarrow && this.minWidth768px) {
 					this._setScrollLeft(this.scrollLeft + dx);
 				} else {
 					this._setScrollTop(this.scrollTop + dx);
@@ -1107,7 +1112,7 @@ Command                                 | Mac Shortcut                          
 			}
 
 			_scrollNext() {
-				if (this.minWidth768px) {
+				if (!this.forceNarrow && this.minWidth768px) {
 					if (this.scrollLeft + this.scrollStep > this.scrollWidth) {
 						this._scroll(this.scrollWidth - this.scrollLeft);
 						this._onScrollButtonUp();
@@ -1130,7 +1135,7 @@ Command                                 | Mac Shortcut                          
 			}
 
 			_scrollPrevious() {
-				if (this.minWidth768px) {
+				if (!this.forceNarrow && this.minWidth768px) {
 					if (this.scrollLeft - this.scrollStep < 0) {
 						this._scroll(-this.scrollLeft);
 						this._onScrollButtonUp();
