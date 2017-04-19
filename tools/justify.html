@@ -130,15 +130,16 @@
 			}
 
 			execCommand (event) {
+			  var target = event.composedPath()[0];
 				if (this.disabled || !this.range0) return false;
 
-				if (this.$.left.contains(event.target)) {
+				if (this.$.left.contains(target)) {
 					this._left();
-				} else if (this.$.right.contains(event.target)) {
+				} else if (this.$.right.contains(target)) {
 					this._right();
-				} else if (this.$.center.contains(event.target)) {
+				} else if (this.$.center.contains(target)) {
 					this._center();
-				} else if (this.$.full.contains(event.target)) {
+				} else if (this.$.full.contains(target)) {
 					this._full();
 				}
 			}
@@ -223,7 +224,8 @@
 			}
 
 			_paperDropdownClose (event) {
-				if (event.target !== this.$.dropdown) return;
+			  var target = event.composedPath()[0];
+				if (target !== this.$.dropdown) return;
 				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
 		}

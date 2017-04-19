@@ -65,7 +65,8 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						if (!this.target.contains(event.target)) return;
+						var target = event.composedPath()[0];
+						if (!this.target.contains(target)) return;
 						event.preventDefault();
 	
 						setTimeout(
@@ -134,9 +135,9 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
+				var linkUrl = this.linkUrl, linkTarget = this.linkTarget, target = event.composedPath()[0];
 
-				if (this.$.updateInsert.contains(event.target)) {
+				if (this.$.updateInsert.contains(target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -157,16 +158,16 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(event.target)) {
+				} else if (this.$.remove.contains(target)) {
 					if (this.selectedLink) {
 						this.selectedLink.outerHTML = this.selectedLink.innerHTML;
 						this._setSelectedLink(null);
 					}
 
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(event.target)) {
+				} else if (this.$.close.contains(target)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(event.target)) {
+				} else if (this.$.button.contains(target)) {
 					if (this.selectedLink) {
 						this.linkUrl = this.selectedLink.href;
 						this.linkTarget = this.selectedLink.target || '_self';

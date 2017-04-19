@@ -53,11 +53,11 @@
 			attached () {
 				if (!this._handler) {
 					this._handler = function (event) {
-						var selectedAudio = null;
-						if (!this.target.contains(event.target)) return;
+						var selectedAudio = null, target = event.composedPath()[0];
+						if (!this.target.contains(target)) return;
 		
-						if (event.target.tagName === 'AUDIO-WRAPPER') {
-							var audio = event.target.querySelector('audio');
+						if (target.tagName === 'AUDIO-WRAPPER') {
+							var audio = target.querySelector('audio');
 							if (audio) selectedAudio = audio;
 						}
 		
@@ -105,9 +105,9 @@
 
 			execCommand (event) {
 				if (this.disabled || !this.range0) return;
-				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
+				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.composedPath()[0];
 
-				if (this.$.updateInsert.contains(event.target)) {
+				if (this.$.updateInsert.contains(target)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -121,12 +121,12 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(event.target)) {
+				} else if (this.$.remove.contains(target)) {
 					if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(event.target)) {
+				} else if (this.$.close.contains(target)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(event.target)) {
+				} else if (this.$.button.contains(target)) {
 					if (this.selectedAudio) {
 						this.audioUrl = this.selectedAudio.src;
 					} else {
@@ -166,7 +166,8 @@
 			}
 
 			_paperDropdownClose (event) {
-				if (event.target !== this.$.dropdown) return;
+				var target = event.composedPath()[0];
+				if (target !== this.$.dropdown) return;
 				this.audioUrl = '';
 				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
