@@ -45,6 +45,9 @@
     "selection-mgr": "miztroh/selection-mgr#master",
     "undo-mgr": "miztroh/undo-mgr#master"
   },
+  "resolutions": {
+    "iron-icon": "2.0-preview"
+  },
   "devDependencies": {
     "web-component-tester": "polymer/web-component-tester#^5.0.1"
   }
