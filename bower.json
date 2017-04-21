@@ -48,7 +48,29 @@
   "resolutions": {
     "iron-flex-layout": "2.0-preview",
     "iron-icon": "2.0-preview",
-    "iron-iconset-svg": "2.0-preview"
+    "iron-iconset-svg": "2.0-preview",
+    "paper-item": "2.0-preview",
+    "paper-icon-button": "2.0-preview",
+    "paper-listbox": "2.0-preview",
+    "polymer": "master",
+    "paper-menu-button": "2.0-preview",
+    "iron-meta": "2.0-preview",
+    "iron-a11y-keys-behavior": "2.0-preview",
+    "paper-behaviors": "2.0-preview",
+    "iron-validatable-behavior": "2.0-preview",
+    "paper-styles": "2.0-preview",
+    "paper-ripple": "2.0-preview",
+    "iron-form-element-behavior": "2.0-preview",
+    "iron-behaviors": "2.0-preview",
+    "iron-menu-behavior": "2.0-preview",
+    "webcomponentsjs": "^v1.0.0-rc.5",
+    "iron-selector": "2.0-preview",
+    "iron-fit-behavior": "2.0-preview",
+    "iron-dropdown": "2.0-preview",
+    "iron-checked-element-behavior": "2.0-preview",
+    "neon-animation": "2.0-preview",
+    "iron-resizable-behavior": "2.0-preview",
+    "iron-overlay-behavior": "2.0-preview"
   },
   "devDependencies": {
     "web-component-tester": "polymer/web-component-tester#^5.0.1"
