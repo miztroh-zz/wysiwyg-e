@@ -101,6 +101,8 @@
 
 				// Until a Polymer 2.x version is released, we manually fix the slot for the dropdown trigger
 				this.$.picker.$.iconButton.setAttribute('slot', 'dropdown-trigger');
+				// Until a Polymer 2.x version is released, we manually fix the slot for the dropdown content
+				this.$.picker.$.container.setAttribute('slot', 'dropdown-content');
 				// Dynamically align the picker's menu dropdown to the viewport
 				this.$.picker.$.iconButton.parentNode.dynamicAlign = true;
 				// Get rid of padding on the picker's menu button
