@@ -47,7 +47,8 @@
   },
   "resolutions": {
     "iron-flex-layout": "2.0-preview",
-    "iron-icon": "2.0-preview"
+    "iron-icon": "2.0-preview",
+    "iron-iconset-svg": "2.0-preview"
   },
   "devDependencies": {
     "web-component-tester": "polymer/web-component-tester#^5.0.1"
