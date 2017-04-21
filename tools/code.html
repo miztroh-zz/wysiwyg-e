@@ -35,9 +35,10 @@
 				if (this.disabled || !this.range0) return;
 
 				if (!this.active) {
-					var text = this.range0.toString();
-					document.execCommand('delete', false);
-					document.execCommand('insertHTML', false, '<code>' + (this.htmlentities(text) || '<br>') + '</code>');
+				  var rangeText = this.range0.toString();
+				  var code = document.createElement('code');
+				  this.range0.surroundContents(code);
+				  if (!rangeText) code.innerHTML = '<br>';
 				} else  {
 					var path = this.commonAncestorPath;
 

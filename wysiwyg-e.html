@@ -104,7 +104,7 @@ Custom property                         | Description                           
 `--wysiwyg-editable`                    | Mixin applied to the wysiwyg-e content             | `{}`
 `--wysiwyg-editable-placeholder`        | Mixin applied to the content placeholder           | `{}`
 `--wysiwyg-editable-blockquote`         | Mixen applied to Blockquote `<blockquote>`         | `{}`
-`--wysiwyg-editable-pre`                | Mixen applied to code `<code>`                     | `{}`
+`--wysiwyg-editable-code`               | Mixen applied to code `<code>`                     | `{}`
 `--wysiwyg-editable-p`                  | Mixen applied to paragraph `<p>`                   | `{}`
 `--wysiwyg-editable-h1`                 | Mixen applied to H1 `<h1>`                         | `{}`
 `--wysiwyg-editable-h2`                 | Mixen applied to H2 `<h2>`                         | `{}`
@@ -207,12 +207,12 @@ Command                                 | Mac Shortcut                          
 				@apply --wysiwyg-editable-placeholder;
 			}
 
-			#editable :first-child {
+			#editable > :first-child {
 				margin-top: 0;
 				@apply --wysiwyg-editable-first-child;
 			}
 
-			#editable :last-child {
+			#editable > :last-child {
 				margin-bottom: 0;
 				@apply --wysiwyg-editable-last-child;
 			}
@@ -255,12 +255,14 @@ Command                                 | Mac Shortcut                          
 
 			#editable code {
 				display: block;
-				padding: 16px;
+				padding: 10px;
+				margin: 10px 0;
 				line-height: 1.5;
 				background-color: #f7f7f7;
 				border-radius: 3px;
 				white-space: pre-wrap;
-				@apply --wysiwyg-editable-pre;
+				font-family: monospace;
+				@apply --wysiwyg-editable-code;
 			}
 
 			#editable p:first-child {
@@ -538,7 +540,12 @@ Command                                 | Mac Shortcut                          
 						value: function () {
 							return [
 								'text-align',
-								'color'
+								'color',
+								'background-color',
+								'white-space',
+								'font-family',
+								'padding',
+								'margin'
 							];
 						}
 					},
