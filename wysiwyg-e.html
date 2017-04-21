@@ -71,24 +71,24 @@ All the included tools are accessible via both the toolbar buttons and keyboard 
 
 ### Styling
 
-The following custom propeses and mixins are available for styling:
+The following CSS Custom Properties and CSS Mixins are available for styling:
 
 #### Font
 
-Custom property                         | Description                                        | Default
+CSS Custom Property                     | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
 `--wysiwyg-font`                        | Font-family                                        | `Roboto`
 
 #### Toolbar
 
-Custom property                         | Description                                        | Default
+CSS Custom Property                     | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
 `--wysiwyg-toolbar-background`          | Toolbar background style                           | `#2A9AF2`
 `--wysiwyg-toolbar-color`               | Toolbar text color                                 | `white`
 
 #### Tools
 
-Custom property                         | Description                                        | Default
+CSS Custom Property                     | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
 `--wysiwyg-tool-icon-active-color`      | Tool close button color                            | `rgba(0, 0, 0, 0.5)`
 `--wysiwyg-tool-icon-disabled-color`    | Tool close button color                            | `rgba(255, 255, 255, 0.5)`
@@ -99,42 +99,32 @@ Custom property                         | Description                           
 
 #### Editable Content
 
-Custom property                         | Description                                        | Default
+CSS Mixin                               | Description                                        | Default
 ----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-editable`                    | Mixin applied to the wysiwyg-e content             | `{}`
-`--wysiwyg-editable-placeholder`        | Mixin applied to the content placeholder           | `{}`
-`--wysiwyg-editable-blockquote`         | Mixen applied to Blockquote `<blockquote>`         | `{}`
-`--wysiwyg-editable-code`               | Mixen applied to code `<code>`                     | `{}`
-`--wysiwyg-editable-p`                  | Mixen applied to paragraph `<p>`                   | `{}`
-`--wysiwyg-editable-h1`                 | Mixen applied to H1 `<h1>`                         | `{}`
-`--wysiwyg-editable-h2`                 | Mixen applied to H2 `<h2>`                         | `{}`
-`--wysiwyg-editable-h3`                 | Mixen applied to H3 `<h3>`                         | `{}`
-`--wysiwyg-editable-h4`                 | Mixen applied to H4 `<h4>`                         | `{}`
-`--wysiwyg-editable-h5`                 | Mixen applied to H5 `<h5>`                         | `{}`
-`--wysiwyg-editable-h6`                 | Mixen applied to H6 `<h6>`                         | `{}`
-`--wysiwyg-editable-ol`                 | Ordered List `<ol>`                                | `{padding-left: 30px;}`
-`--wysiwyg-editable-ul`                 | Unordered List `<ul>`                              | `{padding-left: 30px;}`
-`--wysiwyg-editable-li`                 | Mixen applied to `<li>`                            | `{}`
-`--wysiwyg-editable-a`                  | Link  `<a>`                                        | `{color: #2A9AF2;}`
-`--wysiwyg-editable-img`                | Mixen applied to `<img>`                           | `{}`
-`--wysiwyg-editable-b`                  | Mixen applied to `<b>`                             | `{}`
-`--wysiwyg-editable-u`                  | Mixen applied to `<u>`                             | `{}`
-`--wysiwyg-editable-i`                  | Mixen applied to `<i>`                             | `{}`
-`--wysiwyg-editable-strike`             | Mixen applied to `<strike>`                        | `{}`
-`--wysiwyg-editable-first-child`        | Mixin applied to editable first child              | `{}`
-`--wysiwyg-editable-last-child`         | Mixin applied to editable last child               | `{}`
-`--wysiwyg-editable-selection`          | Editable selection                                 | `{color: white; background: #2A9AF2;}`
-`--wysiwyg-html`                        | Mixin applied to the wysiwyg-e html content        | `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`                    | Html content `<pre>`                               | `{margin: 0;}`
-`--wysiwyg-html-code`                   | Html content `<code>`                              | `{display: block; display: block;}`
-
-#### HTML View
-
-Custom property                         | Description                                        | Default
-----------------------------------------|----------------------------------------------------|---------------------------------------
-`--wysiwyg-html`                        | Mixin applied to the wysiwyg-e html content        | `{padding: 0 20px 20px 20px;}`
-`--wysiwyg-html-pre`                    | Html content `<pre>`                               | `{margin: 0;}`
-`--wysiwyg-html-code`                   | Html content `<code>`                              | `{display: block; display: block;}`
+`--wysiwyg-editable`                    | Mixin applied to the `[contenteditable]`           | `{}`
+`--wysiwyg-editable-placeholder`        | Mixin applied to the placeholder                   | `{}`
+`--wysiwyg-editable-blockquote`         | Mixin applied to `<blockquote>`                    | `{}`
+`--wysiwyg-editable-indent`             | Mixin applied to <blockquote indent>`              | `{}`
+`--wysiwyg-editable-code`               | Mixin applied to `<code>`                          | `{}`
+`--wysiwyg-editable-p`                  | Mixin applied to `<p>`                             | `{}`
+`--wysiwyg-editable-h1`                 | Mixin applied to `<h1>`                            | `{}`
+`--wysiwyg-editable-h2`                 | Mixin applied to `<h2>`                            | `{}`
+`--wysiwyg-editable-h3`                 | Mixin applied to `<h3>`                            | `{}`
+`--wysiwyg-editable-h4`                 | Mixin applied to `<h4>`                            | `{}`
+`--wysiwyg-editable-h5`                 | Mixin applied to `<h5>`                            | `{}`
+`--wysiwyg-editable-h6`                 | Mixin applied to `<h6>`                            | `{}`
+`--wysiwyg-editable-ol`                 | Mixin applied to `<ol>`                            | `{}`
+`--wysiwyg-editable-ul`                 | Mixin applied to `<ul>`                            | `{}`
+`--wysiwyg-editable-li`                 | Mixin applied to `<li>`                            | `{}`
+`--wysiwyg-editable-a`                  | Mixin applied to `<a>`                             | `{}`
+`--wysiwyg-editable-img`                | Mixin applied to `<img>`                           | `{}`
+`--wysiwyg-editable-b`                  | Mixin applied to `<b>`                             | `{}`
+`--wysiwyg-editable-u`                  | Mixin applied to `<u>`                             | `{}`
+`--wysiwyg-editable-i`                  | Mixin applied to `<i>`                             | `{}`
+`--wysiwyg-editable-strike`             | Mixin applied to `<strike>`                        | `{}`
+`--wysiwyg-editable-first-child`        | Mixin applied to `:first-child`                    | `{}`
+`--wysiwyg-editable-last-child`         | Mixin applied to `:last-child`                     | `{}`
+`--wysiwyg-editable-selection`          | Mixin applied to the selection                     | `{}`
 
 ### Accessibility / Shortcut Keys
 `<wysiwyg-e>` implements key bindings to access commands.
@@ -246,12 +236,18 @@ Command                                 | Mac Shortcut                          
 				@apply --wysiwyg-editable-img;
 			}
 
-			#editable blockquote {
+			#editable blockquote[blockquote] {
 				padding: 15px;
 				margin: 0;
 				border-left: 5px solid #eee;
 				@apply --wysiwyg-editable-blockquote;
 			}
+
+      #editable blockquote:not([blockquote]) {
+        padding: 0;
+        margin: 0 0 0 20px;
+        @apply --wysiwyg-editable-indent;
+      }
 
 			#editable code {
 				display: block;

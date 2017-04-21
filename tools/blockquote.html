@@ -33,7 +33,6 @@
 
 			ready () {
 				super.ready();
-				this._setCommand('formatBlock');
 
 				this.resources = {
 					'en': {
@@ -45,47 +44,38 @@
 				};
 			}
 
-			execCommand () {
-				if (this.disabled || !this.range0) return false;
-				var i, blockquote, parent;
+			execCommand() {
+				if (this.disabled || !this.range0) return;
 
 				if (!this.active) {
-					if (this.commonAncestorPath) {
-						for (i = 0; i < this.commonAncestorPath.length; i += 1) {
-							if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') {
-								blockquote = this.commonAncestorPath[i];
-								parent = blockquote.parentNode;
-								this.range0.selectNodeContents(blockquote);
-								parent.insertBefore(this.range0.extractContents(), blockquote);
-								parent.removeChild(blockquote);
-								break;
-							}
-						}
-					}
+				  var rangeText = this.range0.toString();
+				  var blockquote = document.createElement('blockquote');
+				  blockquote.setAttribute('blockquote', '');
+				  this.range0.surroundContents(blockquote);
+				  if (!rangeText) blockquote.innerHTML = '<br>';
+				} else  {
+					var path = this.commonAncestorPath;
 
-					document.execCommand('formatBlock', null, 'BLOCKQUOTE');
-				} else {
-					if (this.commonAncestorPath) {
-						for (i = 0; i < this.commonAncestorPath.length; i += 1) {
-							if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') {
-								blockquote = this.commonAncestorPath[i];
-								parent = blockquote.parentNode;
-								this.range0.selectNodeContents(blockquote);
-								parent.insertBefore(this.range0.extractContents(), blockquote);
-								parent.removeChild(blockquote);
-								break;
+					if (path) {
+						for (var i = 0; i < path.length - 1; i += 1) {
+							if (path[i].tagName === 'BLOCKQUOTE' && path[i].hasAttribute('blockquote')) {
+								path[i].outerHTML = path[i].innerHTML;
 							}
 						}
-					} else {
-						document.execCommand('formatBlock', null, 'P');
 					}
 				}
 			}
 
-			queryCommandState () {
-				if (this.range0 && this.commonAncestorPath) {
-					for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-						if (this.commonAncestorPath[i].tagName === 'BLOCKQUOTE') return true;
+			queryCommandEnabled() {
+				return this.range0;
+			}
+
+			queryCommandState() {
+				var path = this.commonAncestorPath;
+
+				if (path) {
+					for (var i = 0; i < path.length; i += 1) {
+						if (path[i].tagName === 'BLOCKQUOTE' && path[i].hasAttribute('blockquote')) return true;
 					}
 				}
 
