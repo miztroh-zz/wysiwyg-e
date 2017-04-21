@@ -46,6 +46,7 @@
     "undo-mgr": "miztroh/undo-mgr#master"
   },
   "resolutions": {
+    "iron-flex-layout": "2.0-preview",
     "iron-icon": "2.0-preview"
   },
   "devDependencies": {
