@@ -3,9 +3,9 @@
 		"sauce": {
 			"browsers": [
 				{
-					"browserName": "microsoftedge",
+					"browserName": "microsoftEdge",
 					"platform": "Windows 10",
-					"version": ""
+					"version": "14.14393"
 				},
 				{
 					"browserName": "safari",
