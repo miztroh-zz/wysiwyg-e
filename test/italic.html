@@ -9,7 +9,7 @@
 		<link rel="import" href="../tools/italic.html">
 	</head>
 	<body>
-		<test-fixture id="wysiwyg-e-fixture">
+		<test-fixture id="wysiwyg-tool-italic-fixture">
 			<template>
 				<wysiwyg-e value="<p>Hello, world!</p>">
 					<wysiwyg-tool-italic></wysiwyg-tool-italic>
@@ -24,19 +24,19 @@
 
 					setup(
 						function() {
-							wysiwygE = fixture('wysiwyg-e-fixture');
+							wysiwygE = fixture('wysiwyg-tool-italic-fixture');
 							tool = wysiwygE.querySelector('wysiwyg-tool-italic');
 						}
 					);
 
 					test(
 						'execCommand',
-						function (done) {
+            function (done) {
 							wysiwygE.selectAll();
 
 							setTimeout(
 								function () {
-									tool.execCommand();
+								  tool.execCommand();
 
 									setTimeout(
 										function () {
@@ -48,29 +48,7 @@
 								}.bind(wysiwygE),
 								250
 							);
-						}
-					);
-
-					test(
-						'click event',
-						function (done) {
-							wysiwygE.selectAll();
-
-							setTimeout(
-								function () {
-									tool.dispatchEvent(new Event('click'));
-
-									setTimeout(
-										function () {
-											assert.equal(wysiwygE.value, '<p><i>Hello, world!</i></p>');
-											done();
-										}.bind(wysiwygE),
-										250
-									);
-								}.bind(wysiwygE),
-								250
-							);
-						}
+            }
 					);
 				}
 			);

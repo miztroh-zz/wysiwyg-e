@@ -73,6 +73,6 @@
     "iron-overlay-behavior": "2.0-preview"
   },
   "devDependencies": {
-    "web-component-tester": "polymer/web-component-tester#^5.0.1"
+    "web-component-tester": "polymer/web-component-tester#v6.0.0-prerelease.9"
   }
 }
