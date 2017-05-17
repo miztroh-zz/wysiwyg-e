@@ -392,8 +392,6 @@ Command                                 | Mac Shortcut                          
 				@apply --layout-vertical;
 			}
 		</style>
-		<iron-a11y-keys target="[[target]]" keys="backspace" on-keys-pressed="_backspace"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="delete" on-keys-pressed="_delete"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+z" on-keys-pressed="undo"></iron-a11y-keys>
 		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+y" on-keys-pressed="redo"></iron-a11y-keys>
 		<iron-media-query query="(min-width: 768px)" query-matches="{{minWidth768px}}"></iron-media-query>
@@ -447,9 +445,9 @@ Command                                 | Mac Shortcut                          
 				if (!this._keydownHandler) {
 					this._keydownHandler = function (event) {
 						//Prevent default delete behavior
-						if (event.key === 'Delete') event.preventDefault();
+						if (event.key === 'Delete') this._delete(event);
 						//Prevent default backspace behavior
-						if (event.key === 'Backspace') event.preventDefault();
+						if (event.key === 'Backspace') this._backspace(event);
 						//Allow input without alt, ctrl, or meta
 						if (!event.altKey && !event.ctrlKey && !event.metaKey) return;
 						//Allow select all, refresh, print, paste, copy, cut
@@ -1011,9 +1009,9 @@ Command                                 | Mac Shortcut                          
 			}
 
 			_backspace(event) {
+				event.preventDefault();
 				if (!this.range0) return;
-				var keyboardEvent = event.detail.keyboardEvent;
-				if (keyboardEvent.altKey || keyboardEvent.shiftKey) return;
+				if (event.altKey || event.shiftKey) return;
 
 				var singleBackspace = function () {
 					if (this.target.children.length > 1) {
@@ -1034,7 +1032,7 @@ Command                                 | Mac Shortcut                          
 					this.range0.deleteContents();
 				}.bind(this);
 
-				if (keyboardEvent.ctrlKey || keyboardEvent.metaKey) {
+				if (event.ctrlKey || event.metaKey) {
 					var range = this.range0.cloneRange();
 					range.collapse();
 					range.setStart(this.range0.commonAncestorContainer, 0);
@@ -1077,7 +1075,8 @@ Command                                 | Mac Shortcut                          
 				return 'right';
 			}
 
-			_delete() {
+			_delete(event) {
+				event.preventDefault();
 				document.execCommand('forwardDelete');
 			}
 
