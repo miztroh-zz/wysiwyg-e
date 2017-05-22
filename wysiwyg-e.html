@@ -481,10 +481,11 @@ Command                                 | Mac Shortcut                          
 						// If paste does not contain HTML, fall back to plain text
 						if (!data.length) data = event.clipboardData.getData('text');
 						document.execCommand('insertHTML', false, data);
+						this.value = this.$.editable.innerHTML;
 					}.bind(this);
 				}
 
-				this.addEventListener('paste', this._pasteHandler);
+				this.$.editable.addEventListener('paste', this._pasteHandler);
 
 				if (!this._slotchangeHandler) {
 					this._slotchangeHandler = function () {
@@ -499,9 +500,9 @@ Command                                 | Mac Shortcut                          
 				super.disconnectedCallback();
 				window.removeEventListener('resize', this._resizeHandler);
 				this.removeEventListener('keydown', this._keydownHandler);
-				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
+				this.$.toolbar.removeEventListener('restore-selection', this._restoreSelectionHandler);
 				this.removeEventListener('select-element', this._selectElementHandler);
-				this.removeEventListener('paste', this._pasteHandler);
+				this.$.editable.removeEventListener('paste', this._pasteHandler);
 				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
 			}
 
