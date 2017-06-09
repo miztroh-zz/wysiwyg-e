@@ -41,9 +41,7 @@
     "paper-menu-button": "PolymerElements/paper-menu-button#^2.0.0",
     "paper-swatch-picker": "PolymerElements/paper-swatch-picker#^2.0.0",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0",
-    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
-    "selection-mgr": "miztroh/selection-mgr#^2.0.0",
-    "undo-mgr": "miztroh/undo-mgr#^2.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "polymer/web-component-tester#^6.0.0"

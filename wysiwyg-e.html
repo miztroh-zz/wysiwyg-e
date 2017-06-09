@@ -9,8 +9,6 @@
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../selection-mgr/mixin.html">
-<link rel="import" href="../undo-mgr/mixin.html">
 <link rel="import" href="wysiwyg-tool.html">
 <link rel="import" href="wysiwyg-localize.html">
 <iron-iconset-svg size="24" name="wysiwyg">
@@ -243,11 +241,11 @@ Command                                 | Mac Shortcut                          
 				@apply --wysiwyg-editable-blockquote;
 			}
 
-      #editable blockquote:not([blockquote]) {
-        padding: 0;
-        margin: 0 0 0 20px;
-        @apply --wysiwyg-editable-indent;
-      }
+			#editable blockquote:not([blockquote]) {
+				padding: 0;
+				margin: 0 0 0 20px;
+				@apply --wysiwyg-editable-indent;
+			}
 
 			#editable code {
 				display: block;
@@ -427,96 +425,8 @@ Command                                 | Mac Shortcut                          
 		</div>
 	</template>
 	<script>
-		class WysiwygE extends SelectionMgrMixin(UndoMgrMixin(Polymer.Element)) {
+		class WysiwygE extends Polymer.Element {
 			static get is() { return 'wysiwyg-e' }
-
-			connectedCallback() {
-				super.connectedCallback();
-
-				if (!this._resizeHandler) {
-					this._resizeHandler = function () {
-						this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
-						this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
-					}.bind(this);
-				}
-
-				window.addEventListener('resize', this._resizeHandler);
-
-				if (!this._keydownHandler) {
-					this._keydownHandler = function (event) {
-						//Prevent default delete behavior
-						if (event.key === 'Delete') this._delete(event);
-						//Prevent default backspace behavior
-						if (event.key === 'Backspace') this._backspace(event);
-						//Allow input without alt, ctrl, or meta
-						if (!event.altKey && !event.ctrlKey && !event.metaKey) return;
-						//Allow select all, refresh, print, paste, copy, cut
-						if (!event.altKey && !event.shiftKey && ['a', 'r', 'p', 'v', 'c', 'x'].indexOf(event.key) >= 0 && (event.ctrlKey || event.metaKey)) return;
-						event.preventDefault();
-					}.bind(this);
-				}
-
-				this.addEventListener('keydown', this._keydownHandler);
-
-				if (!this._restoreSelectionHandler) {
-					this._restoreSelectionHandler = function () {
-						this.restoreSelection();
-					}.bind(this);
-				}
-					
-				this.$.toolbar.addEventListener('restore-selection', this._restoreSelectionHandler);
-
-				if (!this._selectElementHandler) {
-					this._selectElementHandler = function (event) {
-						this.selectElement(event.detail.element);
-					}.bind(this);
-				}
-
-				this.addEventListener('select-element', this._selectElementHandler);
-
-				if (!this._pasteHandler) {
-					this._pasteHandler = function (event) {
-						event.preventDefault();
-						var data = event.clipboardData.getData('text/html');
-						// If paste does not contain HTML, fall back to plain text
-						if (!data.length) data = event.clipboardData.getData('text');
-						document.execCommand('insertHTML', false, data);
-					}.bind(this);
-				}
-
-				this.addEventListener('paste', this._pasteHandler);
-
-				if (!this._slotchangeHandler) {
-					this._slotchangeHandler = function () {
-						this.updateTools();
-					}.bind(this);
-				}
-
-				this.$.tools.addEventListener('slotchange', this._slotchangeHandler);
-			}
-
-			disconnectedCallback() {
-				super.disconnectedCallback();
-				window.removeEventListener('resize', this._resizeHandler);
-				this.removeEventListener('keydown', this._keydownHandler);
-				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
-				this.removeEventListener('select-element', this._selectElementHandler);
-				this.removeEventListener('paste', this._pasteHandler);
-				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
-			}
-
-			ready() {
-				super.ready();
-				this.target = this.$.editable;
-				this.sanitize();
-
-				setTimeout(
-					function () {
-						this.updateTools();
-					}.bind(this),
-					100
-				);
-			}
 
 			static get observers() {
 				return [
@@ -526,6 +436,15 @@ Command                                 | Mac Shortcut                          
 
 			static get properties() {
 				return {
+					//
+					// Current position within the states stack
+					//
+					activeState: {
+						type: Number,
+						value: 0,
+						notify: true,
+						observer: '_activeStateChanged'
+					},
 					//
 					// Array of style types allowed by the sanitize method
 					//
@@ -538,6 +457,7 @@ Command                                 | Mac Shortcut                          
 							];
 						}
 					},
+					//
 					// Array of tagNames allowed by the sanitize method
 					//
 					allowedTagNames: {
@@ -649,6 +569,47 @@ Command                                 | Mac Shortcut                          
 						}
 					},
 					//
+					// The anchorNode of the current selection
+					//
+					anchorNode: {
+						type: Object,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The anchorOffset of the current selection
+					//
+					anchorOffset: {
+						type: Number,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The baseNode of the current selection
+					//
+					baseNode: {
+						type: Object,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The baseOffset of the current selection
+					//
+					baseOffset: {
+						type: Number,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// Whether a redo action is available
+					//
+					canRedo: {
+						type: Boolean,
+						value: false,
+						computed: '_computeCanRedo(activeState, states)',
+						notify: true
+					},
+					//
 					// If true, tools can scroll up.	Computed.
 					//
 					canScrollPrevious: {
@@ -663,6 +624,15 @@ Command                                 | Mac Shortcut                          
 						computed: '_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft)'
 					},
 					//
+					// Whether an undo action is available
+					//
+					canUndo: {
+						type: Boolean,
+						value: false,
+						computed: '_computeCanUndo(activeState, states)',
+						notify: true
+					},
+					//
 					// If true, console.log debug messages.
 					//
 					debug: {
@@ -670,11 +640,60 @@ Command                                 | Mac Shortcut                          
 						value: false
 					},
 					//
+					// Built from range0.commonAncestorContainer
+					//
+					commonAncestorPath: {
+						type: Array,
+						value: null,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The extentNode of the current selection
+					//
+					extentNode: {
+						type: Object,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The extentOffset of the current selection
+					//
+					extentOffset: {
+						type: Number,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The focusNode of the current selection
+					//
+					focusNode: {
+						type: Object,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The focusOffset of the current selection
+					//
+					focusOffset: {
+						type: Number,
+						readOnly: true,
+						notify: true
+					},
+					//
 					// If true, force narrow view with vertical toolbar.	Defaults to false.
 					//
 					forceNarrow: {
 						type: Boolean,
 						value: false
+					},
+					//
+					// The isCollapsed of the current selection
+					//
+					isCollapsed: {
+						type: Boolean,
+						readOnly: true,
+						notify: true
 					},
 					//
 					// Two-letter language code for use with Polymer.AppLocalizeBehavior.	Defaults to 'en'.
@@ -721,6 +740,22 @@ Command                                 | Mac Shortcut                          
 					placeholder: {
 						type: String,
 						value: 'Edit your content here...'
+					},
+					//
+					// The getRangeAt(0) of the current selection
+					//
+					range0: {
+						type: Object,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The rangeCount of the current selection
+					//
+					rangeCount: {
+						type: Number,
+						readOnly: true,
+						notify: true
 					},
 					//
 					// Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
@@ -791,37 +826,279 @@ Command                                 | Mac Shortcut                          
 						readOnly: true
 					},
 					//
+					// A MutationObserver to update the selection as well as sanitize changes and add them to the states array
+					//
+					mutationObserver: {
+						type: Object,
+						value: function () {
+							var sanitizeQueue = [], sanitizing = false;
+							this.sanitizeQueue = sanitizeQueue;
+
+							var sanitize = function () {
+								sanitizing = true;
+								var mutations = sanitizeQueue.shift();
+								var sanitized = this.sanitize(mutations);
+
+								if (sanitizeQueue.length) {
+									sanitize();
+								} else {
+									sanitizing = false;
+
+									if (sanitized) {
+										var html = this.target.innerHTML || '';
+										if (this.states.length > 1) this.states.splice(this.activeState + 1, this.states.length);
+
+										var state = {
+											html: html
+										};
+
+										this.states.push(state);
+										this.activeState = this.states.length - 1;
+										this.value = html;
+										this._setText = this.target.textContent || '';
+									}
+								}
+
+								return sanitized;
+							}.bind(this);
+		
+							return new MutationObserver(
+								function (mutations) {
+									sanitizeQueue.push(mutations);
+									if (!sanitizing) sanitize();
+									setTimeout(this.updateSelection.bind(this), 10);
+								}.bind(this)
+							);
+						},
+						readOnly: true,
+						observer: '_mutationObserverChanged'
+					},
+					//
 					// Whether placeholder should be shown.	Computed.
 					//
 					showPlaceholder: {
 						type: Boolean,
 						computed: '_computeShowPlaceholder(lastMutation)'
 					},
+					//
+					// An array containing the undo / redo history of the value property
+					//
+					states: {
+						type: Array,
+						value: function () {
+							return [
+								{
+									html: '',
+									selection: null
+								}
+							];
+						},
+						notify: true
+					},
+					//
+					// The target to manage
+					//
+					target: {
+						type: Object,
+						observer: '_targetChanged',
+						notify: true
+					},
+					//
+					// The textContent of the target node
+					//
+					text: {
+						type: String,
+						readOnly: true,
+						notify: true
+					},
+					//
 					// Computed based on ``minWidth768px``
 					//
 					tooltipPosition: {
 						type: String,
 						computed: '_computeTooltipPosition(minWidth768px, forceNarrow)'
+					},
+					//
+					// The type of the current selection
+					//
+					type: {
+						type: String,
+						readOnly: true,
+						notify: true
+					},
+					//
+					// The current innerHTML of the target node
+					//
+					value: {
+						type: String,
+						observer: '_valueChanged',
+						notify: true,
+						vaue: ''
 					}
 				};
 			}
-			//
-			// Stop observing with selectionObserver and undoObserver
-			//
-			disconnect() {
-				super.disconnect();
+
+			connectedCallback() {
+				super.connectedCallback();
+				this.observe();
+
+				if (!this._selectionChangeHandler) {
+					this._selectionChangeHandler = function (event) {
+						setTimeout(this.updateSelection.bind(this), 10);
+					}.bind(this);
+				}
+
+				document.addEventListener('selectionchange', this._selectionChangeHandler);
+
+				if (!this._resizeHandler) {
+					this._resizeHandler = function () {
+						this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
+						this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
+					}.bind(this);
+				}
+
+				window.addEventListener('resize', this._resizeHandler);
+
+				if (!this._keydownHandler) {
+					this._keydownHandler = function (event) {
+						//Prevent default delete behavior
+						if (event.key === 'Delete') this._delete(event);
+						//Prevent default backspace behavior
+						if (event.key === 'Backspace') this._backspace(event);
+						//Allow input without alt, ctrl, or meta
+						if (!event.altKey && !event.ctrlKey && !event.metaKey) return;
+						//Allow select all, refresh, print, paste, copy, cut
+						if (!event.altKey && !event.shiftKey && ['a', 'r', 'p', 'v', 'c', 'x'].indexOf(event.key) >= 0 && (event.ctrlKey || event.metaKey)) return;
+						event.preventDefault();
+					}.bind(this);
+				}
+
+				this.addEventListener('keydown', this._keydownHandler);
+
+				if (!this._restoreSelectionHandler) {
+					this._restoreSelectionHandler = function () {
+						this.restoreSelection();
+					}.bind(this);
+				}
+					
+				this.$.toolbar.addEventListener('restore-selection', this._restoreSelectionHandler);
+
+				if (!this._selectElementHandler) {
+					this._selectElementHandler = function (event) {
+						this.selectElement(event.detail.element);
+					}.bind(this);
+				}
+
+				this.addEventListener('select-element', this._selectElementHandler);
+
+				if (!this._pasteHandler) {
+					this._pasteHandler = function (event) {
+						event.preventDefault();
+						var data = event.clipboardData.getData('text/html');
+						// If paste does not contain HTML, fall back to plain text
+						if (!data.length) data = event.clipboardData.getData('text');
+						document.execCommand('insertHTML', false, data);
+					}.bind(this);
+				}
+
+				this.addEventListener('paste', this._pasteHandler);
+
+				if (!this._slotchangeHandler) {
+					this._slotchangeHandler = function () {
+						this.updateTools();
+					}.bind(this);
+				}
+
+				this.$.tools.addEventListener('slotchange', this._slotchangeHandler);
+			}
+
+			disconnectedCallback() {
+				super.disconnectedCallback();
+				this.disconnect();
+				document.removeEventListener('selectionchange', this._selectionChangeHandler);
+				window.removeEventListener('resize', this._resizeHandler);
+				this.removeEventListener('keydown', this._keydownHandler);
+				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
+				this.removeEventListener('select-element', this._selectElementHandler);
+				this.removeEventListener('paste', this._pasteHandler);
+				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
+			}
+
+			ready() {
+				super.ready();
+				this.target = this.$.editable;
+				this.sanitize();
+
+				setTimeout(
+					function () {
+						this.updateTools();
+					}.bind(this),
+					100
+				);
 			}
 			//
-			// Start observing with selectionObserver and undoObserver
+			// Stop MutationObserver
+			//
+			disconnect() {
+				if (typeof super.disconnect === 'function') super.disconnect();
+				if (this.mutationObserver) this.mutationObserver.disconnect();
+			}
+			//
+			// Get the current selection
+			//
+			getSelection() {
+				if (typeof super.getSelection === 'function') super.getSelection();
+				var parent = this.target;
+
+				while (parent) {
+					if ([9, 11].indexOf(parent.nodeType) >= 0 && parent.getSelection) return parent.getSelection();
+					parent = parent.parentNode || parent.host;
+				}
+			}
+			//
+			// Start MutationObserver
 			//
 			observe() {
-				super.observe();
+				if (typeof super.observe === 'function') super.observe();
+
+				if (this.mutationObserver && this.target) {
+					this.mutationObserver.observe(
+						this.target,
+						{
+							childList: true,
+							attributes: true,
+							characterData: true,
+							subtree: true
+						}
+					);
+				}
 			}
 			//
 			// Revert an undo operation
 			//
 			redo() {
-				if (!this.noRedo) return super.redo();
+				if (this.noRedo) return;
+				if (typeof super.redo === 'function') super.redo();
+				if (!this.states.length || this.activeState >= this.states.length - 1) return false;
+				this.disconnect();
+				this.activeState += 1;
+
+				setTimeout(
+					function () {
+						this.observe();
+					}.bind(this),
+					10
+				);
+			}
+			//
+			// Restore selection state
+			//
+			restoreSelection() {
+				if (typeof super.restoreSelection === 'function') super.restoreSelection();
+				var selection = this.getSelection();
+				selection.removeAllRanges();
+				if (this.range0 && this.target.contains(this.range0.commonAncestorContainer)) selection.addRange(this.range0);
+				setTimeout(this.updateSelection.bind(this), 10);
 			}
 			//
 			// Sanitize DOM changes
@@ -968,10 +1245,100 @@ Command                                 | Mac Shortcut                          
 				return sanitized;
 			}
 			//
+			// Select full contents of target
+			//
+			selectAll() {
+				if (typeof super.selectAll === 'function') super.selectAll();
+				var selection = this.getSelection();
+				selection.removeAllRanges();
+				var range = document.createRange();
+				range.selectNodeContents(this.target);
+				selection.addRange(range);
+				setTimeout(this.updateSelection.bind(this), 10);
+			}
+
+			//
+			// Select node or contents of a node within target
+			//
+			selectElement(element) {
+				if (typeof super.selectElement === 'function') super.selectElement(element);
+				if (!this.target.contains(element)) return;
+				var selection = this.getSelection();
+				selection.removeAllRanges();
+				var range = document.createRange();
+
+				if (element.tagName === 'IMG') {
+					range.selectNode(element);
+				} else {
+					range.selectNodeContents(element);
+				}
+
+				selection.addRange(range);
+				setTimeout(this.updateSelection.bind(this), 10);
+			}
+			//
 			// Perform an undo operation
 			//
 			undo() {
-				if (!this.noUndo) return super.undo();
+				if (this.noUndo) return;
+				if (typeof super.undo === 'function') super.undo();
+				if (!this.states.length || this.activeState <= 0) return false;
+				this.disconnect();
+				this.activeState -= 1;
+
+				setTimeout(
+					function () {
+						this.observe();
+					}.bind(this),
+					10
+				);
+			}
+			//
+			// Update properties based on the current selection
+			//
+			updateSelection() {
+				if (typeof super.updateSelection === 'function') super.updateSelection();
+				var selection = this.getSelection();
+
+				if (selection && selection.anchorNode && this.target.contains(selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode)) {
+					this._setAnchorNode(selection.anchorNode);
+					this._setAnchorOffset(selection.anchorOffset);
+					this._setBaseNode(selection.baseNode);
+					this._setBaseOffset(selection.baseOffset);
+					this._setExtentNode(selection.extentNode);
+					this._setExtentOffset(selection.extentOffset);
+					this._setFocusNode(selection.focusNode);
+					this._setFocusOffset(selection.focusOffset);
+					this._setIsCollapsed(selection.isCollapsed);
+					this._setRangeCount(selection.rangeCount);
+					this._setType(selection.type);
+					this._setRange0(selection.rangeCount ? selection.getRangeAt(0) : null);
+
+					var path = null;
+
+					if (this.range0) {
+						var element = this.range0.commonAncestorContainer;
+						path = [];
+
+						while (this.target.contains(element)) {
+							path.push(element);
+							element = element.parentNode;
+						}
+
+						this._setCommonAncestorPath(path);
+					}
+
+					var range = this.range0;
+					var preSelectionRange = range.cloneRange();
+					preSelectionRange.selectNodeContents(this.target);
+					preSelectionRange.setEnd(range.startContainer, range.startOffset);
+					var start = preSelectionRange.toString().length;
+
+					this.states[this.activeState].selection = {
+						start: start,
+						end: start + range.toString().length
+					};
+				}
 			}
 			//
 			// Update tools properties
@@ -1009,6 +1376,50 @@ Command                                 | Mac Shortcut                          
 					tools[i]._setLanguage(this.language);
 					tools[i]._setDebug(this.debug);
 					tools[i]._setModifier(this.modifier);
+				}
+			}
+
+			_activeStateChanged(newValue, oldValue) {
+				if (this.activeState !== +this.activeState.toFixed(0)) {
+					this.activeState = +this.activeState.toFixed(0);
+				} else if (this.activeState < 0) {
+					this.activeState = 0;
+				} else if (this.states.length && this.activeState > this.states.length - 1) {
+					this.activeState = this.states.length - 1;
+				} else if (typeof oldValue !== 'undefined' && this.target && this.target.innerHTML !== this.states[this.activeState].html) {
+					this.target.innerHTML = this.states[this.activeState].html;
+					var charIndex = 0, range = this.target.ownerDocument.createRange(), savedSel = this.states[this.activeState].selection;
+					range.setStart(this.target, 0);
+					range.collapse(true);
+					var nodeStack = [this.target], node, foundStart = false, stop = false;
+
+					while (!stop && (node = nodeStack.pop())) {
+						if (node.nodeType == 3) {
+							var nextCharIndex = charIndex + node.length;
+
+							if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
+								range.setStart(node, savedSel.start - charIndex);
+								foundStart = true;
+							}
+
+							if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
+								range.setEnd(node, savedSel.end - charIndex);
+								stop = true;
+							}
+
+							charIndex = nextCharIndex;
+						} else {
+							var i = node.childNodes.length;
+
+							while (i--) {
+								nodeStack.push(node.childNodes[i]);
+							}
+						}
+					}
+
+					var sel = this.getSelection();
+					sel.removeAllRanges();
+					sel.addRange(range);
 				}
 			}
 
@@ -1060,6 +1471,10 @@ Command                                 | Mac Shortcut                          
 				}
 			}
 
+			_computeCanRedo() {
+				return this.states && this.activeState < this.states.length - 1;
+			}
+
 			_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
 				if (minWidth768px && !forceNarrow) return scrollLeft < scrollWidth;
 				return scrollTop < scrollHeight;
@@ -1068,6 +1483,10 @@ Command                                 | Mac Shortcut                          
 			_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
 				if (minWidth768px && !forceNarrow) return scrollLeft > 0;
 				return scrollTop > 0;
+			}
+
+			_computeCanUndo() {
+				return this.states && this.activeState > 0;
 			}
 
 			_computeShowPlaceholder(value) {
@@ -1087,6 +1506,12 @@ Command                                 | Mac Shortcut                          
 			_minWidth768pxChanged() {
 				this._setScrollTop(0);
 				this._setScrollLeft(0);
+			}
+
+			_mutationObserverChanged(newObserver, oldObserver) {
+				if (typeof super._mutationObserverChanged === 'function') super._mutationObserverChanged(newObserver, oldObserver);
+				if (oldObserver) oldObserver.disconnect();
+				this.observe();
 			}
 
 			_onScrollButtonUp() {
@@ -1156,6 +1581,27 @@ Command                                 | Mac Shortcut                          
 			_scrollPreviousIcon(minWidth768px, forceNarrow) {
 				if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-left';
 				return 'wysiwyg:scroll-up';
+			}
+
+			_targetChanged() {
+				if (typeof super._targetChanged === 'function') super._targetChanged();
+				this.disconnect();
+				this.observe();
+				if (!this.value) this.value = '';
+				this.target.innerHTML = this.value;
+			}
+
+			_valueChanged() {
+				if (typeof super._valueChanged === 'function') super._valueChanged();
+
+				if (typeof this.value !== 'string') {
+					this.value = '';
+					return;
+				}
+
+				if (this.target && (this.target.innerHTML || '') !== this.value) {
+					this.target.innerHTML = this.value;
+				}
 			}
 		}
 
