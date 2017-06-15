@@ -1094,11 +1094,39 @@ Command                                 | Mac Shortcut                          
 			// Restore selection state
 			//
 			restoreSelection() {
-				if (typeof super.restoreSelection === 'function') super.restoreSelection();
-				var selection = this.getSelection();
-				selection.removeAllRanges();
-				if (this.range0 && this.target.contains(this.range0.commonAncestorContainer)) selection.addRange(this.range0);
-				setTimeout(this.updateSelection.bind(this), 10);
+				var charIndex = 0, range = this.target.ownerDocument.createRange(), savedSel = this.states[this.activeState].selection;
+				if (!savedSel) return;
+				range.setStart(this.target, 0);
+				range.collapse(true);
+				var nodeStack = [this.target], node, foundStart = false, stop = false;
+
+				while (!stop && (node = nodeStack.pop())) {
+					if (node.nodeType == 3) {
+						var nextCharIndex = charIndex + node.length;
+
+						if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
+							range.setStart(node, savedSel.start - charIndex);
+							foundStart = true;
+						}
+
+						if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
+							range.setEnd(node, savedSel.end - charIndex);
+							stop = true;
+						}
+
+						charIndex = nextCharIndex;
+					} else {
+						var i = node.childNodes.length;
+
+						while (i--) {
+							nodeStack.push(node.childNodes[i]);
+						}
+					}
+				}
+
+				var sel = this.getSelection();
+				sel.removeAllRanges();
+				sel.addRange(range);
 			}
 			//
 			// Sanitize DOM changes
@@ -1328,16 +1356,23 @@ Command                                 | Mac Shortcut                          
 						this._setCommonAncestorPath(path);
 					}
 
-					var range = this.range0;
-					var preSelectionRange = range.cloneRange();
-					preSelectionRange.selectNodeContents(this.target);
-					preSelectionRange.setEnd(range.startContainer, range.startOffset);
-					var start = preSelectionRange.toString().length;
+					setTimeout(
+						function () {
+							if (this.shadowRoot.activeElement && this.target.contains(this.shadowRoot.activeElement)) {
+								var range = this.range0;
+								var preSelectionRange = range.cloneRange();
+								preSelectionRange.selectNodeContents(this.target);
+								preSelectionRange.setEnd(range.startContainer, range.startOffset);
+								var start = preSelectionRange.toString().length;
 
-					this.states[this.activeState].selection = {
-						start: start,
-						end: start + range.toString().length
-					};
+								this.states[this.activeState].selection = {
+									start: start,
+									end: start + range.toString().length
+								};
+							}
+						}.bind(this),
+						50
+					);
 				}
 			}
 			//
@@ -1388,38 +1423,7 @@ Command                                 | Mac Shortcut                          
 					this.activeState = this.states.length - 1;
 				} else if (typeof oldValue !== 'undefined' && this.target && this.target.innerHTML !== this.states[this.activeState].html) {
 					this.target.innerHTML = this.states[this.activeState].html;
-					var charIndex = 0, range = this.target.ownerDocument.createRange(), savedSel = this.states[this.activeState].selection;
-					range.setStart(this.target, 0);
-					range.collapse(true);
-					var nodeStack = [this.target], node, foundStart = false, stop = false;
-
-					while (!stop && (node = nodeStack.pop())) {
-						if (node.nodeType == 3) {
-							var nextCharIndex = charIndex + node.length;
-
-							if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
-								range.setStart(node, savedSel.start - charIndex);
-								foundStart = true;
-							}
-
-							if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
-								range.setEnd(node, savedSel.end - charIndex);
-								stop = true;
-							}
-
-							charIndex = nextCharIndex;
-						} else {
-							var i = node.childNodes.length;
-
-							while (i--) {
-								nodeStack.push(node.childNodes[i]);
-							}
-						}
-					}
-
-					var sel = this.getSelection();
-					sel.removeAllRanges();
-					sel.addRange(range);
+					this.restoreSelection();
 				}
 			}
 

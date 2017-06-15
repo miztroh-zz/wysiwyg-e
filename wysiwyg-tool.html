@@ -79,13 +79,13 @@
 				max-width: 100%;
 			}
 
-      paper-item {
-        padding: 8px 16px;
-      }
+			paper-item {
+				padding: 8px 16px;
+			}
 
-      paper-item:hover {
-        cursor: pointer;
-      }
+			paper-item:hover {
+				cursor: pointer;
+			}
 		</style>
 		<div>test</div>
 	</template>
@@ -98,7 +98,22 @@
 	
 				if (!this._clickHandler) {
 					this._clickHandler = function (event) {
-						this.execCommand(event);
+						this.dispatchEvent(
+							new Event(
+								'restore-selection',
+								{
+									bubbles: true,
+									composed: true
+								}
+							)
+						);
+
+						setTimeout(
+							function () {
+								this.execCommand(event);
+							}.bind(this),
+							100
+						);
 					}.bind(this);
 				}
 	
