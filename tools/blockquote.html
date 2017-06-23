@@ -31,7 +31,7 @@
 		class WysiwygToolBlockquote extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-blockquote' }
 
-			ready () {
+			ready() {
 				super.ready();
 
 				this.resources = {
@@ -45,6 +45,8 @@
 						'Blockquote': 'Citation'
 					}
 				};
+
+				this.allowedTagNames = ['blockquote'];
 			}
 
 			execCommand() {

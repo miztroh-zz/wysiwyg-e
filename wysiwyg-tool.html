@@ -134,6 +134,19 @@
 						reflectToAttribute: true,
 						observer: '_activeChanged'
 					},
+					//
+					// Array of tagNames allowed by tool for the editor's sanitize method
+					//
+					allowedTagNames: {
+						type: Array,
+						value: function () {
+							return [
+								'br',
+								'p',
+								'span'
+							];
+						}
+					},
 					canRedo: {
 						type: Boolean,
 						value: false,

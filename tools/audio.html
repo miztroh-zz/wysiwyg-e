@@ -50,7 +50,7 @@
 		class WysiwygToolAudio extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-audio' }
 
-			attached () {
+			attached() {
 				if (!this._handler) {
 					this._handler = function (event) {
 						var selectedAudio = null, target = event.composedPath()[0];
@@ -69,12 +69,12 @@
 				document.addEventListener('keydown', this._handler);
 			}
 
-			detached () {
+			detached() {
 				document.removeEventListener('click', this._handler);
 				document.removeEventListener('keydown', this._handler);
 			}
 
-			static get properties () {
+			static get properties() {
 				return {
 					audioUrl: {
 						type: String,
@@ -103,7 +103,7 @@
 				};
 			}
 
-			execCommand (event) {
+			execCommand(event) {
 				if (this.disabled || !this.range0) return;
 				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.composedPath()[0];
 
@@ -144,15 +144,15 @@
 				}
 			}
 
-			queryCommandEnabled () {
+			queryCommandEnabled() {
 				return this.range0;
 			}
 
-			queryCommandState () {
+			queryCommandState() {
 				return this.selectedAudio;
 			}
 
-			ready () {
+			ready() {
 				super.ready();
 
 				this.resources = {
@@ -166,18 +166,20 @@
 						'Audio': 'Audio'
 					}
 				};
+
+				this.allowedTagNames = ['p', 'br', 'audio-wrapper', 'audio'];
 			}
 
-			_paperDropdownClose (event) {
+			_paperDropdownClose(event) {
 				var target = event.composedPath()[0];
 				if (target !== this.$.dropdown) return;
 				this.audioUrl = '';
 				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
 			}
 
-			_selectedAudioChanged () {}
+			_selectedAudioChanged() {}
 
-			_stopPropagation (event) {
+			_stopPropagation(event) {
 				event.stopPropagation();
 			}
 		}

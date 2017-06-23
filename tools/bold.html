@@ -31,7 +31,7 @@
 		class WysiwygToolBold extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-bold' }
 
-			ready () {
+			ready() {
 				super.ready();
 				this._setCommand('bold');
 
@@ -46,6 +46,8 @@
 						'Bold': 'Gras'
 					}
 				};
+
+				this.allowedTagNames = ['b'];
 			}
 		}
 

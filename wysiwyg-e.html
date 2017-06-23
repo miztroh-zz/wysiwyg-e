@@ -458,113 +458,15 @@ Command                                 | Mac Shortcut                          
 						}
 					},
 					//
-					// Array of tagNames allowed by the sanitize method
+					// Array of tagNames allowed by editor for its sanitize method
 					//
 					allowedTagNames: {
 						type: Array,
 						value: function () {
 							return [
-								'a',
-								'abbr',
-								'address',
-								'area',
-								'article',
-								'aside',
-								'audio',
-								'b',
-								'base',
-								'bdi',
-								'bdo',
-								'blockquote',
 								'br',
-								'button',
-								'canvas',
-								'caption',
-								'cite',
-								'code',
-								'col',
-								'colgroup',
-								'data',
-								'datalist',
-								'dd',
-								'del',
-								'details',
-								'dfn',
-								'div',
-								'dl',
-								'dt',
-								'element',
-								'em',
-								'embed',
-								'fieldset',
-								'figcaption',
-								'figure',
-								'footer',
-								'form',
-								'h1',
-								'h2',
-								'h3',
-								'h4',
-								'h5',
-								'h6',
-								'header',
-								'hgroup',
-								'hr',
-								'i',
-								'img',
-								'input',
-								'ins',
-								'kbd',
-								'label',
-								'legend',
-								'li',
-								'main',
-								'map',
-								'mark',
-								'meter',
-								'nav',
-								'noframes',
-								'noscript',
-								'object',
-								'ol',
-								'optgroup',
-								'option',
-								'output',
 								'p',
-								'param',
-								'progress',
-								'q',
-								'rp',
-								'rt',
-								'rtc',
-								'ruby',
-								's',
-								'samp',
-								'section',
-								'select',
-								'small',
-								'source',
-								'span',
-								'strong',
-								'sub',
-								'summary',
-								'sup',
-								'table',
-								'tbody',
-								'td',
-								'template',
-								'textarea',
-								'tfoot',
-								'th',
-								'thead',
-								'time',
-								'tr',
-								'track',
-								'u',
-								'ul',
-								'var',
-								'video',
-								'wbr'
+								'span'
 							];
 						}
 					},
@@ -721,6 +623,54 @@ Command                                 | Mac Shortcut                          
 						}
 					},
 					//
+					// A MutationObserver to update the selection as well as sanitize changes and add them to the states array
+					//
+					mutationObserver: {
+						type: Object,
+						value: function () {
+							var sanitizeQueue = [], sanitizing = false;
+							this.sanitizeQueue = sanitizeQueue;
+
+							var sanitize = function () {
+								sanitizing = true;
+								var mutations = sanitizeQueue.shift();
+								var sanitized = this.sanitize(mutations);
+
+								if (sanitizeQueue.length) {
+									sanitize();
+								} else {
+									sanitizing = false;
+
+									if (sanitized) {
+										var html = this.target.innerHTML || '';
+										if (this.states.length > 1) this.states.splice(this.activeState + 1, this.states.length);
+
+										var state = {
+											html: html
+										};
+
+										this.states.push(state);
+										this.activeState = this.states.length - 1;
+										this.value = html;
+										this._setText = this.target.textContent || '';
+									}
+								}
+
+								return sanitized;
+							}.bind(this);
+		
+							return new MutationObserver(
+								function (mutations) {
+									sanitizeQueue.push(mutations);
+									if (!sanitizing) sanitize();
+									setTimeout(this.updateSelection.bind(this), 10);
+								}.bind(this)
+							);
+						},
+						readOnly: true,
+						observer: '_mutationObserverChanged'
+					},
+					//
 					// Hide the redo button and prevent redo operations
 					//
 					noRedo: {
@@ -824,54 +774,6 @@ Command                                 | Mac Shortcut                          
 						type: Number,
 						value: 0,
 						readOnly: true
-					},
-					//
-					// A MutationObserver to update the selection as well as sanitize changes and add them to the states array
-					//
-					mutationObserver: {
-						type: Object,
-						value: function () {
-							var sanitizeQueue = [], sanitizing = false;
-							this.sanitizeQueue = sanitizeQueue;
-
-							var sanitize = function () {
-								sanitizing = true;
-								var mutations = sanitizeQueue.shift();
-								var sanitized = this.sanitize(mutations);
-
-								if (sanitizeQueue.length) {
-									sanitize();
-								} else {
-									sanitizing = false;
-
-									if (sanitized) {
-										var html = this.target.innerHTML || '';
-										if (this.states.length > 1) this.states.splice(this.activeState + 1, this.states.length);
-
-										var state = {
-											html: html
-										};
-
-										this.states.push(state);
-										this.activeState = this.states.length - 1;
-										this.value = html;
-										this._setText = this.target.textContent || '';
-									}
-								}
-
-								return sanitized;
-							}.bind(this);
-		
-							return new MutationObserver(
-								function (mutations) {
-									sanitizeQueue.push(mutations);
-									if (!sanitizing) sanitize();
-									setTimeout(this.updateSelection.bind(this), 10);
-								}.bind(this)
-							);
-						},
-						readOnly: true,
-						observer: '_mutationObserverChanged'
 					},
 					//
 					// Whether placeholder should be shown.	Computed.
@@ -1132,6 +1034,7 @@ Command                                 | Mac Shortcut                          
 			// Sanitize DOM changes
 			//
 			sanitize(mutations) {
+				return true;
 				if (!mutations) return true;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
 
@@ -1251,8 +1154,15 @@ Command                                 | Mac Shortcut                          
 								break;
 						}
 
+						var allowedTagNames = this.allowedTagNames;
+						var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
+
+						for (j = 0; j < tools.length; j += 1) {
+							allowedTagNames = allowedTagNames.concat(tools[j].allowedTagNames);
+						}
+
 						//Make sure tagName is allowed
-						if (node.tagName && this.allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
+						if (node.tagName && allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
 							node.outerHTML = node.innerHTML;
 							if (this.debug) console.log(node, 'invalid tagName');
 							sanitized = false;
