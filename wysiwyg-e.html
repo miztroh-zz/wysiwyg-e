@@ -1345,8 +1345,8 @@ Command                                 | Mac Shortcut                          
 				var singleBackspace = function () {
 					if (this.target.children.length > 1) {
 						document.execCommand('delete');
-					} else if (this.target.children.length === 1) {
-						if (this.target.children[0].textContent.length) {
+					} else {
+						if ((this.target.children.length && this.target.children[0].textContent.length) || (this.target.childNodes.length && this.target.childNodes[0].textContent.length)) {
 							document.execCommand('delete');
 						} else {
 							document.execCommand('formatBlock', null, 'P');
