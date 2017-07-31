@@ -1034,7 +1034,6 @@ Command                                 | Mac Shortcut                          
 			// Sanitize DOM changes
 			//
 			sanitize(mutations) {
-				return true;
 				if (!mutations) return true;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
 
@@ -1105,7 +1104,7 @@ Command                                 | Mac Shortcut                          
 						}
 
 						//If node is a text node immediate child of target, wrap inside a P
-						if (node.parentNode === this.target && node.nodeType === 3) {
+						if (node.parentNode === this.target && node.nodeType === Node.TEXT_NODE) {
 							if (!node.textContent.trim().length) continue;
 							p = document.createElement('p');
 							this.target.insertBefore(p, node.nextSibling);
