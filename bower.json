@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg-e",
-  "version": "2.0.1",
+  "version": "2.0.5",
   "homepage": "https://github.com/miztroh/wysiwyg-e",
   "authors": [
     "Jonathan Cox <jonathan@teamcox.family>"
@@ -41,7 +41,7 @@
     "paper-menu-button": "PolymerElements/paper-menu-button#^2.0.0",
     "paper-swatch-picker": "PolymerElements/paper-swatch-picker#^2.0.0",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0",
-    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^3.0.0"
   },
   "devDependencies": {
     "web-component-tester": "polymer/web-component-tester#^6.0.0"
