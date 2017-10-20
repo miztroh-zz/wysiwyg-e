@@ -1337,6 +1337,7 @@ Command                                 | Mac Shortcut                          
 			}
 
 			_backspace(event) {
+				if (!this.target || !this.target.contains(event.composedPath()[0])) return;
 				event.preventDefault();
 				if (!this.range0) return;
 				if (event.altKey || event.shiftKey) return;
@@ -1412,6 +1413,7 @@ Command                                 | Mac Shortcut                          
 			}
 
 			_delete(event) {
+				if (!this.target || !this.target.contains(event.composedPath()[0])) return;
 				event.preventDefault();
 				document.execCommand('forwardDelete');
 			}

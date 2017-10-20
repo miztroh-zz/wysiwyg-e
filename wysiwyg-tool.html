@@ -97,6 +97,8 @@
 	
 				if (!this._clickHandler) {
 					this._clickHandler = function (event) {
+						if (this.usesDialog) return;
+
 						this.dispatchEvent(
 							new Event(
 								'restore-selection',
@@ -240,6 +242,12 @@
 						value: 'bottom',
 						readOnly: true,
 						observer: '_tooltipPositionChanged'
+					},
+					usesDialog: {
+						type: Boolean,
+						value: false,
+						readOnly: true,
+						observer: '_usesDialogChanged'
 					},
 					value: {
 						type: String,
@@ -454,6 +462,8 @@
 			_targetChanged() {}
 	
 			_tooltipPositionChanged() {}
+
+			_usesDialogChanged() {}
 	
 			_valueChanged() {}
 		}
