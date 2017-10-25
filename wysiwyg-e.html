@@ -652,7 +652,7 @@ Command                                 | Mac Shortcut                          
 										this.states.push(state);
 										this.activeState = this.states.length - 1;
 										this.value = html;
-										this._setText = this.target.textContent || '';
+										this._setText(this.target ? this.target.textContent : '');
 									}
 								}
 
