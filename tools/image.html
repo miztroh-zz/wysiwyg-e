@@ -130,11 +130,11 @@
 				};
 			}
 
-			execCommand (event) {
+			execCommand (clickTarget) {
 				if (this.disabled || !this.range0) return;
-				var imageUrl = this.imageUrl, imageFloat = this.imageFloat, target = event.composedPath()[0];
+				var imageUrl = this.imageUrl, imageFloat = this.imageFloat;
 
-				if (this.$.updateInsert === target || this.$.updateInsert.root.contains(target)) {
+				if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -155,16 +155,16 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove === target || this.$.remove.root.contains(target)) {
+				} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 					if (this.selectedImage) {
 						this.selectedImage.parentNode.removeChild(this.selectedImage);
 						this._setSelectedImage(null);
 					}
 
 					this.$.dropdown.close();
-				} else if (this.$.close === target || this.$.close.root.contains(target)) {
+				} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 					this.$.dropdown.close();
-				} else if (this.$.button === target || this.$.button.root.contains(target)) {
+				} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 					if (this.selectedImage) {
 						this.imageUrl = this.selectedImage.src;
 						this.imageFloat = this.selectedImage.style.float || 'none';

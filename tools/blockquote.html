@@ -50,7 +50,7 @@
 				this.allowedTagNames = ['blockquote'];
 			}
 
-			execCommand() {
+			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return;
 
 				if (!this.active) {

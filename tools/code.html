@@ -32,7 +32,7 @@
 		class WysiwygToolCode extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-code' }
 
-			execCommand() {
+			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return;
 
 				if (!this.active) {

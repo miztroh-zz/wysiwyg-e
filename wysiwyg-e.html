@@ -996,37 +996,16 @@ Command                                 | Mac Shortcut                          
 			// Restore selection state
 			//
 			restoreSelection() {
-				var charIndex = 0, range = this.target.ownerDocument.createRange(), savedSel = this.states[this.activeState].selection;
+				var charIndex = 0, range = this.target.ownerDocument.createRange(), target = this.target, savedSel = this.states[this.activeState].selection;
 				if (!savedSel) return;
-				range.setStart(this.target, 0);
-				range.collapse(true);
-				var nodeStack = [this.target], node, foundStart = false, stop = false;
+				var startNodeOffset, endNodeOffset;
+				startNodeOffset = this._getNodeAndOffsetAt(target, savedSel.start);
+				endNodeOffset = this._getNodeAndOffsetAt(target, savedSel.end);
 
-				while (!stop && (node = nodeStack.pop())) {
-					if (node.nodeType == 3) {
-						var nextCharIndex = charIndex + node.length;
+				range.setStart(startNodeOffset.node, startNodeOffset.offset);
+				range.setEnd(endNodeOffset.node, endNodeOffset.offset);
 
-						if (!foundStart && savedSel.start >= charIndex && savedSel.start <= nextCharIndex) {
-							range.setStart(node, savedSel.start - charIndex);
-							foundStart = true;
-						}
-
-						if (foundStart && savedSel.end >= charIndex && savedSel.end <= nextCharIndex) {
-							range.setEnd(node, savedSel.end - charIndex);
-							stop = true;
-						}
-
-						charIndex = nextCharIndex;
-					} else {
-						var i = node.childNodes.length;
-
-						while (i--) {
-							nodeStack.push(node.childNodes[i]);
-						}
-					}
-				}
-
-				var sel = this.getSelection();
+				var sel = window.getSelection();
 				sel.removeAllRanges();
 				sel.addRange(range);
 			}
@@ -1230,6 +1209,160 @@ Command                                 | Mac Shortcut                          
 					10
 				);
 			}
+
+			/*
+			Gets the offset of a node within another node. Text nodes are
+			counted a n where n is the length. Entering (or passing) an
+			element is one offset. Exiting is 0.
+			*/
+			_getNodeOffset(start, dest) {
+				var offset = 0;
+
+				var node = start;
+				var stack = [];
+
+				while (true) {
+					if (node === dest) {
+						return offset;
+					}
+
+					// Go into children
+					if (node.firstChild) {
+						// Going into first one doesn't count
+						if (node !== start)
+							offset += 1;
+						stack.push(node);
+						node = node.firstChild;
+					}
+					// If can go to next sibling
+					else if (stack.length > 0 && node.nextSibling) {
+						// If text, count length (plus 1)
+						if (node.nodeType === 3)
+							offset += node.nodeValue.length + 1;
+						else
+							offset += 1;
+
+						node = node.nextSibling;
+					}
+					else {
+						// If text, count length
+						if (node.nodeType === 3)
+							offset += node.nodeValue.length + 1;
+						else
+							offset += 1;
+
+						// No children or siblings, move up stack
+						while (true) {
+							if (stack.length <= 1)
+								return offset;
+
+							var next = stack.pop();
+
+							// Go to sibling
+							if (next.nextSibling) {
+								node = next.nextSibling;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			// Calculate the total offsets of a node
+			_calculateNodeOffset(node) {
+				var offset = 0;
+
+				// If text, count length
+				if (node.nodeType === 3)
+					offset += node.nodeValue.length + 1;
+				else
+					offset += 1;
+
+				if (node.childNodes) {
+					for (var i=0;i<node.childNodes.length;i++) {
+						offset += this._calculateNodeOffset(node.childNodes[i]);
+					}
+				}
+
+				return offset;
+			}
+
+			// Determine total offset length from returned offset from ranges
+			_totalOffsets(parentNode, offset) {
+				if (parentNode.nodeType == 3)
+					return offset;
+
+				if (parentNode.nodeType == 1) {
+					var total = 0;
+					// Get child nodes
+					for (var i=0;i<offset;i++) {
+						total += this._calculateNodeOffset(parentNode.childNodes[i]);
+					}
+					return total;
+				}
+
+				return 0;
+			}
+
+			_getNodeAndOffsetAt(start, offset) {
+				var node = start;
+				var stack = [];
+
+				while (true) {
+					// If arrived
+					if (offset <= 0)
+						return { node: node, offset: 0 };
+
+					// If will be within current text node
+					if (node.nodeType == 3 && (offset <= node.nodeValue.length))
+						return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+
+					// Go into children (first one doesn't count)
+					if (node.firstChild) {
+						if (node !== start)
+							offset -= 1;
+						stack.push(node);
+						node = node.firstChild;
+					}
+					// If can go to next sibling
+					else if (stack.length > 0 && node.nextSibling) {
+						// If text, count length
+						if (node.nodeType === 3)
+							offset -= node.nodeValue.length + 1;
+						else
+							offset -= 1;
+
+						node = node.nextSibling;
+					}
+					else {
+						// No children or siblings, move up stack
+						while (true) {
+							if (stack.length <= 1) {
+								// No more options, use current node
+								if (node.nodeType == 3)
+									return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+								else
+									return { node: node, offset: 0 };
+							}
+
+							var next = stack.pop();
+
+							// Go to sibling
+							if (next.nextSibling) {
+								// If text, count length
+								if (node.nodeType === 3)
+									offset -= node.nodeValue.length + 1;
+								else
+									offset -= 1;
+
+								node = next.nextSibling;
+								break;
+							}
+						}
+					}
+				}
+			}
+
 			//
 			// Update properties based on the current selection
 			//
@@ -1268,15 +1401,13 @@ Command                                 | Mac Shortcut                          
 					setTimeout(
 						function () {
 							if (this.shadowRoot.activeElement && this.target.contains(this.shadowRoot.activeElement)) {
-								var range = this.range0;
-								var preSelectionRange = range.cloneRange();
-								preSelectionRange.selectNodeContents(this.target);
-								preSelectionRange.setEnd(range.startContainer, range.startOffset);
-								var start = preSelectionRange.toString().length;
+
+
+								var target = this.target, range = this.range0;
 
 								this.states[this.activeState].selection = {
-									start: start,
-									end: start + range.toString().length
+									start: this._getNodeOffset(target, range.startContainer) + this._totalOffsets(range.startContainer, range.startOffset),
+									end: this._getNodeOffset(target, range.endContainer) + this._totalOffsets(range.endContainer, range.endOffset)
 								};
 							}
 						}.bind(this),

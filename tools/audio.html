@@ -104,11 +104,11 @@
 				};
 			}
 
-			execCommand(event) {
+			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return;
-				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;'), target = event.composedPath()[0];
+				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-				if (this.$.updateInsert.contains(target)) {
+				if (this.$.updateInsert.contains(clickTarget)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -122,12 +122,12 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(target)) {
+				} else if (this.$.remove.contains(clickTarget)) {
 					if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(target)) {
+				} else if (this.$.close.contains(clickTarget)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(target)) {
+				} else if (this.$.button.contains(clickTarget)) {
 					if (this.selectedAudio) {
 						this.audioUrl = this.selectedAudio.src;
 					} else {

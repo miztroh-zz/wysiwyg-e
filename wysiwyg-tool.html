@@ -97,21 +97,23 @@
 	
 				if (!this._clickHandler) {
 					this._clickHandler = function (event) {
-						if (this.usesDialog) return;
+						if (!this.usesDialog) {
+							this.dispatchEvent(
+								new Event(
+									'restore-selection',
+									{
+										bubbles: true,
+										composed: true
+									}
+								)
+							);
+						}
 
-						this.dispatchEvent(
-							new Event(
-								'restore-selection',
-								{
-									bubbles: true,
-									composed: true
-								}
-							)
-						);
+						var clickTarget = event.composedPath()[0];
 
 						setTimeout(
 							function () {
-								this.execCommand(event);
+								this.execCommand(clickTarget);
 							}.bind(this),
 							100
 						);
@@ -257,8 +259,8 @@
 					}
 				};
 			}
-	
-			execCommand() {
+
+			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return false;
 				document.execCommand(this.command);
 			}

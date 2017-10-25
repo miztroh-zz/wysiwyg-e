@@ -112,7 +112,7 @@
 				this.$.picker.$.iconButton.parentNode.style.padding = '0';
 			}
 
-			execCommand() {
+			execCommand(clickTarget) {
 				var color = this.$.picker.color;
 				this.$.picker.color = '';
 				// Do nothing without a valid selection or picker color

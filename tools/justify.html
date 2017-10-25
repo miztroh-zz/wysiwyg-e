@@ -139,17 +139,16 @@
 				};
 			}
 
-			execCommand (event) {
-			  var target = event.composedPath()[0];
+			execCommand (clickTarget) {
 				if (this.disabled || !this.range0) return false;
 
-				if (this.$.left.contains(target)) {
+				if (this.$.left.contains(clickTarget)) {
 					this._left();
-				} else if (this.$.right.contains(target)) {
+				} else if (this.$.right.contains(clickTarget)) {
 					this._right();
-				} else if (this.$.center.contains(target)) {
+				} else if (this.$.center.contains(clickTarget)) {
 					this._center();
-				} else if (this.$.full.contains(target)) {
+				} else if (this.$.full.contains(clickTarget)) {
 					this._full();
 				}
 			}
