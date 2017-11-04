@@ -117,22 +117,38 @@ class WysiwygToolColor extends WysiwygTool {
 		this.$.picker.color = '';
 		// Do nothing without a valid selection or picker color
 		if (this.disabled || !this.range0 || !color) return;
-		// Use CSS when setting the color
-		document.execCommand('styleWithCSS', false, true);
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 
 		setTimeout(
 			function () {
-				// Set the color on the current selection
-				document.execCommand(this.command, false, color);
+				// Use CSS when setting the color
+				document.execCommand('styleWithCSS', false, true);
 
 				setTimeout(
 					function () {
-						// Revert to styleWithCSS default
-						document.execCommand('styleWithCSS', false, false);
+						// Set the color on the current selection
+						document.execCommand(this.command, false, color);
+
+						setTimeout(
+							function () {
+								// Revert to styleWithCSS default
+								document.execCommand('styleWithCSS', false, false);
+							}.bind(this),
+							1000
+						);
 					}.bind(this),
-					1000
+					10
 				);
-			}.bind(this),
+			},
 			10
 		);
 	}

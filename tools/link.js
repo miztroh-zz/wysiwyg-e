@@ -147,7 +147,7 @@ class WysiwygToolLink extends WysiwygTool {
 		if (this.disabled || !this.range0) return;
 		var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
 
-		if (this.$.updateInsert.contains(clickTarget)) {
+		if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -168,16 +168,16 @@ class WysiwygToolLink extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (this.$.remove.contains(clickTarget)) {
+		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedLink) {
 				this.selectedLink.outerHTML = this.selectedLink.innerHTML;
 				this._setSelectedLink(null);
 			}
 
 			this.$.dropdown.close();
-		} else if (this.$.close.contains(clickTarget)) {
+		} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (this.$.button.contains(clickTarget)) {
+		} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 			if (this.selectedLink) {
 				this.linkUrl = this.selectedLink.href;
 				this.linkTarget = this.selectedLink.target || '_self';
@@ -243,7 +243,16 @@ class WysiwygToolLink extends WysiwygTool {
 		if (this.$.dropdown.opened) return;
 		this.linkUrl = '';
 		this.linkTarget = '_self';
-		this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 	}
 
 	_selectedLinkChanged (event) {}

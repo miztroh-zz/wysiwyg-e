@@ -106,7 +106,11 @@ export class WysiwygTool extends PolymerElement {
 
 		if (!this._clickHandler) {
 			this._clickHandler = function (event) {
+				var timeout = 0;
+
 				if (!this.usesDialog) {
+					timeout = 100;
+
 					this.dispatchEvent(
 						new Event(
 							'restore-selection',
@@ -124,7 +128,7 @@ export class WysiwygTool extends PolymerElement {
 					function () {
 						this.execCommand(clickTarget);
 					}.bind(this),
-					100
+					timeout
 				);
 			}.bind(this);
 		}

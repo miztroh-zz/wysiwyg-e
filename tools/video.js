@@ -120,7 +120,7 @@ class WysiwygToolVideo extends WysiwygTool {
 		if (this.disabled || !this.range0) return;
 		var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-		if (this.$.updateInsert.contains(clickTarget)) {
+		if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -134,12 +134,12 @@ class WysiwygToolVideo extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (this.$.remove.contains(clickTarget)) {
+		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedVideo) this.selectedVideo.parentNode.removeChild(this.selectedVideo);
 			this.$.dropdown.close();
-		} else if (this.$.close.contains(clickTarget)) {
+		} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (this.$.button.contains(clickTarget)) {
+		} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 			if (this.selectedVideo) {
 				this.videoUrl = this.selectedVideo.src;
 			} else {
@@ -191,7 +191,16 @@ class WysiwygToolVideo extends WysiwygTool {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
 		this.videoUrl = '';
-		this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 	}
 
 	_selectedVideoChanged () {}

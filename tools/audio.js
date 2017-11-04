@@ -117,7 +117,7 @@ class WysiwygToolAudio extends WysiwygTool {
 		if (this.disabled || !this.range0) return;
 		var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-		if (this.$.updateInsert.contains(clickTarget)) {
+		if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -131,12 +131,12 @@ class WysiwygToolAudio extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (this.$.remove.contains(clickTarget)) {
+		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
 			this.$.dropdown.close();
-		} else if (this.$.close.contains(clickTarget)) {
+		} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (this.$.button.contains(clickTarget)) {
+		} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 			if (this.selectedAudio) {
 				this.audioUrl = this.selectedAudio.src;
 			} else {
@@ -185,7 +185,16 @@ class WysiwygToolAudio extends WysiwygTool {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
 		this.audioUrl = '';
-		this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 	}
 
 	_selectedAudioChanged() {}

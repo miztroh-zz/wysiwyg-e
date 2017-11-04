@@ -110,35 +110,6 @@ class WysiwygToolHeading extends WysiwygTool {
 		`;
 	}
 
-	connectedCallback() {
-		if (!this._clickHandler) {
-			this._clickHandler = function (event) {
-				var target = event.composedPath()[0];
-				if (!this.$.button.contains(target)) return;
-
-				this.dispatchEvent(
-					new Event(
-						'restore-selection',
-						{
-							bubbles: true,
-							composed: true
-						}
-					)
-				);
-
-				setTimeout(
-					function () {
-						this.execCommand(event);
-					}.bind(this),
-					100
-				);
-			}.bind(this);
-		}
-
-		this.addEventListener('click', this._clickHandler);
-		super.connectedCallback();
-	}
-
 	static get properties() {
 		return {
 			allowedTagNames: {
@@ -198,32 +169,33 @@ class WysiwygToolHeading extends WysiwygTool {
 
 	execCommand(clickTarget) {
 		if (this.disabled || !this.range0) return false
+		var action;
 
-		if (this.$.p.contains(clickTarget)) {
+		if (this.$.p === clickTarget || this.$.p.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(0);
 			}.bind(this);
-		} else if (this.$.h1.contains(clickTarget)) {
+		} else if (this.$.h1 === clickTarget || this.$.h1.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(1);
 			}.bind(this);
-		} else if (this.$.h2.contains(clickTarget)) {
+		} else if (this.$.h2 === clickTarget || this.$.h2.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(2);
 			}.bind(this);
-		} else if (this.$.h3.contains(clickTarget)) {
+		} else if (this.$.h3 === clickTarget || this.$.h3.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(3);
 			}.bind(this);
-		} else if (this.$.h4.contains(clickTarget)) {
+		} else if (this.$.h4 === clickTarget || this.$.h4.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(4);
 			}.bind(this);
-		} else if (this.$.h5.contains(clickTarget)) {
+		} else if (this.$.h5 === clickTarget || this.$.h5.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(5);
 			}.bind(this);
-		} else if (this.$.h6.contains(clickTarget)) {
+		} else if (this.$.h6 === clickTarget || this.$.h6.root.contains(clickTarget)) {
 			action = function () {
 				this._heading(6);
 			}.bind(this);
@@ -378,7 +350,16 @@ class WysiwygToolHeading extends WysiwygTool {
 	_paperDropdownClose(event) {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
-		this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 	}
 }
 

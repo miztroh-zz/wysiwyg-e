@@ -247,7 +247,16 @@ class WysiwygToolImage extends WysiwygTool {
 		if (target !== this.$.dropdown) return;
 		this.imageUrl = '';
 		this.imageFloat = 'none';
-		this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 	}
 
 	_selectedImageChanged () {}

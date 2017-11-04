@@ -151,13 +151,13 @@ class WysiwygToolJustify extends WysiwygTool {
 	execCommand (clickTarget) {
 		if (this.disabled || !this.range0) return false;
 
-		if (this.$.left.contains(clickTarget)) {
+		if (this.$.left === clickTarget || this.$.left.root.contains(clickTarget)) {
 			this._left();
-		} else if (this.$.right.contains(clickTarget)) {
+		} else if (this.$.right === clickTarget || this.$.right.root.contains(clickTarget)) {
 			this._right();
-		} else if (this.$.center.contains(clickTarget)) {
+		} else if (this.$.center === clickTarget || this.$.center.root.contains(clickTarget)) {
 			this._center();
-		} else if (this.$.full.contains(clickTarget)) {
+		} else if (this.$.full === clickTarget || this.$.full.root.contains(clickTarget)) {
 			this._full();
 		}
 	}
@@ -244,7 +244,16 @@ class WysiwygToolJustify extends WysiwygTool {
 	_paperDropdownClose (event) {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
-		this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
 	}
 }
 
