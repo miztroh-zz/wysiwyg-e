@@ -146,7 +146,7 @@ export class WysiwygTool extends PolymerElement {
 			active: {
 				type: Boolean,
 				value: false,
-				computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
+				computed: '_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command)',
 				reflectToAttribute: true,
 				observer: '_activeChanged'
 			},
@@ -196,7 +196,7 @@ export class WysiwygTool extends PolymerElement {
 			disabled: {
 				type: Boolean,
 				value: true,
-				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
+				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command)',
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
@@ -217,12 +217,6 @@ export class WysiwygTool extends PolymerElement {
 				value: true,
 				readOnly: true,
 				observer: '_minWidth768pxChanged'
-			},
-			mode: {
-				type: String,
-				value: 'edit',
-				readOnly: true,
-				observer: '_modeChanged'
 			},
 			modifier: {
 				type: Object,
@@ -427,21 +421,6 @@ export class WysiwygTool extends PolymerElement {
 		);
 	}
 
-	queryCommandEnabled() {
-		if (!this.range0) return false;
-		return document.queryCommandEnabled(this.command);
-	}
-
-	queryCommandState() {
-		if (!this.range0) return false;
-
-		try {
-			return document.queryCommandState(this.command);
-		} catch (ignore) {
-			return false;
-		}
-	}
-
 	_activeChanged() {}
 
 	_canRedoChanged() {}
@@ -452,8 +431,19 @@ export class WysiwygTool extends PolymerElement {
 
 	_commonAncestorPathChanged() {}
 
-	_computeDisabled() {
-		return !this.queryCommandEnabled();
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState(command);
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled(command);
 	}
 
 	_debugChanged() {}
@@ -465,8 +455,6 @@ export class WysiwygTool extends PolymerElement {
 	_languageChanged() {}
 
 	_minWidth768pxChanged() {}
-
-	_modeChanged() {}
 
 	_modifierChanged() {}
 

@@ -77,7 +77,9 @@ class WysiwygToolImage extends WysiwygTool {
 		`;
 	}
 
-	attached () {
+	connectedCallback() {
+		super.connectedCallback();
+
 		if (!this._handler) {
 			this._handler = function (event) {
 				var target = event.composedPath()[0];
@@ -101,11 +103,12 @@ class WysiwygToolImage extends WysiwygTool {
 		document.addEventListener('click', this._handler);
 	}
 
-	detached () {
+	disconnectedCallback() {
+		super.disconnectedCallback();
 		document.removeEventListener('click', this._handler);
 	}
 
-	static get properties () {
+	static get properties() {
 		return {
 			imageFloat: {
 				type: String,
@@ -117,29 +120,15 @@ class WysiwygToolImage extends WysiwygTool {
 				value: ''
 			},
 			selectedImage: {
-				type: Object,
+				type: HTMLImageElement,
 				value: null,
 				readOnly: true,
 				observer: '_selectedImageChanged'
-			},
-			active: {
-				type: Boolean,
-				value: false,
-				computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
-				reflectToAttribute: true,
-				observer: '_activeChanged'
-			},
-			disabled: {
-				type: Boolean,
-				value: true,
-				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedImage)',
-				reflectToAttribute: true,
-				observer: '_disabledChanged'
 			}
 		};
 	}
 
-	execCommand (clickTarget) {
+	execCommand(clickTarget) {
 		if (this.disabled || !this.range0) return;
 		var imageUrl = this.imageUrl, imageFloat = this.imageFloat;
 
@@ -193,15 +182,7 @@ class WysiwygToolImage extends WysiwygTool {
 		}
 	}
 
-	queryCommandEnabled () {
-		return this.range0;
-	}
-
-	queryCommandState () {
-		return this.selectedImage;
-	}
-
-	ready () {
+	ready() {
 		super.ready();
 		this._setUsesDialog(true);
 
@@ -234,15 +215,24 @@ class WysiwygToolImage extends WysiwygTool {
 
 		this.allowedTagNames = ['img'];
 	}
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !!this.selectedImage;
+	}
 
-	_imageFloatChanged () {
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (this.selectedImage || this.range0) return false;
+		return true;
+	}
+
+	_imageFloatChanged() {
 		if (['none', 'left', 'right'].indexOf(this.imageFloat) === -1) {
 			this.imageFloat = 'none';
 			return;
 		}
 	}
 
-	_paperDropdownClose (event) {
+	_paperDropdownClose(event) {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
 		this.imageUrl = '';
@@ -258,10 +248,16 @@ class WysiwygToolImage extends WysiwygTool {
 			)
 		);
 	}
+	
+	_selectedImageChanged(event) {
+		if (this.selectedImage) {
+			this.imageUrl = this.selectedImage.src;
+		} else {
+			this.imageUrl = '';
+		}
+	}
 
-	_selectedImageChanged () {}
-
-	_stopPropagation (event) {
+	_stopPropagation(event) {
 		event.stopPropagation();
 	}
 }

@@ -60,7 +60,9 @@ class WysiwygToolAudio extends WysiwygTool {
 		`;
 	}
 
-	attached() {
+	connectedCallback() {
+		super.connectedCallback();
+
 		if (!this._handler) {
 			this._handler = function (event) {
 				var selectedAudio = null, target = event.composedPath()[0];
@@ -79,7 +81,8 @@ class WysiwygToolAudio extends WysiwygTool {
 		document.addEventListener('keydown', this._handler);
 	}
 
-	detached() {
+	disconnectedCallback() {
+		super.disconnectedCallback();
 		document.removeEventListener('click', this._handler);
 		document.removeEventListener('keydown', this._handler);
 	}
@@ -95,20 +98,6 @@ class WysiwygToolAudio extends WysiwygTool {
 				value: null,
 				readOnly: true,
 				observer: '_selectedAudioChanged'
-			},
-			active: {
-				type: Boolean,
-				value: false,
-				computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
-				reflectToAttribute: true,
-				observer: '_activeChanged'
-			},
-			disabled: {
-				type: Boolean,
-				value: true,
-				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
-				reflectToAttribute: true,
-				observer: '_disabledChanged'
 			}
 		};
 	}
@@ -153,13 +142,14 @@ class WysiwygToolAudio extends WysiwygTool {
 			);
 		}
 	}
-
-	queryCommandEnabled() {
-		return this.range0;
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !!this.selectedAudio;
 	}
 
-	queryCommandState() {
-		return this.selectedAudio;
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (this.selectedAudio || this.range0) return false;
+		return true;
 	}
 
 	ready() {
@@ -196,8 +186,14 @@ class WysiwygToolAudio extends WysiwygTool {
 			)
 		);
 	}
-
-	_selectedAudioChanged() {}
+	
+	_selectedAudioChanged(event) {
+		if (this.selectedAudio) {
+			this.audioUrl = this.selectedAudio.src;
+		} else {
+			this.audioUrl = '';
+		}
+	}
 
 	_stopPropagation(event) {
 		event.stopPropagation();

@@ -63,7 +63,9 @@ class WysiwygToolVideo extends WysiwygTool {
 		`;
 	}
 
-	attached () {
+	connectedCallback() {
+		super.connectedCallback();
+
 		if (!this._handler) {
 			this._handler = function (event) {
 				var selectedVideo = null, target = event.composedPath()[0];
@@ -82,7 +84,8 @@ class WysiwygToolVideo extends WysiwygTool {
 		document.addEventListener('keydown', this._handler);
 	}
 
-	detached () {
+	disconnectedCallback() {
+		super.disconnectedCallback();
 		document.removeEventListener('click', this._handler);
 		document.removeEventListener('keydown', this._handler);
 	}
@@ -98,25 +101,11 @@ class WysiwygToolVideo extends WysiwygTool {
 				value: null,
 				readOnly: true,
 				observer: '_selectedVideoChanged'
-			},
-			active: {
-				type: Boolean,
-				value: false,
-				computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedVideo)',
-				reflectToAttribute: true,
-				observer: '_activeChanged'
-			},
-			disabled: {
-				type: Boolean,
-				value: true,
-				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedVideo)',
-				reflectToAttribute: true,
-				observer: '_disabledChanged'
 			}
 		};
 	}
 
-	execCommand (clickTarget) {
+	execCommand(clickTarget) {
 		if (this.disabled || !this.range0) return;
 		var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
 
@@ -156,16 +145,17 @@ class WysiwygToolVideo extends WysiwygTool {
 			);
 		}
 	}
-
-	queryCommandEnabled () {
-		return this.range0;
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !!this.selectedVideo;
 	}
 
-	queryCommandState () {
-		return this.selectedVideo;
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (this.selectedVideo || this.range0) return false;
+		return true;
 	}
 
-	ready () {
+	ready() {
 		super.ready();
 		this._setUsesDialog(true);
 
@@ -202,10 +192,16 @@ class WysiwygToolVideo extends WysiwygTool {
 			)
 		);
 	}
+	
+	_selectedVideoChanged(event) {
+		if (this.selectedVideo) {
+			this.videoUrl = this.selectedVideo.src;
+		} else {
+			this.videoUrl = '';
+		}
+	}
 
-	_selectedVideoChanged () {}
-
-	_stopPropagation (event) {
+	_stopPropagation(event) {
 		event.stopPropagation();
 	}
 }

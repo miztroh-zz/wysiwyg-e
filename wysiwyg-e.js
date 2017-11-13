@@ -46,6 +46,10 @@ if (document) {
 }
 
 export class WysiwygE extends PolymerElement {
+	static get _targetTemplate() {
+		return `<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>`;
+	}
+
   static get template() {
     return `
 			<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning"></style>
@@ -304,7 +308,7 @@ export class WysiwygE extends PolymerElement {
 					</paper-button>
 				</div>
 				<div id="content">
-					<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>
+					${this._targetTemplate}
 				</div>
 			</div>
     `;
@@ -531,10 +535,12 @@ export class WysiwygE extends PolymerElement {
 									html: html
 								};
 
-								this.states.push(state);
-								this.activeState = this.states.length - 1;
-								this.value = html;
-								this._setText(this.target ? this.target.textContent : '');
+								if (state.html !== this.states[this.activeState].html) {
+									this.states.push(state);
+									this.activeState = this.states.length - 1;
+									this.value = html;
+									this._setText(this.target ? this.target.textContent : '');
+								}
 							}
 						}
 
@@ -662,7 +668,8 @@ export class WysiwygE extends PolymerElement {
 			//
 			showPlaceholder: {
 				type: Boolean,
-				computed: '_computeShowPlaceholder(lastMutation)'
+				computed: '_computeShowPlaceholder(value)',
+				value: true
 			},
 			//
 			// An array containing the undo / redo history of the value property
@@ -672,7 +679,7 @@ export class WysiwygE extends PolymerElement {
 				value: function () {
 					return [
 						{
-							html: '',
+							html: '<p><br></p>',
 							selection: null
 						}
 					];
@@ -716,8 +723,7 @@ export class WysiwygE extends PolymerElement {
 			value: {
 				type: String,
 				observer: '_valueChanged',
-				notify: true,
-				vaue: '<p><br></p>'
+				notify: true
 			}
 		};
 	}
@@ -811,6 +817,7 @@ export class WysiwygE extends PolymerElement {
 	ready() {
 		super.ready();
 		this.target = this.$.editable;
+		if (!this.value) this.value = '<p><br></p>';
 		this.sanitize();
 
 		setTimeout(
@@ -1354,14 +1361,10 @@ export class WysiwygE extends PolymerElement {
 		if (event.altKey || event.shiftKey) return;
 
 		var singleBackspace = function () {
-			if (this.target.children.length > 1) {
+			if (this.target.children.length > 0) {
 				document.execCommand('delete');
 			} else {
-				if ((this.target.children.length && this.target.children[0].textContent.length) || (this.target.childNodes.length && this.target.childNodes[0].textContent.length)) {
-					document.execCommand('delete');
-				} else {
-					document.execCommand('formatBlock', null, 'P');
-				}
+				document.execCommand('formatBlock', null, 'P');
 			}
 		}.bind(this);
 
@@ -1415,7 +1418,9 @@ export class WysiwygE extends PolymerElement {
 	}
 
 	_computeShowPlaceholder(value) {
-		return this.target && !this.target.textContent.trim().length;
+		var div = document.createElement('div');
+		div.innerHTML = value;
+		var showPlaceholder = this.target && !div.textContent.trim().length && !div.querySelectorAll('img').length && !div.querySelectorAll('audio').length && !div.querySelectorAll('video').length;
 	}
 
 	_computeTooltipPosition(minWidth768px, forceNarrow) {

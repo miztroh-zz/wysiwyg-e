@@ -72,44 +72,7 @@ class WysiwygToolLink extends WysiwygTool {
 		`;
 	}
 
-	attached () {
-		if (!this._handler) {
-			this._handler = function (event) {
-				var target = event.composedPath()[0];
-				if (!this.target.contains(target)) return;
-				event.preventDefault();
-
-				setTimeout(
-					function () {
-						var path = this.commonAncestorPath, selectedLink = null;
-
-						for (var i = 0; i < path.length; i += 1) {
-							if (path[i].tagName === 'A') {
-								selectedLink = path[i];
-								break;
-							}
-						}
-
-						this._setSelectedLink(selectedLink);
-
-						if (selectedLink) {
-							if (this.mode !== 'read') return;
-							window.open(selectedLink.href);
-						}
-					}.bind(this),
-					100
-				);
-			}.bind(this);
-		}
-
-		document.addEventListener('click', this._handler);
-	}
-
-	detached () {
-		document.removeEventListener('click', this._handler);
-	}
-
-	static get properties () {
+	static get properties() {
 		return {
 			linkTarget: {
 				type: String,
@@ -121,29 +84,14 @@ class WysiwygToolLink extends WysiwygTool {
 				value: ''
 			},
 			selectedLink: {
-				type: Object,
-				value: null,
-				readOnly: true,
+				type: HTMLAnchorElement,
+				computed: '_computeSelectedLink(commonAncestorPath)',
 				observer: '_selectedLinkChanged'
-			},
-			active: {
-				type: Boolean,
-				value: false,
-				computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
-				reflectToAttribute: true,
-				observer: '_activeChanged'
-			},
-			disabled: {
-				type: Boolean,
-				value: true,
-				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedLink)',
-				reflectToAttribute: true,
-				observer: '_disabledChanged'
 			}
 		};
 	}
 
-	execCommand (clickTarget) {
+	execCommand(clickTarget) {
 		if (this.disabled || !this.range0) return;
 		var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
 
@@ -156,7 +104,9 @@ class WysiwygToolLink extends WysiwygTool {
 						this.selectedLink.href = linkUrl;
 						this.selectedLink.target = linkTarget;
 					} else {
-						document.execCommand('createLink', false, linkUrl);
+						var link = document.createElement('a');
+						link.href = linkUrl;
+						this.range0.surroundContents(link);
 
 						setTimeout(
 							function () {
@@ -171,7 +121,6 @@ class WysiwygToolLink extends WysiwygTool {
 		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedLink) {
 				this.selectedLink.outerHTML = this.selectedLink.innerHTML;
-				this._setSelectedLink(null);
 			}
 
 			this.$.dropdown.close();
@@ -197,17 +146,7 @@ class WysiwygToolLink extends WysiwygTool {
 		}
 	}
 
-	queryCommandEnabled () {
-		if (this.selectedLink) return true;
-		if (!this.range0) return false;
-		return this.range0.startContainer !== this.range0.endContainer || this.range0.endOffset > this.range0.startOffset;
-	}
-
-	queryCommandState () {
-		return this.selectedLink;
-	}
-
-	ready () {
+	ready() {
 		super.ready();
 		this._setUsesDialog(true);
 
@@ -231,15 +170,35 @@ class WysiwygToolLink extends WysiwygTool {
 
 		this.allowedTagNames = ['a'];
 	}
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !!this._computeSelectedLink(commonAncestorPath);
+	}
 
-	_linkTargetChanged () {
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (this._computeSelectedLink(commonAncestorPath)) return false;
+		if (!this.range0) return true;
+		return !(this.range0.startContainer !== this.range0.endContainer || this.range0.endOffset > this.range0.startOffset);
+	}
+
+	_computeSelectedLink(commonAncestorPath) {
+		if (commonAncestorPath) {
+			for (var i = 0; i < commonAncestorPath.length; i += 1) {
+				if (commonAncestorPath[i].tagName === 'A') return commonAncestorPath[i];
+			}
+		}
+
+		return false;
+	}
+
+	_linkTargetChanged() {
 		if (['_blank', '_self', '_parent', '_top'].indexOf(this.linkTarget) === -1) {
 			this.linkTarget = '_self';
 			return;
 		}
 	}
 
-	_paperDropdownOpenedChanged (event) {
+	_paperDropdownOpenedChanged(event) {
 		if (this.$.dropdown.opened) return;
 		this.linkUrl = '';
 		this.linkTarget = '_self';
@@ -255,9 +214,15 @@ class WysiwygToolLink extends WysiwygTool {
 		);
 	}
 
-	_selectedLinkChanged (event) {}
+	_selectedLinkChanged(event) {
+		if (this.selectedLink) {
+			this.linkUrl = this.selectedLink.href;
+		} else {
+			this.linkUrl = '';
+		}
+	}
 
-	_stopPropagation (event) {
+	_stopPropagation(event) {
 		event.stopPropagation();
 	}
 }
