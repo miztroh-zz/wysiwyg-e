@@ -69,7 +69,7 @@ class WysiwygToolJustify extends WysiwygTool {
 			</paper-tooltip>
 			<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
-				<span> (Shift + Alt + E)</span>
+				<span> (Shift + Alt + C)</span>
 			</paper-tooltip>
 			<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
@@ -151,18 +151,18 @@ class WysiwygToolJustify extends WysiwygTool {
 	execCommand (clickTarget) {
 		if (this.disabled || !this.range0) return false;
 
-		if (this.$.left === clickTarget || this.$.left.root.contains(clickTarget)) {
+		if (this.$.left.contains(clickTarget) || this.$.left.root.contains(clickTarget)) {
 			this._left();
-		} else if (this.$.right === clickTarget || this.$.right.root.contains(clickTarget)) {
+		} else if (this.$.right.contains(clickTarget) || this.$.right.root.contains(clickTarget)) {
 			this._right();
-		} else if (this.$.center === clickTarget || this.$.center.root.contains(clickTarget)) {
+		} else if (this.$.center.contains(clickTarget) || this.$.center.root.contains(clickTarget)) {
 			this._center();
-		} else if (this.$.full === clickTarget || this.$.full.root.contains(clickTarget)) {
+		} else if (this.$.full.contains(clickTarget) || this.$.full.root.contains(clickTarget)) {
 			this._full();
 		}
 	}
 
-	queryCommandState () {
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 		if (this.range0) {
 			var left = document.queryCommandState('justifyLeft');
 

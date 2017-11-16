@@ -47,7 +47,8 @@ class WysiwygToolAudio extends WysiwygTool {
 					<iron-icon icon="wysiwyg-tool-audio:icon"></iron-icon>
 				</paper-button>
 				<div class="vertical layout" style="padding: 8px 16px 18px 16px;" slot="dropdown-content">
-					<paper-input label="URL" always-float-label value="{{audioUrl}}" id="url"></paper-input>
+				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></wysiwyg-localize>
+				<paper-input label="[[_localizedUrl]]" always-float-label value="{{audioUrl}}" id="url"></paper-input>
 					<div class="horizontal layout">
 						<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
 						<div class="flex"></div>
@@ -103,10 +104,11 @@ class WysiwygToolAudio extends WysiwygTool {
 	}
 
 	execCommand(clickTarget) {
+		if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
 		if (this.disabled || !this.range0) return;
 		var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-		if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
+		if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -120,12 +122,12 @@ class WysiwygToolAudio extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
 			this.$.dropdown.close();
-		} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
+		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 			if (this.selectedAudio) {
 				this.audioUrl = this.selectedAudio.src;
 			} else {
@@ -158,13 +160,16 @@ class WysiwygToolAudio extends WysiwygTool {
 
 		this.resources = {
 			'br': {
-				'Audio': 'Áudio'
+				'Audio': 'Áudio',
+				'URL': 'URL'
 			},
 			'en': {
-				'Audio': 'Audio'
+				'Audio': 'Audio',
+				'URL': 'URL'
 			},
 			'fr': {
-				'Audio': 'Audio'
+				'Audio': 'Audio',
+				'URL': 'URL'
 			}
 		};
 

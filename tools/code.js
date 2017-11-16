@@ -35,9 +35,9 @@ class WysiwygToolCode extends WysiwygTool {
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Code"></wysiwyg-localize>
-				<span> ([[modifier.tooltip]] + Z)</span>
+				<span> ([[modifier.tooltip]] + K)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+k" on-keys-pressed="execCommand"></iron-a11y-keys>
 		`;
 	}
 
@@ -61,12 +61,8 @@ class WysiwygToolCode extends WysiwygTool {
 			}
 		}
 	}
-
-	queryCommandEnabled() {
-		return this.range0;
-	}
-
-	queryCommandState() {
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 		var path = this.commonAncestorPath;
 
 		if (path) {
@@ -76,6 +72,10 @@ class WysiwygToolCode extends WysiwygTool {
 		}
 
 		return false;
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !this.range0
 	}
 
 	ready() {

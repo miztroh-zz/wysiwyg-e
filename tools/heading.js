@@ -219,7 +219,7 @@ class WysiwygToolHeading extends WysiwygTool {
 		}
 	}
 
-	queryCommandState() {
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 		if (this.range0 && this.commonAncestorPath) {
 			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
 				var h1 = this.commonAncestorPath[i].tagName === 'H1';
@@ -294,6 +294,7 @@ class WysiwygToolHeading extends WysiwygTool {
 	}
 
 	_h1() {
+		console.log('h1');
 		this._heading(1);
 	}
 

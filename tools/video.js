@@ -49,7 +49,7 @@ class WysiwygToolVideo extends WysiwygTool {
 					<iron-icon icon="wysiwyg-tool-video:icon"></iron-icon>
 				</paper-button>
 				<div class="vertical layout" style="padding: 8px 16px 18px 16px;" slot="dropdown-content">
-					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}"></wysiwyg-localize>
+					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></wysiwyg-localize>
 					<paper-input label="[[_localizedUrl]]" always-float-label value="{{videoUrl}}" id="url"></paper-input>
 					<div class="horizontal layout">
 						<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
@@ -106,10 +106,11 @@ class WysiwygToolVideo extends WysiwygTool {
 	}
 
 	execCommand(clickTarget) {
+		if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
 		if (this.disabled || !this.range0) return;
 		var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-		if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
+		if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -123,12 +124,12 @@ class WysiwygToolVideo extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedVideo) this.selectedVideo.parentNode.removeChild(this.selectedVideo);
 			this.$.dropdown.close();
-		} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
+		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 			if (this.selectedVideo) {
 				this.videoUrl = this.selectedVideo.src;
 			} else {

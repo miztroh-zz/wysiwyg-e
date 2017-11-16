@@ -23,13 +23,13 @@ class WysiwygToolColor extends WysiwygTool {
 				}
 			</style>
 			<paper-button disabled="[[disabled]]" id="button">
-				<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}"></paper-swatch-picker>
+				<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}" on-paper-dropdown-close="_paperDropdownClose"></paper-swatch-picker>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Color"></wysiwyg-localize>
 				<span> (Shift + Alt + P)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+p" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+p" on-keys-pressed="_execCommand"></iron-a11y-keys>
 		`;
 	}
 
@@ -112,21 +112,18 @@ class WysiwygToolColor extends WysiwygTool {
 		this.$.picker.$.iconButton.parentNode.style.padding = '0';
 	}
 
+	_execCommand() {
+		var btn = this.$.picker.shadowRoot.querySelector('paper-menu-button');
+		if (btn && !btn.opened) btn.open();
+		this.execCommand();
+	}
+
 	execCommand(clickTarget) {
 		var color = this.$.picker.color;
+		if (this.disabled || !this.range0 || !color) return;
 		this.$.picker.color = '';
 		// Do nothing without a valid selection or picker color
-		if (this.disabled || !this.range0 || !color) return;
-
-		this.dispatchEvent(
-			new Event(
-				'restore-selection',
-				{
-					bubbles: true,
-					composed: true
-				}
-			)
-		);
+		if (!color) return;
 
 		setTimeout(
 			function () {
@@ -148,7 +145,24 @@ class WysiwygToolColor extends WysiwygTool {
 					}.bind(this),
 					10
 				);
-			},
+			}.bind(this),
+			20
+		);
+	}
+	
+	_paperDropdownClose() {
+		setTimeout(
+			function () {
+				this.dispatchEvent(
+					new Event(
+						'restore-selection',
+						{
+							bubbles: true,
+							composed: true
+						}
+					)
+				);
+			}.bind(this),
 			10
 		);
 	}

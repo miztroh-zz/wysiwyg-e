@@ -2,7 +2,9 @@ import { Element as PolymerElement } from '../node_modules/@polymer/polymer/poly
 
 export class WysiwygLocalize extends PolymerElement {
   static get template() {
-		return `<slot></slot>`;
+		return `
+			<slot></slot>
+		`;
 	}
 	
 	static get properties() {

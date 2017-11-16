@@ -80,12 +80,8 @@ class WysiwygToolBlockquote extends WysiwygTool {
 			}
 		}
 	}
-
-	queryCommandEnabled() {
-		return this.range0;
-	}
-
-	queryCommandState() {
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 		var path = this.commonAncestorPath;
 
 		if (path) {
@@ -95,6 +91,10 @@ class WysiwygToolBlockquote extends WysiwygTool {
 		}
 
 		return false;
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !this.range0
 	}
 }
 

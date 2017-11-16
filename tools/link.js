@@ -92,10 +92,11 @@ class WysiwygToolLink extends WysiwygTool {
 	}
 
 	execCommand(clickTarget) {
+		if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
 		if (this.disabled || !this.range0) return;
 		var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
 
-		if (this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
+		if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -118,15 +119,15 @@ class WysiwygToolLink extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedLink) {
 				this.selectedLink.outerHTML = this.selectedLink.innerHTML;
 			}
 
 			this.$.dropdown.close();
-		} else if (this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
+		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 			if (this.selectedLink) {
 				this.linkUrl = this.selectedLink.href;
 				this.linkTarget = this.selectedLink.target || '_self';
