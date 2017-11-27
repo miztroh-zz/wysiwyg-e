@@ -61,24 +61,24 @@ class WysiwygToolJustify extends WysiwygTool {
 			</paper-tooltip>
 			<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Left"></wysiwyg-localize>
-				<span> (Shift + Alt + L)</span>
+				<span> (Shift + Alt + Left)</span>
 			</paper-tooltip>
 			<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
-				<span> (Shift + Alt + R)</span>
+				<span> (Shift + Alt + Right)</span>
 			</paper-tooltip>
 			<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
-				<span> (Shift + Alt + C)</span>
+				<span> (Shift + Alt + Up)</span>
 			</paper-tooltip>
 			<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
-				<span> (Shift + Alt + J)</span>
+				<span> (Shift + Alt + Down)</span>
 			</paper-tooltip>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+l" on-keys-pressed="_left"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+r" on-keys-pressed="_right"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+c" on-keys-pressed="_center"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+j" on-keys-pressed="_full"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="shift+alt+left" on-keys-pressed="_left"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="shift+alt+right" on-keys-pressed="_right"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="shift+alt+up" on-keys-pressed="_center"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="shift+alt+down" on-keys-pressed="_full"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon id="icon" icon="wysiwyg-tool-justify:icon"></iron-icon>

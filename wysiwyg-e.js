@@ -751,6 +751,8 @@ export class WysiwygE extends PolymerElement {
 
 		if (!this._keydownHandler) {
 			this._keydownHandler = function (event) {
+				//Prevent default tab behavior
+				if (event.key === 'Tab') this._tab(event);
 				//Prevent default delete behavior
 				if (event.key === 'Delete') this._delete(event);
 				//Prevent default backspace behavior
@@ -763,7 +765,7 @@ export class WysiwygE extends PolymerElement {
 			}.bind(this);
 		}
 
-		this.addEventListener('keydown', this._keydownHandler);
+		this.$.content.addEventListener('keydown', this._keydownHandler);
 
 		if (!this._restoreSelectionHandler) {
 			this._restoreSelectionHandler = function () {
@@ -807,7 +809,7 @@ export class WysiwygE extends PolymerElement {
 		this.disconnect();
 		document.removeEventListener('selectionchange', this._selectionChangeHandler);
 		window.removeEventListener('resize', this._resizeHandler);
-		this.removeEventListener('keydown', this._keydownHandler);
+		this.$.content.removeEventListener('keydown', this._keydownHandler);
 		this.removeEventListener('restore-selection', this._restoreSelectionHandler);
 		this.removeEventListener('select-element', this._selectElementHandler);
 		this.removeEventListener('paste', this._pasteHandler);
@@ -1061,7 +1063,6 @@ export class WysiwygE extends PolymerElement {
 		selection.addRange(range);
 		setTimeout(this.updateSelection.bind(this), 10);
 	}
-
 	//
 	// Select node or contents of a node within target
 	//
@@ -1098,160 +1099,6 @@ export class WysiwygE extends PolymerElement {
 			10
 		);
 	}
-
-	/*
-	Gets the offset of a node within another node. Text nodes are
-	counted a n where n is the length. Entering (or passing) an
-	element is one offset. Exiting is 0.
-	*/
-	_getNodeOffset(start, dest) {
-		var offset = 0;
-
-		var node = start;
-		var stack = [];
-
-		while (true) {
-			if (node === dest) {
-				return offset;
-			}
-
-			// Go into children
-			if (node.firstChild) {
-				// Going into first one doesn't count
-				if (node !== start)
-					offset += 1;
-				stack.push(node);
-				node = node.firstChild;
-			}
-			// If can go to next sibling
-			else if (stack.length > 0 && node.nextSibling) {
-				// If text, count length (plus 1)
-				if (node.nodeType === 3)
-					offset += node.nodeValue.length + 1;
-				else
-					offset += 1;
-
-				node = node.nextSibling;
-			}
-			else {
-				// If text, count length
-				if (node.nodeType === 3)
-					offset += node.nodeValue.length + 1;
-				else
-					offset += 1;
-
-				// No children or siblings, move up stack
-				while (true) {
-					if (stack.length <= 1)
-						return offset;
-
-					var next = stack.pop();
-
-					// Go to sibling
-					if (next.nextSibling) {
-						node = next.nextSibling;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	// Calculate the total offsets of a node
-	_calculateNodeOffset(node) {
-		var offset = 0;
-
-		// If text, count length
-		if (node.nodeType === 3)
-			offset += node.nodeValue.length + 1;
-		else
-			offset += 1;
-
-		if (node.childNodes) {
-			for (var i=0;i<node.childNodes.length;i++) {
-				offset += this._calculateNodeOffset(node.childNodes[i]);
-			}
-		}
-
-		return offset;
-	}
-
-	// Determine total offset length from returned offset from ranges
-	_totalOffsets(parentNode, offset) {
-		if (parentNode.nodeType == 3)
-			return offset;
-
-		if (parentNode.nodeType == 1) {
-			var total = 0;
-			// Get child nodes
-			for (var i=0;i<offset;i++) {
-				total += this._calculateNodeOffset(parentNode.childNodes[i]);
-			}
-			return total;
-		}
-
-		return 0;
-	}
-
-	_getNodeAndOffsetAt(start, offset) {
-		var node = start;
-		var stack = [];
-
-		while (true) {
-			// If arrived
-			if (offset <= 0)
-				return { node: node, offset: 0 };
-
-			// If will be within current text node
-			if (node.nodeType == 3 && (offset <= node.nodeValue.length))
-				return { node: node, offset: Math.min(offset, node.nodeValue.length) };
-
-			// Go into children (first one doesn't count)
-			if (node.firstChild) {
-				if (node !== start)
-					offset -= 1;
-				stack.push(node);
-				node = node.firstChild;
-			}
-			// If can go to next sibling
-			else if (stack.length > 0 && node.nextSibling) {
-				// If text, count length
-				if (node.nodeType === 3)
-					offset -= node.nodeValue.length + 1;
-				else
-					offset -= 1;
-
-				node = node.nextSibling;
-			}
-			else {
-				// No children or siblings, move up stack
-				while (true) {
-					if (stack.length <= 1) {
-						// No more options, use current node
-						if (node.nodeType == 3)
-							return { node: node, offset: Math.min(offset, node.nodeValue.length) };
-						else
-							return { node: node, offset: 0 };
-					}
-
-					var next = stack.pop();
-
-					// Go to sibling
-					if (next.nextSibling) {
-						// If text, count length
-						if (node.nodeType === 3)
-							offset -= node.nodeValue.length + 1;
-						else
-							offset -= 1;
-
-						node = next.nextSibling;
-						break;
-					}
-				}
-			}
-		}
-	}
-
 	//
 	// Update properties based on the current selection
 	//
@@ -1398,6 +1245,24 @@ export class WysiwygE extends PolymerElement {
 			singleBackspace();
 		}
 	}
+	// Calculate the total offsets of a node
+	_calculateNodeOffset(node) {
+		var offset = 0;
+
+		// If text, count length
+		if (node.nodeType === 3)
+			offset += node.nodeValue.length + 1;
+		else
+			offset += 1;
+
+		if (node.childNodes) {
+			for (var i=0;i<node.childNodes.length;i++) {
+				offset += this._calculateNodeOffset(node.childNodes[i]);
+			}
+		}
+
+		return offset;
+	}
 
 	_computeCanRedo() {
 		return this.states && this.activeState < this.states.length - 1;
@@ -1432,6 +1297,123 @@ export class WysiwygE extends PolymerElement {
 		if (!this.target || !this.target.contains(event.composedPath()[0])) return;
 		event.preventDefault();
 		document.execCommand('forwardDelete');
+	}
+
+
+	/*
+	Gets the offset of a node within another node. Text nodes are
+	counted a n where n is the length. Entering (or passing) an
+	element is one offset. Exiting is 0.
+	*/
+	_getNodeOffset(start, dest) {
+		var offset = 0;
+
+		var node = start;
+		var stack = [];
+
+		while (true) {
+			if (node === dest) {
+				return offset;
+			}
+
+			// Go into children
+			if (node.firstChild) {
+				// Going into first one doesn't count
+				if (node !== start)
+					offset += 1;
+				stack.push(node);
+				node = node.firstChild;
+			}
+			// If can go to next sibling
+			else if (stack.length > 0 && node.nextSibling) {
+				// If text, count length (plus 1)
+				if (node.nodeType === 3)
+					offset += node.nodeValue.length + 1;
+				else
+					offset += 1;
+
+				node = node.nextSibling;
+			}
+			else {
+				// If text, count length
+				if (node.nodeType === 3)
+					offset += node.nodeValue.length + 1;
+				else
+					offset += 1;
+
+				// No children or siblings, move up stack
+				while (true) {
+					if (stack.length <= 1)
+						return offset;
+
+					var next = stack.pop();
+
+					// Go to sibling
+					if (next.nextSibling) {
+						node = next.nextSibling;
+						break;
+					}
+				}
+			}
+		}
+	}
+	_getNodeAndOffsetAt(start, offset) {
+		var node = start;
+		var stack = [];
+
+		while (true) {
+			// If arrived
+			if (offset <= 0)
+				return { node: node, offset: 0 };
+
+			// If will be within current text node
+			if (node.nodeType == 3 && (offset <= node.nodeValue.length))
+				return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+
+			// Go into children (first one doesn't count)
+			if (node.firstChild) {
+				if (node !== start)
+					offset -= 1;
+				stack.push(node);
+				node = node.firstChild;
+			}
+			// If can go to next sibling
+			else if (stack.length > 0 && node.nextSibling) {
+				// If text, count length
+				if (node.nodeType === 3)
+					offset -= node.nodeValue.length + 1;
+				else
+					offset -= 1;
+
+				node = node.nextSibling;
+			}
+			else {
+				// No children or siblings, move up stack
+				while (true) {
+					if (stack.length <= 1) {
+						// No more options, use current node
+						if (node.nodeType == 3)
+							return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+						else
+							return { node: node, offset: 0 };
+					}
+
+					var next = stack.pop();
+
+					// Go to sibling
+					if (next.nextSibling) {
+						// If text, count length
+						if (node.nodeType === 3)
+							offset -= node.nodeValue.length + 1;
+						else
+							offset -= 1;
+
+						node = next.nextSibling;
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	_minWidth768pxChanged() {
@@ -1514,12 +1496,32 @@ export class WysiwygE extends PolymerElement {
 		return 'wysiwyg:scroll-up';
 	}
 
+	_tab(event) {
+		event.preventDefault();
+	}
+
 	_targetChanged() {
 		if (typeof super._targetChanged === 'function') super._targetChanged();
 		this.disconnect();
 		this.observe();
 		if (!this.value) this.value = '';
 		this.target.innerHTML = this.value;
+	}
+	// Determine total offset length from returned offset from ranges
+	_totalOffsets(parentNode, offset) {
+		if (parentNode.nodeType == 3)
+			return offset;
+
+		if (parentNode.nodeType == 1) {
+			var total = 0;
+			// Get child nodes
+			for (var i=0;i<offset;i++) {
+				total += this._calculateNodeOffset(parentNode.childNodes[i]);
+			}
+			return total;
+		}
+
+		return 0;
 	}
 
 	_valueChanged() {

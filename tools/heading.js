@@ -57,42 +57,42 @@ class WysiwygToolHeading extends WysiwygTool {
 			</style>
 			<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Paragraph"></wysiwyg-localize>
-				<span> (Shift + Alt + 0)</span>
+				<span> (Control + 0)</span>
 			</paper-tooltip>
 			<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="1"></wysiwyg-localize>
-				<span> (Shift + Alt + 1)</span>
+				<span> (Control + 1)</span>
 			</paper-tooltip>
 			<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="2"></wysiwyg-localize>
-				<span> (Shift + Alt + 2)</span>
+				<span> (Control + 2)</span>
 			</paper-tooltip>
 			<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="3"></wysiwyg-localize>
-				<span> (Shift + Alt + 3)</span>
+				<span> (Control + 3)</span>
 			</paper-tooltip>
 			<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="4"></wysiwyg-localize>
-				<span> (Shift + Alt + 4)</span>
+				<span> (Control + 4)</span>
 			</paper-tooltip>
 			<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="5"></wysiwyg-localize>
-				<span> (Shift + Alt + 5)</span>
+				<span> (Control + 5)</span>
 			</paper-tooltip>
 			<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="6"></wysiwyg-localize>
-				<span> (Shift + Alt + 6)</span>
+				<span> (Control + 6)</span>
 			</paper-tooltip>
 			<paper-tooltip for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></wysiwyg-localize>
 			</paper-tooltip>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+0" on-keys-pressed="_p"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+1" on-keys-pressed="_h1"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+2" on-keys-pressed="_h2"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+3" on-keys-pressed="_h3"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+4" on-keys-pressed="_h4"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+5" on-keys-pressed="_h5"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+6" on-keys-pressed="_h6"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+0" on-keys-pressed="_p"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+1" on-keys-pressed="_h1"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+2" on-keys-pressed="_h2"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+3" on-keys-pressed="_h3"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+4" on-keys-pressed="_h4"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+5" on-keys-pressed="_h5"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="control+6" on-keys-pressed="_h6"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-heading:icon"></iron-icon>

@@ -27,9 +27,9 @@ class WysiwygToolColor extends WysiwygTool {
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Color"></wysiwyg-localize>
-				<span> (Shift + Alt + P)</span>
+				<span> (Shift + Alt + C)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+p" on-keys-pressed="_execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="_execCommand"></iron-a11y-keys>
 		`;
 	}
 

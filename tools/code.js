@@ -35,7 +35,7 @@ class WysiwygToolCode extends WysiwygTool {
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Code"></wysiwyg-localize>
-				<span> ([[modifier.tooltip]] + K)</span>
+				<span> (Shift + Alt + K)</span>
 			</paper-tooltip>
 			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+k" on-keys-pressed="execCommand"></iron-a11y-keys>
 		`;
