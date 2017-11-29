@@ -32,7 +32,7 @@
 		class WysiwygToolOutdent extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-outdent' }
 
-			ready () {
+			ready() {
 				super.ready();
 				this._setCommand('outdent');
 
@@ -49,7 +49,7 @@
 				};
 			}
 
-			_keysPressed (event, detail) {
+			_keysPressed(event, detail) {
 				if (!detail.keyboardEvent.shiftKey) return;
 				this.execCommand();
 			}

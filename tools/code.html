@@ -24,9 +24,9 @@
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Code"></wysiwyg-localize>
-			<span> ([[modifier.tooltip]] + Z)</span>
+			<span> (Shift + Alt + K)</span>
 		</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+k" on-keys-pressed="execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		class WysiwygToolCode extends WysiwygTool {
@@ -34,15 +34,15 @@
 
 			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return;
-
+		
 				if (!this.active) {
-				  var rangeText = this.range0.toString();
-				  var code = document.createElement('code');
-				  this.range0.surroundContents(code);
-				  if (!rangeText) code.innerHTML = '<br>';
+					var rangeText = this.range0.toString();
+					var code = document.createElement('code');
+					this.range0.surroundContents(code);
+					if (!rangeText) code.innerHTML = '<br>';
 				} else  {
 					var path = this.commonAncestorPath;
-
+		
 					if (path) {
 						for (var i = 0; i < path.length - 1; i += 1) {
 							if (path[i].tagName === 'CODE') {
@@ -52,26 +52,26 @@
 					}
 				}
 			}
-
-			queryCommandEnabled() {
-				return this.range0;
-			}
-
-			queryCommandState() {
+			
+			_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 				var path = this.commonAncestorPath;
-
+		
 				if (path) {
 					for (var i = 0; i < path.length; i += 1) {
 						if (path[i].tagName === 'CODE') return true;
 					}
 				}
-
+		
 				return false;
 			}
-
+		
+			_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+				return !this.range0
+			}
+		
 			ready() {
 				super.ready();
-
+		
 				this.resources = {
 					'br': {
 						'Code': 'Código'
@@ -83,7 +83,7 @@
 						'Code': 'Code'
 					}
 				};
-
+		
 				this.allowedTagNames = ['code', 'br'];
 			}
 		}

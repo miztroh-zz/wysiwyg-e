@@ -32,10 +32,10 @@
 		class WysiwygToolOrdered extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-ordered' }
 
-			ready () {
+			ready() {
 				super.ready();
 				this._setCommand('insertOrderedList');
-
+		
 				this.resources = {
 					'br': {
 						'Ordered List': 'Lista ordenada'
@@ -47,7 +47,7 @@
 						'Ordered List': 'Liste ordonnée'
 					}
 				};
-
+		
 				this.allowedTagNames = ['ol', 'li'];
 			}
 		}

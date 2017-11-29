@@ -46,42 +46,42 @@
 		</style>
 		<paper-tooltip for="p" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Paragraph"></wysiwyg-localize>
-			<span> (Shift + Alt + 0)</span>
+			<span> ([[modifier.tooltip]] + 0)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h1" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="1"></wysiwyg-localize>
-			<span> (Shift + Alt + 1)</span>
+			<span> ([[modifier.tooltip]] + 1)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h2" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="2"></wysiwyg-localize>
-			<span> (Shift + Alt + 2)</span>
+			<span> ([[modifier.tooltip]] + 2)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h3" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="3"></wysiwyg-localize>
-			<span> (Shift + Alt + 3)</span>
+			<span> ([[modifier.tooltip]] + 3)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h4" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="4"></wysiwyg-localize>
-			<span> (Shift + Alt + 4)</span>
+			<span> ([[modifier.tooltip]] + 4)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h5" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="5"></wysiwyg-localize>
-			<span> (Shift + Alt + 5)</span>
+			<span> ([[modifier.tooltip]] + 5)</span>
 		</paper-tooltip>
 		<paper-tooltip for="h6" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Heading" param1-name="number" param1-value="6"></wysiwyg-localize>
-			<span> (Shift + Alt + 6)</span>
+			<span> ([[modifier.tooltip]] + 6)</span>
 		</paper-tooltip>
 		<paper-tooltip for="button" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></wysiwyg-localize>
 		</paper-tooltip>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+0" on-keys-pressed="_p"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+1" on-keys-pressed="_h1"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+2" on-keys-pressed="_h2"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+3" on-keys-pressed="_h3"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+4" on-keys-pressed="_h4"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+5" on-keys-pressed="_h5"></iron-a11y-keys>
-		<iron-a11y-keys target="[[target]]" keys="shift+alt+6" on-keys-pressed="_h6"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+0" on-keys-pressed="_p"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+1" on-keys-pressed="_h1"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+2" on-keys-pressed="_h2"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+3" on-keys-pressed="_h3"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+4" on-keys-pressed="_h4"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+5" on-keys-pressed="_h5"></iron-a11y-keys>
+		<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+6" on-keys-pressed="_h6"></iron-a11y-keys>
 		<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 			<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 				<iron-icon icon="wysiwyg-tool-heading:icon"></iron-icon>
@@ -100,35 +100,6 @@
 	<script>
 		class WysiwygToolHeading extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-heading' }
-
-			connectedCallback() {
-				if (!this._clickHandler) {
-					this._clickHandler = function (event) {
-						var target = event.composedPath()[0];
-						if (!this.$.button.contains(target)) return;
-
-						this.dispatchEvent(
-							new Event(
-								'restore-selection',
-								{
-									bubbles: true,
-									composed: true
-								}
-							)
-						);
-
-						setTimeout(
-							function () {
-								this.execCommand(event);
-							}.bind(this),
-							100
-						);
-					}.bind(this);
-				}
-	
-				this.addEventListener('click', this._clickHandler);
-				super.connectedCallback();
-			}
 
 			static get properties() {
 				return {
@@ -162,12 +133,12 @@
 					}
 				};
 			}
-
+		
 			ready() {
 				super.ready();
 				this._setUsesDialog(true);
 				this._setCommand('formatBlock');
-
+		
 				this.resources = {
 					'br': {
 						'Headings': 'Títulos',
@@ -186,40 +157,41 @@
 					}
 				};
 			}
-
+		
 			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return false
-
-				if (this.$.p.contains(clickTarget)) {
+				var action;
+		
+				if (this.$.p === clickTarget || this.$.p.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(0);
 					}.bind(this);
-				} else if (this.$.h1.contains(clickTarget)) {
+				} else if (this.$.h1 === clickTarget || this.$.h1.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(1);
 					}.bind(this);
-				} else if (this.$.h2.contains(clickTarget)) {
+				} else if (this.$.h2 === clickTarget || this.$.h2.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(2);
 					}.bind(this);
-				} else if (this.$.h3.contains(clickTarget)) {
+				} else if (this.$.h3 === clickTarget || this.$.h3.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(3);
 					}.bind(this);
-				} else if (this.$.h4.contains(clickTarget)) {
+				} else if (this.$.h4 === clickTarget || this.$.h4.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(4);
 					}.bind(this);
-				} else if (this.$.h5.contains(clickTarget)) {
+				} else if (this.$.h5 === clickTarget || this.$.h5.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(5);
 					}.bind(this);
-				} else if (this.$.h6.contains(clickTarget)) {
+				} else if (this.$.h6 === clickTarget || this.$.h6.root.contains(clickTarget)) {
 					action = function () {
 						this._heading(6);
 					}.bind(this);
 				}
-
+		
 				if (action) {
 					this.dispatchEvent(
 						new Event(
@@ -230,65 +202,65 @@
 							}
 						)
 					);
-
+		
 					setTimeout(
 						action,
 						100
 					);
 				}
 			}
-
-			queryCommandState() {
+		
+			_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 				if (this.range0 && this.commonAncestorPath) {
 					for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
 						var h1 = this.commonAncestorPath[i].tagName === 'H1';
-
+		
 						if (h1) {
 							this.$.h1.setAttribute('active', '');
 						} else {
 							this.$.h1.removeAttribute('active');
 						}
-
+		
 						var h2 = this.commonAncestorPath[i].tagName === 'H2';
-
+		
 						if (h2) {
 							this.$.h2.setAttribute('active', '');
 						} else {
 							this.$.h2.removeAttribute('active');
 						}
-
+		
 						var h3 = this.commonAncestorPath[i].tagName === 'H3';
-
+		
 						if (h3) {
 							this.$.h3.setAttribute('active', '');
 						} else {
 							this.$.h3.removeAttribute('active');
 						}
-
+		
 						var h4 = this.commonAncestorPath[i].tagName === 'H4';
-
+		
 						if (h4) {
 							this.$.h4.setAttribute('active', '');
 						} else {
 							this.$.h4.removeAttribute('active');
 						}
-
+		
 						var h5 = this.commonAncestorPath[i].tagName === 'H5';
-
+		
 						if (h5) {
 							this.$.h5.setAttribute('active', '');
 						} else {
 							this.$.h5.removeAttribute('active');
 						}
-
+		
 						var h6 = this.commonAncestorPath[i].tagName === 'H6';
-
+		
 						if (h6) {
 							this.$.h6.setAttribute('active', '');
 						} else {
 							this.$.h6.removeAttribute('active');
 						}
-
+		
 						if (h1 || h2 || h3 || h4 || h5 || h6) {
 							this.$.p.removeAttribute('active');
 							return true;
@@ -297,10 +269,10 @@
 						}
 					}
 				}
-
+		
 				return false;
 			}
-
+		
 			_computeAllowedTagNames() {
 				var tagNames = ['p'];
 				if (this.h1) tagNames.push('h1');
@@ -311,45 +283,46 @@
 				if (this.h6) tagNames.push('h6');
 				return tagNames;
 			}
-
+		
 			_h1() {
+				console.log('h1');
 				this._heading(1);
 			}
-
+		
 			_h2() {
 				this._heading(2);
 			}
-
+		
 			_h3() {
 				this._heading(3);
 			}
-
+		
 			_h4() {
 				this._heading(4);
 			}
-
+		
 			_h5() {
 				this._heading(5);
 			}
-
+		
 			_h6() {
 				this._heading(6);
 			}
-
+		
 			_heading(level) {
 				if (this.disabled || !this.range0 || level !== parseInt(level) || level < 0 || level > 6) return false;
-
+		
 				var heading;
-
+		
 				for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
 					if (['H' + level].indexOf(this.commonAncestorPath[i].tagName) >= 0) {
 						heading = true;
 						break;
 					}
 				}
-
+		
 				this.$.dropdown.close();
-
+		
 				setTimeout(
 					function () {
 						if (heading || level === 0) {
@@ -361,15 +334,24 @@
 					10
 				);
 			}
-
+		
 			_p() {
 				this._heading(0);
 			}
-
+		
 			_paperDropdownClose(event) {
 				var target = event.composedPath()[0];
 				if (target !== this.$.dropdown) return;
-				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
+		
+				this.dispatchEvent(
+					new Event(
+						'restore-selection',
+						{
+							bubbles: true,
+							composed: true
+						}
+					)
+				);
 			}
 		}
 

@@ -51,17 +51,19 @@
 		class WysiwygToolAudio extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-audio' }
 
-			attached() {
+			connectedCallback() {
+				super.connectedCallback();
+
 				if (!this._handler) {
 					this._handler = function (event) {
 						var selectedAudio = null, target = event.composedPath()[0];
 						if (!this.target.contains(target)) return;
-		
+
 						if (target.tagName === 'AUDIO-WRAPPER') {
 							var audio = target.querySelector('audio');
 							if (audio) selectedAudio = audio;
 						}
-		
+
 						this._setSelectedAudio(selectedAudio);
 					}.bind(this);
 				}
@@ -70,7 +72,8 @@
 				document.addEventListener('keydown', this._handler);
 			}
 
-			detached() {
+			disconnectedCallback() {
+				super.disconnectedCallback();
 				document.removeEventListener('click', this._handler);
 				document.removeEventListener('keydown', this._handler);
 			}
@@ -86,29 +89,16 @@
 						value: null,
 						readOnly: true,
 						observer: '_selectedAudioChanged'
-					},
-					active: {
-						type: Boolean,
-						value: false,
-						computed: 'queryCommandState(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
-						reflectToAttribute: true,
-						observer: '_activeChanged'
-					},
-					disabled: {
-						type: Boolean,
-						value: true,
-						computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, selectedAudio)',
-						reflectToAttribute: true,
-						observer: '_disabledChanged'
 					}
 				};
 			}
 
 			execCommand(clickTarget) {
+				if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
 				if (this.disabled || !this.range0) return;
 				var audioUrl = this.audioUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-				if (this.$.updateInsert.contains(clickTarget)) {
+				if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
 					this.$.dropdown.close();
 
 					setTimeout(
@@ -122,12 +112,12 @@
 						}.bind(this),
 						10
 					);
-				} else if (this.$.remove.contains(clickTarget)) {
+				} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
 					if (this.selectedAudio) this.selectedAudio.parentNode.removeChild(this.selectedAudio);
 					this.$.dropdown.close();
-				} else if (this.$.close.contains(clickTarget)) {
+				} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 					this.$.dropdown.close();
-				} else if (this.$.button.contains(clickTarget)) {
+				} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
 					if (this.selectedAudio) {
 						this.audioUrl = this.selectedAudio.src;
 					} else {
@@ -144,13 +134,14 @@
 					);
 				}
 			}
-
-			queryCommandEnabled() {
-				return this.range0;
+			
+			_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+				return !!this.selectedAudio;
 			}
 
-			queryCommandState() {
-				return this.selectedAudio;
+			_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+				if (this.selectedAudio || this.range0) return false;
+				return true;
 			}
 
 			ready() {
@@ -159,13 +150,16 @@
 
 				this.resources = {
 					'br': {
-						'Audio': 'Áudio'
+						'Audio': 'Áudio',
+						'URL': 'URL'
 					},
 					'en': {
-						'Audio': 'Audio'
+						'Audio': 'Audio',
+						'URL': 'URL'
 					},
 					'fr': {
-						'Audio': 'Audio'
+						'Audio': 'Audio',
+						'URL': 'URL'
 					}
 				};
 
@@ -176,10 +170,25 @@
 				var target = event.composedPath()[0];
 				if (target !== this.$.dropdown) return;
 				this.audioUrl = '';
-				this.dispatchEvent(new CustomEvent('restore-selection', { composed: true }));
-			}
 
-			_selectedAudioChanged() {}
+				this.dispatchEvent(
+					new Event(
+						'restore-selection',
+						{
+							bubbles: true,
+							composed: true
+						}
+					)
+				);
+			}
+			
+			_selectedAudioChanged(event) {
+				if (this.selectedAudio) {
+					this.audioUrl = this.selectedAudio.src;
+				} else {
+					this.audioUrl = '';
+				}
+			}
 
 			_stopPropagation(event) {
 				event.stopPropagation();

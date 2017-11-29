@@ -133,7 +133,7 @@ Command                                 | Mac Shortcut                          
 `Italic`                                | Cmd + I                                            | Ctrl + I
 `Underline`                             | Cmd + U                                            | Ctrl + U
 `Strikethrough`                         | Shift + Alt + D                                    | Shift + Alt + D
-`Color`                                 | Shift + Alt + P                                    | Shift + Alt + P
+`Color`                                 | Shift + Alt + C                                    | Shift + Alt + C
 `Remove Format`                         | Cmd + Space                                        | Ctrl + Space
 `Link`                                  | Shift + Alt + A                                    | Shift + Alt + A
 `Image`                                 | Shift + Alt + M                                    | Shift + Alt + M
@@ -143,17 +143,17 @@ Command                                 | Mac Shortcut                          
 `Bullet List`                           | Shift + Alt + U                                    | Shift + Alt + U
 `Indent`                                | Tab                                                | Tab
 `Outdent`                               | Shift + Tab                                        | Shift + Tab
-`Align Left`                            | Shift + Alt + L                                    | Shift + Alt + L
-`Align Right`                           | Shift + Alt + R                                    | Shift + Alt + R
-`Align Center`                          | Shift + Alt + C                                    | Shift + Alt + C
-`Justify`                               | Shift + Alt + J                                    | Shift + Alt + J
-`Paragraph`                             | Shift + Alt + 0                                    | Shift + Alt + 0
-`H1`                                    | Shift + Alt + 1                                    | Shift + Alt + 1
-`H2`                                    | Shift + Alt + 2                                    | Shift + Alt + 2
-`H3`                                    | Shift + Alt + 3                                    | Shift + Alt + 2
-`H4`                                    | Shift + Alt + 4                                    | Shift + Alt + 3
-`H5`                                    | Shift + Alt + 5                                    | Shift + Alt + 3
-`H6`                                    | Shift + Alt + 6                                    | Shift + Alt + 6
+`Align Left`                            | Cmd + Left                                         | Ctrl + Left
+`Align Right`                           | Cmd + Right                                        | Ctrl + Right
+`Align Center`                          | Cmd + Up                                           | Ctrl + Up
+`Justify`                               | Cmd + Down                                         | Ctrl + Down
+`Paragraph`                             | Cmd + 0                                            | Ctrl + 0
+`H1`                                    | Cmd + 1                                            | Ctrl + 1
+`H2`                                    | Cmd + 2                                            | Ctrl + 2
+`H3`                                    | Cmd + 3                                            | Ctrl + 2
+`H4`                                    | Cmd + 4                                            | Ctrl + 3
+`H5`                                    | Cmd + 5                                            | Ctrl + 3
+`H6`                                    | Cmd + 6                                            | Ctrl + 6
 `Blockquote`                            | Shift + Alt + Q                                    | Shift + Alt + Q
 `Undo`                                  | Cmd + Z                                            | Ctrl + Z
 `Redo`                                  | Cmd + Y                                            | Ctrl + Y
@@ -433,7 +433,7 @@ Command                                 | Mac Shortcut                          
 					'updateTools(range0, canRedo, canUndo, value, commonAncestorPath, minWidth768px, tooltipPosition, forceNarrow, language, debug, modifier)'
 				];
 			}
-
+		
 			static get properties() {
 				return {
 					//
@@ -630,32 +630,34 @@ Command                                 | Mac Shortcut                          
 						value: function () {
 							var sanitizeQueue = [], sanitizing = false;
 							this.sanitizeQueue = sanitizeQueue;
-
+		
 							var sanitize = function () {
 								sanitizing = true;
 								var mutations = sanitizeQueue.shift();
 								var sanitized = this.sanitize(mutations);
-
+		
 								if (sanitizeQueue.length) {
 									sanitize();
 								} else {
 									sanitizing = false;
-
+		
 									if (sanitized) {
 										var html = this.target.innerHTML || '';
 										if (this.states.length > 1) this.states.splice(this.activeState + 1, this.states.length);
-
+		
 										var state = {
 											html: html
 										};
-
-										this.states.push(state);
-										this.activeState = this.states.length - 1;
-										this.value = html;
-										this._setText(this.target ? this.target.textContent : '');
+		
+										if (state.html !== this.states[this.activeState].html) {
+											this.states.push(state);
+											this.activeState = this.states.length - 1;
+											this.value = html;
+											this._setText(this.target ? this.target.textContent : '');
+										}
 									}
 								}
-
+		
 								return sanitized;
 							}.bind(this);
 		
@@ -780,7 +782,8 @@ Command                                 | Mac Shortcut                          
 					//
 					showPlaceholder: {
 						type: Boolean,
-						computed: '_computeShowPlaceholder(lastMutation)'
+						computed: '_computeShowPlaceholder(value)',
+						value: true
 					},
 					//
 					// An array containing the undo / redo history of the value property
@@ -790,7 +793,7 @@ Command                                 | Mac Shortcut                          
 						value: function () {
 							return [
 								{
-									html: '',
+									html: '<p><br></p>',
 									selection: null
 								}
 							];
@@ -834,35 +837,36 @@ Command                                 | Mac Shortcut                          
 					value: {
 						type: String,
 						observer: '_valueChanged',
-						notify: true,
-						vaue: ''
+						notify: true
 					}
 				};
 			}
-
+		
 			connectedCallback() {
 				super.connectedCallback();
 				this.observe();
-
+		
 				if (!this._selectionChangeHandler) {
 					this._selectionChangeHandler = function (event) {
 						setTimeout(this.updateSelection.bind(this), 10);
 					}.bind(this);
 				}
-
+		
 				document.addEventListener('selectionchange', this._selectionChangeHandler);
-
+		
 				if (!this._resizeHandler) {
 					this._resizeHandler = function () {
 						this._setScrollHeight(Math.max(0, this.$.toolbarLayout.scrollHeight - this.$.toolbarLayout.offsetHeight));
 						this._setScrollWidth(Math.max(0, this.$.toolbarLayout.scrollWidth - this.$.toolbarLayout.offsetWidth));
 					}.bind(this);
 				}
-
+		
 				window.addEventListener('resize', this._resizeHandler);
-
+		
 				if (!this._keydownHandler) {
 					this._keydownHandler = function (event) {
+						//Prevent default tab behavior
+						if (event.key === 'Tab') this._tab(event);
 						//Prevent default delete behavior
 						if (event.key === 'Delete') this._delete(event);
 						//Prevent default backspace behavior
@@ -874,9 +878,9 @@ Command                                 | Mac Shortcut                          
 						event.preventDefault();
 					}.bind(this);
 				}
-
-				this.addEventListener('keydown', this._keydownHandler);
-
+		
+				this.$.content.addEventListener('keydown', this._keydownHandler);
+		
 				if (!this._restoreSelectionHandler) {
 					this._restoreSelectionHandler = function () {
 						this.restoreSelection();
@@ -884,15 +888,15 @@ Command                                 | Mac Shortcut                          
 				}
 					
 				this.$.toolbar.addEventListener('restore-selection', this._restoreSelectionHandler);
-
+		
 				if (!this._selectElementHandler) {
 					this._selectElementHandler = function (event) {
 						this.selectElement(event.detail.element);
 					}.bind(this);
 				}
-
+		
 				this.addEventListener('select-element', this._selectElementHandler);
-
+		
 				if (!this._pasteHandler) {
 					this._pasteHandler = function (event) {
 						event.preventDefault();
@@ -902,35 +906,36 @@ Command                                 | Mac Shortcut                          
 						document.execCommand('insertHTML', false, data);
 					}.bind(this);
 				}
-
+		
 				this.addEventListener('paste', this._pasteHandler);
-
+		
 				if (!this._slotchangeHandler) {
 					this._slotchangeHandler = function () {
 						this.updateTools();
 					}.bind(this);
 				}
-
+		
 				this.$.tools.addEventListener('slotchange', this._slotchangeHandler);
 			}
-
+		
 			disconnectedCallback() {
 				super.disconnectedCallback();
 				this.disconnect();
 				document.removeEventListener('selectionchange', this._selectionChangeHandler);
 				window.removeEventListener('resize', this._resizeHandler);
-				this.removeEventListener('keydown', this._keydownHandler);
+				this.$.content.removeEventListener('keydown', this._keydownHandler);
 				this.removeEventListener('restore-selection', this._restoreSelectionHandler);
 				this.removeEventListener('select-element', this._selectElementHandler);
 				this.removeEventListener('paste', this._pasteHandler);
 				this.$.tools.removeEventListener('slotchange', this._slotchangeHandler);
 			}
-
+		
 			ready() {
 				super.ready();
 				this.target = this.$.editable;
+				if (!this.value) this.value = '<p><br></p>';
 				this.sanitize();
-
+		
 				setTimeout(
 					function () {
 						this.updateTools();
@@ -951,7 +956,7 @@ Command                                 | Mac Shortcut                          
 			getSelection() {
 				if (typeof super.getSelection === 'function') super.getSelection();
 				var parent = this.target;
-
+		
 				while (parent) {
 					if ([9, 11].indexOf(parent.nodeType) >= 0 && parent.getSelection) return parent.getSelection();
 					parent = parent.parentNode || parent.host;
@@ -962,7 +967,7 @@ Command                                 | Mac Shortcut                          
 			//
 			observe() {
 				if (typeof super.observe === 'function') super.observe();
-
+		
 				if (this.mutationObserver && this.target) {
 					this.mutationObserver.observe(
 						this.target,
@@ -984,7 +989,7 @@ Command                                 | Mac Shortcut                          
 				if (!this.states.length || this.activeState >= this.states.length - 1) return false;
 				this.disconnect();
 				this.activeState += 1;
-
+		
 				setTimeout(
 					function () {
 						this.observe();
@@ -1001,10 +1006,10 @@ Command                                 | Mac Shortcut                          
 				var startNodeOffset, endNodeOffset;
 				startNodeOffset = this._getNodeAndOffsetAt(target, savedSel.start);
 				endNodeOffset = this._getNodeAndOffsetAt(target, savedSel.end);
-
+		
 				range.setStart(startNodeOffset.node, startNodeOffset.offset);
 				range.setEnd(endNodeOffset.node, endNodeOffset.offset);
-
+		
 				var sel = window.getSelection();
 				sel.removeAllRanges();
 				sel.addRange(range);
@@ -1015,31 +1020,31 @@ Command                                 | Mac Shortcut                          
 			sanitize(mutations) {
 				if (!mutations) return true;
 				var sanitized = true, nodes = [], i, j, k, p, pre;
-
+		
 				for (i = 0; i < mutations.length; i += 1) {
 					var mutation = mutations[i];
-
+		
 					if (nodes.indexOf(mutation.target) === -1) {
 						nodes.push(mutation.target);
-
+		
 						if (mutation.target.querySelectorAll) {
 							var subnodes = mutation.target.querySelectorAll('*');
-
+		
 							for (k = 0; k < subnodes.length; k += 1) {
 								if (nodes.indexOf(subnodes[k]) === -1) nodes.push(subnodes[k]);
 							}
 						}
 					}
-
+		
 					for (j = 0; j < mutation.addedNodes.length; j += 1) {
 						var addedNode = mutation.addedNodes[j];
-
+		
 						if (nodes.indexOf(addedNode) === -1) {
 							nodes.push(addedNode);
-
+		
 							if (addedNode.querySelectorAll) {
 								var subnodes = addedNode.querySelectorAll('*');
-
+		
 								for (k = 0; k < subnodes.length; k += 1) {
 									if (nodes.indexOf(subnodes[k]) === -1) nodes.push(subnodes[k]);
 								}
@@ -1047,10 +1052,10 @@ Command                                 | Mac Shortcut                          
 						}
 					}
 				}
-
+		
 				for (i = 0; i < nodes.length; i += 1) {
 					var node = nodes[i];
-
+		
 					if (node !== this.target && this.target.contains(node)) {
 						//Remove the id attribute
 						if (node.hasAttribute && node.hasAttribute('id')) {
@@ -1058,11 +1063,11 @@ Command                                 | Mac Shortcut                          
 							if (this.debug) console.log(node, 'id attribute');
 							sanitized = false;
 						}
-
+		
 						//Remove the style attribute
 						if (node.hasAttribute && node.hasAttribute('style')) {
 							var styles = node.getAttribute('style').split(';'), validStyles = [];
-
+		
 							for (j = 0; j < styles.length; j += 1) {
 								if (styles[j]) {
 									var style = styles[j].split(':')[0].trim();
@@ -1074,14 +1079,14 @@ Command                                 | Mac Shortcut                          
 								}
 							}
 						}
-
+		
 						//Remove the class attribute
 						if (node.hasAttribute && node.hasAttribute('class')) {
 							node.removeAttribute('class');
 							if (this.debug) console.log(node, 'class attribute');
 							sanitized = false;
 						}
-
+		
 						//If node is a text node immediate child of target, wrap inside a P
 						if (node.parentNode === this.target && node.nodeType === Node.TEXT_NODE) {
 							if (!node.textContent.trim().length) continue;
@@ -1091,7 +1096,7 @@ Command                                 | Mac Shortcut                          
 							if (this.debug) console.log(node, 'wrap top level text nodes inside p node');
 							sanitized = false;
 						}
-
+		
 						switch (node.tagName) {
 							//Remove invalid CODE children
 							case 'CODE':
@@ -1104,7 +1109,7 @@ Command                                 | Mac Shortcut                          
 										sanitized = false;
 									}
 								}
-
+		
 								break;
 							//Replace STRONG with B
 							case 'STRONG':
@@ -1131,23 +1136,23 @@ Command                                 | Mac Shortcut                          
 								sanitized = false;
 								break;
 						}
-
+		
 						var allowedTagNames = this.allowedTagNames;
 						var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
-
+		
 						for (j = 0; j < tools.length; j += 1) {
 							allowedTagNames = allowedTagNames.concat(tools[j].allowedTagNames);
 						}
-
+		
 						//Make sure tagName is allowed
-						if (node.tagName && allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
+						if (node.parentNode && node.tagName && allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
 							node.outerHTML = node.innerHTML;
 							if (this.debug) console.log(node, 'invalid tagName');
 							sanitized = false;
 						}
 					}
 				}
-
+		
 				//Guard against improper values
 				if (!this.target.children.length) {
 					p = document.createElement('p');
@@ -1157,7 +1162,7 @@ Command                                 | Mac Shortcut                          
 					if (this.debug) console.log('improper value');
 					sanitized = false;
 				}
-
+		
 				return sanitized;
 			}
 			//
@@ -1172,7 +1177,6 @@ Command                                 | Mac Shortcut                          
 				selection.addRange(range);
 				setTimeout(this.updateSelection.bind(this), 10);
 			}
-
 			//
 			// Select node or contents of a node within target
 			//
@@ -1182,13 +1186,13 @@ Command                                 | Mac Shortcut                          
 				var selection = this.getSelection();
 				selection.removeAllRanges();
 				var range = document.createRange();
-
+		
 				if (element.tagName === 'IMG') {
 					range.selectNode(element);
 				} else {
 					range.selectNodeContents(element);
 				}
-
+		
 				selection.addRange(range);
 				setTimeout(this.updateSelection.bind(this), 10);
 			}
@@ -1201,7 +1205,7 @@ Command                                 | Mac Shortcut                          
 				if (!this.states.length || this.activeState <= 0) return false;
 				this.disconnect();
 				this.activeState -= 1;
-
+		
 				setTimeout(
 					function () {
 						this.observe();
@@ -1209,167 +1213,13 @@ Command                                 | Mac Shortcut                          
 					10
 				);
 			}
-
-			/*
-			Gets the offset of a node within another node. Text nodes are
-			counted a n where n is the length. Entering (or passing) an
-			element is one offset. Exiting is 0.
-			*/
-			_getNodeOffset(start, dest) {
-				var offset = 0;
-
-				var node = start;
-				var stack = [];
-
-				while (true) {
-					if (node === dest) {
-						return offset;
-					}
-
-					// Go into children
-					if (node.firstChild) {
-						// Going into first one doesn't count
-						if (node !== start)
-							offset += 1;
-						stack.push(node);
-						node = node.firstChild;
-					}
-					// If can go to next sibling
-					else if (stack.length > 0 && node.nextSibling) {
-						// If text, count length (plus 1)
-						if (node.nodeType === 3)
-							offset += node.nodeValue.length + 1;
-						else
-							offset += 1;
-
-						node = node.nextSibling;
-					}
-					else {
-						// If text, count length
-						if (node.nodeType === 3)
-							offset += node.nodeValue.length + 1;
-						else
-							offset += 1;
-
-						// No children or siblings, move up stack
-						while (true) {
-							if (stack.length <= 1)
-								return offset;
-
-							var next = stack.pop();
-
-							// Go to sibling
-							if (next.nextSibling) {
-								node = next.nextSibling;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			// Calculate the total offsets of a node
-			_calculateNodeOffset(node) {
-				var offset = 0;
-
-				// If text, count length
-				if (node.nodeType === 3)
-					offset += node.nodeValue.length + 1;
-				else
-					offset += 1;
-
-				if (node.childNodes) {
-					for (var i=0;i<node.childNodes.length;i++) {
-						offset += this._calculateNodeOffset(node.childNodes[i]);
-					}
-				}
-
-				return offset;
-			}
-
-			// Determine total offset length from returned offset from ranges
-			_totalOffsets(parentNode, offset) {
-				if (parentNode.nodeType == 3)
-					return offset;
-
-				if (parentNode.nodeType == 1) {
-					var total = 0;
-					// Get child nodes
-					for (var i=0;i<offset;i++) {
-						total += this._calculateNodeOffset(parentNode.childNodes[i]);
-					}
-					return total;
-				}
-
-				return 0;
-			}
-
-			_getNodeAndOffsetAt(start, offset) {
-				var node = start;
-				var stack = [];
-
-				while (true) {
-					// If arrived
-					if (offset <= 0)
-						return { node: node, offset: 0 };
-
-					// If will be within current text node
-					if (node.nodeType == 3 && (offset <= node.nodeValue.length))
-						return { node: node, offset: Math.min(offset, node.nodeValue.length) };
-
-					// Go into children (first one doesn't count)
-					if (node.firstChild) {
-						if (node !== start)
-							offset -= 1;
-						stack.push(node);
-						node = node.firstChild;
-					}
-					// If can go to next sibling
-					else if (stack.length > 0 && node.nextSibling) {
-						// If text, count length
-						if (node.nodeType === 3)
-							offset -= node.nodeValue.length + 1;
-						else
-							offset -= 1;
-
-						node = node.nextSibling;
-					}
-					else {
-						// No children or siblings, move up stack
-						while (true) {
-							if (stack.length <= 1) {
-								// No more options, use current node
-								if (node.nodeType == 3)
-									return { node: node, offset: Math.min(offset, node.nodeValue.length) };
-								else
-									return { node: node, offset: 0 };
-							}
-
-							var next = stack.pop();
-
-							// Go to sibling
-							if (next.nextSibling) {
-								// If text, count length
-								if (node.nodeType === 3)
-									offset -= node.nodeValue.length + 1;
-								else
-									offset -= 1;
-
-								node = next.nextSibling;
-								break;
-							}
-						}
-					}
-				}
-			}
-
 			//
 			// Update properties based on the current selection
 			//
 			updateSelection() {
 				if (typeof super.updateSelection === 'function') super.updateSelection();
 				var selection = this.getSelection();
-
+		
 				if (selection && selection.anchorNode && this.target.contains(selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode)) {
 					this._setAnchorNode(selection.anchorNode);
 					this._setAnchorOffset(selection.anchorOffset);
@@ -1383,28 +1233,26 @@ Command                                 | Mac Shortcut                          
 					this._setRangeCount(selection.rangeCount);
 					this._setType(selection.type);
 					this._setRange0(selection.rangeCount ? selection.getRangeAt(0) : null);
-
+		
 					var path = null;
-
+		
 					if (this.range0) {
 						var element = this.range0.commonAncestorContainer;
 						path = [];
-
+		
 						while (this.target.contains(element)) {
 							path.push(element);
 							element = element.parentNode;
 						}
-
+		
 						this._setCommonAncestorPath(path);
 					}
-
+		
 					setTimeout(
 						function () {
 							if (this.shadowRoot.activeElement && this.target.contains(this.shadowRoot.activeElement)) {
-
-
 								var target = this.target, range = this.range0;
-
+		
 								this.states[this.activeState].selection = {
 									start: this._getNodeOffset(target, range.startContainer) + this._totalOffsets(range.startContainer, range.startOffset),
 									end: this._getNodeOffset(target, range.endContainer) + this._totalOffsets(range.endContainer, range.endOffset)
@@ -1421,21 +1269,21 @@ Command                                 | Mac Shortcut                          
 			updateTools() {
 				if (this._resizeHandler) this._resizeHandler();
 				var now = new Date();
-
+		
 				if (this._toolUpdateTimeout) {
 					delete this._toolUpdateTimeout;
 					clearTimeout(this._toolUpdateTimeout);
 				}
-
+		
 				if (this._lastToolUpdate && now - this._lastToolUpdate < 250) {
 					this._toolUpdateTimeout = setTimeout(this.updateTools.bind(this), 250 - (now - this._lastToolUpdate));
 					return;
 				}
-
+		
 				this._lastToolUpdate = now;
 				if (!this.$) return;
 				var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
-
+		
 				for (var i = 0; i < tools.length; i += 1) {
 					if (!(tools[i] instanceof WysiwygTool)) continue;
 					tools[i]._setRange0(this.range0);
@@ -1453,7 +1301,7 @@ Command                                 | Mac Shortcut                          
 					tools[i]._setModifier(this.modifier);
 				}
 			}
-
+		
 			_activeStateChanged(newValue, oldValue) {
 				if (this.activeState !== +this.activeState.toFixed(0)) {
 					this.activeState = +this.activeState.toFixed(0);
@@ -1466,41 +1314,37 @@ Command                                 | Mac Shortcut                          
 					this.restoreSelection();
 				}
 			}
-
+		
 			_backspace(event) {
 				if (!this.target || !this.target.contains(event.composedPath()[0])) return;
 				event.preventDefault();
 				if (!this.range0) return;
 				if (event.altKey || event.shiftKey) return;
-
+		
 				var singleBackspace = function () {
-					if (this.target.children.length > 1) {
+					if (this.target.children.length > 0) {
 						document.execCommand('delete');
 					} else {
-						if ((this.target.children.length && this.target.children[0].textContent.length) || (this.target.childNodes.length && this.target.childNodes[0].textContent.length)) {
-							document.execCommand('delete');
-						} else {
-							document.execCommand('formatBlock', null, 'P');
-						}
+						document.execCommand('formatBlock', null, 'P');
 					}
 				}.bind(this);
-
+		
 				var wholeWordBackspace = function (lastWord, lastWordPosition) {
 					this.range0.collapse(true);
 					this.range0.setStart(this.range0.commonAncestorContainer, lastWordPosition);
 					this.range0.setEnd(this.range0.commonAncestorContainer, this.range0.commonAncestorContainer.textContent.length < lastWordPosition + lastWord.length + 1 ? this.range0.commonAncestorContainer : lastWordPosition + lastWord.length + 1);
 					this.range0.deleteContents();
 				}.bind(this);
-
+		
 				if (event.ctrlKey || event.metaKey) {
 					var range = this.range0.cloneRange();
 					range.collapse();
 					range.setStart(this.range0.commonAncestorContainer, 0);
 					var preceding = range.toString();
-
+		
 					if (preceding.length) {
 						var match = preceding.match(/(?:\s|^)([\S]+)$/i);
-	
+		
 						if (match) {
 							wholeWordBackspace(match.slice(-1)[0], match.index);
 						} else if (preceding.trim().split(' ').length === 1) {
@@ -1515,66 +1359,203 @@ Command                                 | Mac Shortcut                          
 					singleBackspace();
 				}
 			}
-
+			// Calculate the total offsets of a node
+			_calculateNodeOffset(node) {
+				var offset = 0;
+		
+				// If text, count length
+				if (node.nodeType === 3)
+					offset += node.nodeValue.length + 1;
+				else
+					offset += 1;
+		
+				if (node.childNodes) {
+					for (var i=0;i<node.childNodes.length;i++) {
+						offset += this._calculateNodeOffset(node.childNodes[i]);
+					}
+				}
+		
+				return offset;
+			}
+		
 			_computeCanRedo() {
 				return this.states && this.activeState < this.states.length - 1;
 			}
-
+		
 			_computeCanScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
 				if (minWidth768px && !forceNarrow) return scrollLeft < scrollWidth;
 				return scrollTop < scrollHeight;
 			}
-
+		
 			_computeCanScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
 				if (minWidth768px && !forceNarrow) return scrollLeft > 0;
 				return scrollTop > 0;
 			}
-
+		
 			_computeCanUndo() {
 				return this.states && this.activeState > 0;
 			}
-
+		
 			_computeShowPlaceholder(value) {
-				return this.target && !this.target.textContent.trim().length;
+				var div = document.createElement('div');
+				div.innerHTML = value;
+				var showPlaceholder = this.target && !div.textContent.trim().length && !div.querySelectorAll('img').length && !div.querySelectorAll('audio').length && !div.querySelectorAll('video').length;
 			}
-
+		
 			_computeTooltipPosition(minWidth768px, forceNarrow) {
 				if (minWidth768px && !forceNarrow) return 'bottom';
 				return 'right';
 			}
-
+		
 			_delete(event) {
 				if (!this.target || !this.target.contains(event.composedPath()[0])) return;
 				event.preventDefault();
 				document.execCommand('forwardDelete');
 			}
-
+		
+		
+			/*
+			Gets the offset of a node within another node. Text nodes are
+			counted a n where n is the length. Entering (or passing) an
+			element is one offset. Exiting is 0.
+			*/
+			_getNodeOffset(start, dest) {
+				var offset = 0;
+		
+				var node = start;
+				var stack = [];
+		
+				while (true) {
+					if (node === dest) {
+						return offset;
+					}
+		
+					// Go into children
+					if (node.firstChild) {
+						// Going into first one doesn't count
+						if (node !== start)
+							offset += 1;
+						stack.push(node);
+						node = node.firstChild;
+					}
+					// If can go to next sibling
+					else if (stack.length > 0 && node.nextSibling) {
+						// If text, count length (plus 1)
+						if (node.nodeType === 3)
+							offset += node.nodeValue.length + 1;
+						else
+							offset += 1;
+		
+						node = node.nextSibling;
+					}
+					else {
+						// If text, count length
+						if (node.nodeType === 3)
+							offset += node.nodeValue.length + 1;
+						else
+							offset += 1;
+		
+						// No children or siblings, move up stack
+						while (true) {
+							if (stack.length <= 1)
+								return offset;
+		
+							var next = stack.pop();
+		
+							// Go to sibling
+							if (next.nextSibling) {
+								node = next.nextSibling;
+								break;
+							}
+						}
+					}
+				}
+			}
+			_getNodeAndOffsetAt(start, offset) {
+				var node = start;
+				var stack = [];
+		
+				while (true) {
+					// If arrived
+					if (offset <= 0)
+						return { node: node, offset: 0 };
+		
+					// If will be within current text node
+					if (node.nodeType == 3 && (offset <= node.nodeValue.length))
+						return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+		
+					// Go into children (first one doesn't count)
+					if (node.firstChild) {
+						if (node !== start)
+							offset -= 1;
+						stack.push(node);
+						node = node.firstChild;
+					}
+					// If can go to next sibling
+					else if (stack.length > 0 && node.nextSibling) {
+						// If text, count length
+						if (node.nodeType === 3)
+							offset -= node.nodeValue.length + 1;
+						else
+							offset -= 1;
+		
+						node = node.nextSibling;
+					}
+					else {
+						// No children or siblings, move up stack
+						while (true) {
+							if (stack.length <= 1) {
+								// No more options, use current node
+								if (node.nodeType == 3)
+									return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+								else
+									return { node: node, offset: 0 };
+							}
+		
+							var next = stack.pop();
+		
+							// Go to sibling
+							if (next.nextSibling) {
+								// If text, count length
+								if (node.nodeType === 3)
+									offset -= node.nodeValue.length + 1;
+								else
+									offset -= 1;
+		
+								node = next.nextSibling;
+								break;
+							}
+						}
+					}
+				}
+			}
+		
 			_minWidth768pxChanged() {
 				this._setScrollTop(0);
 				this._setScrollLeft(0);
 			}
-
+		
 			_mutationObserverChanged(newObserver, oldObserver) {
 				if (typeof super._mutationObserverChanged === 'function') super._mutationObserverChanged(newObserver, oldObserver);
 				if (oldObserver) oldObserver.disconnect();
 				this.observe();
 			}
-
+		
 			_onScrollButtonUp() {
 				clearInterval(this._scrollJob);
 				this._scrollJob = null;
 			}
-
+		
 			_onScrollNext() {
 				this._scrollNext();
 				this._scrollJob = setInterval(this._scrollNext.bind(this), this.scrollDelay);
 			}
-
+		
 			_onScrollPrevious() {
 				this._scrollPrevious();
 				this._scrollJob = setInterval(this._scrollPrevious.bind(this), this.scrollDelay);
 			}
-
+		
 			_scroll(dx) {
 				if (!this.forceNarrow && this.minWidth768px) {
 					this._setScrollLeft(this.scrollLeft + dx);
@@ -1582,7 +1563,7 @@ Command                                 | Mac Shortcut                          
 					this._setScrollTop(this.scrollTop + dx);
 				}
 			}
-
+		
 			_scrollNext() {
 				if (!this.forceNarrow && this.minWidth768px) {
 					if (this.scrollLeft + this.scrollStep > this.scrollWidth) {
@@ -1600,12 +1581,12 @@ Command                                 | Mac Shortcut                          
 					}
 				}
 			}
-
+		
 			_scrollNextIcon(minWidth768px, forceNarrow) {
 				if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-right';
 				return 'wysiwyg:scroll-down';
 			}
-
+		
 			_scrollPrevious() {
 				if (!this.forceNarrow && this.minWidth768px) {
 					if (this.scrollLeft - this.scrollStep < 0) {
@@ -1623,12 +1604,16 @@ Command                                 | Mac Shortcut                          
 					}
 				}
 			}
-
+		
 			_scrollPreviousIcon(minWidth768px, forceNarrow) {
 				if (minWidth768px && !forceNarrow) return 'wysiwyg:scroll-left';
 				return 'wysiwyg:scroll-up';
 			}
-
+		
+			_tab(event) {
+				event.preventDefault();
+			}
+		
 			_targetChanged() {
 				if (typeof super._targetChanged === 'function') super._targetChanged();
 				this.disconnect();
@@ -1636,15 +1621,31 @@ Command                                 | Mac Shortcut                          
 				if (!this.value) this.value = '';
 				this.target.innerHTML = this.value;
 			}
-
+			// Determine total offset length from returned offset from ranges
+			_totalOffsets(parentNode, offset) {
+				if (parentNode.nodeType == 3)
+					return offset;
+		
+				if (parentNode.nodeType == 1) {
+					var total = 0;
+					// Get child nodes
+					for (var i=0;i<offset;i++) {
+						total += this._calculateNodeOffset(parentNode.childNodes[i]);
+					}
+					return total;
+				}
+		
+				return 0;
+			}
+		
 			_valueChanged() {
 				if (typeof super._valueChanged === 'function') super._valueChanged();
-
+		
 				if (typeof this.value !== 'string') {
 					this.value = '';
 					return;
 				}
-
+		
 				if (this.target && (this.target.innerHTML || '') !== this.value) {
 					this.target.innerHTML = this.value;
 				}

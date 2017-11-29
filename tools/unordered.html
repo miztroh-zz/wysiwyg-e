@@ -32,10 +32,10 @@
 		class WysiwygToolUnordered extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-unordered' }
 
-			ready () {
+			ready() {
 				super.ready();
 				this._setCommand('insertUnorderedList');
-
+		
 				this.resources = {
 					'br': {
 						'Unordered List': 'Lista não ordenada'
@@ -47,7 +47,7 @@
 						'Unordered List': 'Liste non-ordonnée'
 					}
 				};
-
+		
 				this.allowedTagNames = ['ul', 'li'];
 			}
 		}

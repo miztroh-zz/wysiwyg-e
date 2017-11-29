@@ -21,13 +21,13 @@
 			}
 		</style>
 		<paper-button disabled="[[disabled]]" id="button">
-			<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}"></paper-swatch-picker>
+			<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}" on-paper-dropdown-close="_paperDropdownClose"></paper-swatch-picker>
 		</paper-button>
 		<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 			<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Color"></wysiwyg-localize>
-			<span> (Shift + Alt + P)</span>
+			<span> (Shift + Alt + C)</span>
 		</paper-tooltip>
-		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+p" on-keys-pressed="execCommand"></iron-a11y-keys>
+		<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="_execCommand"></iron-a11y-keys>
 	</template>
 	<script>
 		class WysiwygToolColor extends WysiwygTool {
@@ -86,12 +86,12 @@
 					}
 				};
 			}
-
+		
 			ready() {
 				super.ready();
 				this._setUsesDialog(true);
 				this._setCommand('foreColor');
-
+		
 				this.resources = {
 					'br': {
 						'Color': 'Cor'
@@ -103,34 +103,64 @@
 						'Color': 'Couleur'
 					}
 				};
-
+		
 				this.allowedTagNames = ['span'];
-
+		
 				// Dynamically align the picker's menu dropdown to the viewport
 				this.$.picker.$.iconButton.parentNode.dynamicAlign = true;
 				// Get rid of padding on the picker's menu button
 				this.$.picker.$.iconButton.parentNode.style.padding = '0';
 			}
-
+		
+			_execCommand() {
+				var btn = this.$.picker.shadowRoot.querySelector('paper-menu-button');
+				if (btn && !btn.opened) btn.open();
+				this.execCommand();
+			}
+		
 			execCommand(clickTarget) {
 				var color = this.$.picker.color;
+				if (this.disabled || !this.range0 || !color) return;
 				this.$.picker.color = '';
 				// Do nothing without a valid selection or picker color
-				if (this.disabled || !this.range0 || !color) return;
-				// Use CSS when setting the color
-				document.execCommand('styleWithCSS', false, true);
-
+				if (!color) return;
+		
 				setTimeout(
 					function () {
-						// Set the color on the current selection
-						document.execCommand(this.command, false, color);
-
+						// Use CSS when setting the color
+						document.execCommand('styleWithCSS', false, true);
+		
 						setTimeout(
 							function () {
-								// Revert to styleWithCSS default
-								document.execCommand('styleWithCSS', false, false);
+								// Set the color on the current selection
+								document.execCommand(this.command, false, color);
+		
+								setTimeout(
+									function () {
+										// Revert to styleWithCSS default
+										document.execCommand('styleWithCSS', false, false);
+									}.bind(this),
+									1000
+								);
 							}.bind(this),
-							1000
+							10
+						);
+					}.bind(this),
+					20
+				);
+			}
+			
+			_paperDropdownClose() {
+				setTimeout(
+					function () {
+						this.dispatchEvent(
+							new Event(
+								'restore-selection',
+								{
+									bubbles: true,
+									composed: true
+								}
+							)
 						);
 					}.bind(this),
 					10

@@ -32,10 +32,10 @@
 		class WysiwygToolItalic extends WysiwygTool {
 			static get is() { return 'wysiwyg-tool-italic' }
 
-			ready () {
+			ready() {
 				super.ready();
 				this._setCommand('italic');
-
+		
 				this.resources = {
 					'br': {
 						'Italic': 'Itálico'
@@ -47,7 +47,7 @@
 						'Italic': 'Italique'
 					}
 				};
-
+		
 				this.allowedTagNames = ['i'];
 			}
 		}

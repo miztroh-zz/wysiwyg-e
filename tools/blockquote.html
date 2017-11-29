@@ -34,7 +34,7 @@
 
 			ready() {
 				super.ready();
-
+		
 				this.resources = {
 					'br': {
 						'Blockquote': 'Citação'
@@ -46,22 +46,22 @@
 						'Blockquote': 'Citation'
 					}
 				};
-
+		
 				this.allowedTagNames = ['blockquote'];
 			}
-
+		
 			execCommand(clickTarget) {
 				if (this.disabled || !this.range0) return;
-
+		
 				if (!this.active) {
-				  var rangeText = this.range0.toString();
-				  var blockquote = document.createElement('blockquote');
-				  blockquote.setAttribute('blockquote', '');
-				  this.range0.surroundContents(blockquote);
-				  if (!rangeText) blockquote.innerHTML = '<br>';
+					var rangeText = this.range0.toString();
+					var blockquote = document.createElement('blockquote');
+					blockquote.setAttribute('blockquote', '');
+					this.range0.surroundContents(blockquote);
+					if (!rangeText) blockquote.innerHTML = '<br>';
 				} else  {
 					var path = this.commonAncestorPath;
-
+		
 					if (path) {
 						for (var i = 0; i < path.length - 1; i += 1) {
 							if (path[i].tagName === 'BLOCKQUOTE' && path[i].hasAttribute('blockquote')) {
@@ -71,21 +71,21 @@
 					}
 				}
 			}
-
-			queryCommandEnabled() {
-				return this.range0;
-			}
-
-			queryCommandState() {
+			
+			_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 				var path = this.commonAncestorPath;
-
+		
 				if (path) {
 					for (var i = 0; i < path.length; i += 1) {
 						if (path[i].tagName === 'BLOCKQUOTE' && path[i].hasAttribute('blockquote')) return true;
 					}
 				}
-
+		
 				return false;
+			}
+		
+			_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+				return !this.range0
 			}
 		}
 
