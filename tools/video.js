@@ -178,7 +178,7 @@ class WysiwygToolVideo extends WysiwygTool {
 		this.allowedTagNames = ['p', 'br', 'video-wrapper', 'video'];
 	}
 
-	_paperDropdownClose (event) {
+	_paperDropdownClose(event) {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
 		this.videoUrl = '';

@@ -41,7 +41,7 @@ class WysiwygToolIndent extends WysiwygTool {
 		`;
 	}
 
-	ready () {
+	ready() {
 		super.ready();
 		this._setCommand('indent');
 
@@ -60,7 +60,7 @@ class WysiwygToolIndent extends WysiwygTool {
 		this.allowedTagNames = ['blockquote'];
 	}
 
-	_keysPressed (event, detail) {
+	_keysPressed(event, detail) {
 		if (detail.keyboardEvent.shiftKey) return;
 		this.execCommand();
 	}

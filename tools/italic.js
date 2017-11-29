@@ -41,7 +41,7 @@ class WysiwygToolItalic extends WysiwygTool {
 		`;
 	}
 
-	ready () {
+	ready() {
 		super.ready();
 		this._setCommand('italic');
 

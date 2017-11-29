@@ -41,7 +41,7 @@ class WysiwygToolOrdered extends WysiwygTool {
 		`;
 	}
 
-	ready () {
+	ready() {
 		super.ready();
 		this._setCommand('insertOrderedList');
 

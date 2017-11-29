@@ -41,7 +41,7 @@ class WysiwygToolOutdent extends WysiwygTool {
 		`;
 	}
 
-	ready () {
+	ready() {
 		super.ready();
 		this._setCommand('outdent');
 
@@ -58,7 +58,7 @@ class WysiwygToolOutdent extends WysiwygTool {
 		};
 	}
 
-	_keysPressed (event, detail) {
+	_keysPressed(event, detail) {
 		if (!detail.keyboardEvent.shiftKey) return;
 		this.execCommand();
 	}

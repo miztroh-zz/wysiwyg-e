@@ -61,24 +61,24 @@ class WysiwygToolJustify extends WysiwygTool {
 			</paper-tooltip>
 			<paper-tooltip for="left" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Left"></wysiwyg-localize>
-				<span> (Shift + Alt + Left)</span>
+				<span> ([[modifier.tooltip]] + Left)</span>
 			</paper-tooltip>
 			<paper-tooltip for="right" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
-				<span> (Shift + Alt + Right)</span>
+				<span> ([[modifier.tooltip]] + Right)</span>
 			</paper-tooltip>
 			<paper-tooltip for="center" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
-				<span> (Shift + Alt + Up)</span>
+				<span> ([[modifier.tooltip]] + Up)</span>
 			</paper-tooltip>
 			<paper-tooltip for="full" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
-				<span> (Shift + Alt + Down)</span>
+				<span> ([[modifier.tooltip]] + Down)</span>
 			</paper-tooltip>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+left" on-keys-pressed="_left"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+right" on-keys-pressed="_right"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+up" on-keys-pressed="_center"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="shift+alt+down" on-keys-pressed="_full"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+left" on-keys-pressed="_left"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+right" on-keys-pressed="_right"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+up" on-keys-pressed="_center"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+down" on-keys-pressed="_full"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon id="icon" icon="wysiwyg-tool-justify:icon"></iron-icon>
@@ -118,7 +118,7 @@ class WysiwygToolJustify extends WysiwygTool {
 		};
 	}
 
-	ready () {
+	ready() {
 		super.ready();
 		this._setUsesDialog(true);
 		this._setCommand('formatBlock');
@@ -148,7 +148,7 @@ class WysiwygToolJustify extends WysiwygTool {
 		};
 	}
 
-	execCommand (clickTarget) {
+	execCommand(clickTarget) {
 		if (this.disabled || !this.range0) return false;
 
 		if (this.$.left.contains(clickTarget) || this.$.left.root.contains(clickTarget)) {
@@ -206,7 +206,7 @@ class WysiwygToolJustify extends WysiwygTool {
 		return false;
 	}
 
-	_justify (justification) {
+	_justify(justification) {
 		if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
 
 		this.$.dropdown.close();
@@ -225,23 +225,23 @@ class WysiwygToolJustify extends WysiwygTool {
 		);
 	}
 
-	_left () {
+	_left() {
 		this._justify('left');
 	}
 
-	_right () {
+	_right() {
 		this._justify('right');
 	}
 
-	_center () {
+	_center() {
 		this._justify('center');
 	}
 
-	_full () {
+	_full() {
 		this._justify('full');
 	}
 
-	_paperDropdownClose (event) {
+	_paperDropdownClose(event) {
 		var target = event.composedPath()[0];
 		if (target !== this.$.dropdown) return;
 
