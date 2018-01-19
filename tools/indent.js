@@ -57,7 +57,7 @@ class WysiwygToolIndent extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['blockquote'];
+		this.allowedTagNames = ['BLOCKQUOTE'];
 	}
 
 	_keysPressed(event, detail) {

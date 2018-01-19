@@ -57,7 +57,11 @@ class WysiwygToolBold extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['b'];
+		this.allowedTagNames = ['B'];
+
+		this.replacementTagNames = {
+			'STRONG': 'B'
+		};
 	}
 }
 

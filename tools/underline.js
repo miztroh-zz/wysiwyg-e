@@ -57,7 +57,7 @@ class WysiwygToolUnderline extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['u'];
+		this.allowedTagNames = ['U'];
 	}
 }
 

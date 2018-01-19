@@ -56,7 +56,7 @@ class WysiwygToolBlockquote extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['blockquote'];
+		this.allowedTagNames = ['BLOCKQUOTE'];
 	}
 
 	execCommand(clickTarget) {

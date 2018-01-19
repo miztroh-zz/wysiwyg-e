@@ -57,7 +57,7 @@ class WysiwygToolUnordered extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['ul', 'li'];
+		this.allowedTagNames = ['UL', 'LI'];
 	}
 }
 

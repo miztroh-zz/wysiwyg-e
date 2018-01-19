@@ -130,12 +130,7 @@ class WysiwygToolVideo extends WysiwygTool {
 		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
-			if (this.selectedVideo) {
-				this.videoUrl = this.selectedVideo.src;
-			} else {
-				this.videoUrl = '';
-			}
-
+			this._selectedVideoChanged();
 			this.$.dropdown.open();
 
 			setTimeout(
@@ -175,7 +170,7 @@ class WysiwygToolVideo extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['p', 'br', 'video-wrapper', 'video'];
+		this.allowedTagNames = ['VIDEO-WRAPPER', 'VIDEO'];
 	}
 
 	_paperDropdownClose(event) {

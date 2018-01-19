@@ -57,7 +57,7 @@ class WysiwygToolOrdered extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['ol', 'li'];
+		this.allowedTagNames = ['OL', 'LI'];
 	}
 }
 

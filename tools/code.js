@@ -41,6 +41,24 @@ class WysiwygToolCode extends WysiwygTool {
 		`;
 	}
 
+	ready() {
+		super.ready();
+
+		this.resources = {
+			'br': {
+				'Code': 'Código'
+			},
+			'en': {
+				'Code': 'Code'
+			},
+			'fr': {
+				'Code': 'Code'
+			}
+		};
+
+		this.allowedTagNames = ['CODE'];
+	}
+
 	execCommand(clickTarget) {
 		if (this.disabled || !this.range0) return;
 
@@ -61,6 +79,29 @@ class WysiwygToolCode extends WysiwygTool {
 			}
 		}
 	}
+
+	sanitize(node) {
+		var sanitized = super.sanitize(node);
+
+		if (node && node.tagName) {
+			var childNodes = Array.prototype.slice.call(node.childNodes);
+
+			switch (node.tagName) {
+				//Remove invalid CODE children
+				case 'CODE':
+					for (var j = 0; j < childNodes.length; j += 1) {
+						if (childNodes[j].tagName === 'P') {
+							node.outerHTML = node.innerHTML;
+							sanitized = false;
+						}
+					}
+
+					break;
+			}
+		}
+
+		return sanitized;
+	}
 	
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 		var path = this.commonAncestorPath;
@@ -76,24 +117,6 @@ class WysiwygToolCode extends WysiwygTool {
 
 	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
 		return !this.range0
-	}
-
-	ready() {
-		super.ready();
-
-		this.resources = {
-			'br': {
-				'Code': 'Código'
-			},
-			'en': {
-				'Code': 'Code'
-			},
-			'fr': {
-				'Code': 'Code'
-			}
-		};
-
-		this.allowedTagNames = ['code', 'br'];
 	}
 }
 

@@ -9,18 +9,30 @@ export class WysiwygLocalize extends PolymerElement {
 	
 	static get properties() {
 		return {
+			//
+			// A string of the key to look up from resources object
+			//
 			stringKey: {
 				type: String,
 				notify: true
 			},
+			//
+			// An object with key-value pairs per language, per word
+			//
 			resources: {
 				type: Object,
 				notify: true
 			},
+			//
+			// Used to localize the stringKey
+			//
 			language: {
 				type: String,
 				notify: true
 			},
+			//
+			// A computed string localized based on stringKey, resources, and language
+			//
 			localized: {
 				type: String,
 				value: '',

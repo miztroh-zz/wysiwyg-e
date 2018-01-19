@@ -57,7 +57,11 @@ class WysiwygToolStrike extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['s'];
+		this.allowedTagNames = ['S'];
+
+		this.replacementTagNames = {
+			'STRIKE': 'S'
+		};
 	}
 }
 

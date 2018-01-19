@@ -164,14 +164,7 @@ class WysiwygToolImage extends WysiwygTool {
 		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
-			if (this.selectedImage) {
-				this.imageUrl = this.selectedImage.src;
-				this.imageFloat = this.selectedImage.style.float || 'none';
-			} else {
-				this.imageUrl = '';
-				this.imageFloat = 'none';
-			}
-
+			this._selectedImageChanged();
 			this.$.dropdown.open();
 
 			setTimeout(
@@ -214,7 +207,7 @@ class WysiwygToolImage extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['img'];
+		this.allowedTagNames = ['IMG'];
 	}
 	
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
@@ -253,8 +246,10 @@ class WysiwygToolImage extends WysiwygTool {
 	_selectedImageChanged(event) {
 		if (this.selectedImage) {
 			this.imageUrl = this.selectedImage.src;
+			this.imageFloat = this.selectedImage.style.float || 'none';
 		} else {
 			this.imageUrl = '';
+			this.imageFloat = 'none';
 		}
 	}
 

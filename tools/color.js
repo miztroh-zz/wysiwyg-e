@@ -104,8 +104,6 @@ class WysiwygToolColor extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['span'];
-
 		// Dynamically align the picker's menu dropdown to the viewport
 		this.$.picker.$.iconButton.parentNode.dynamicAlign = true;
 		// Get rid of padding on the picker's menu button

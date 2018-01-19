@@ -35,7 +35,7 @@ export class WysiwygTool extends PolymerElement {
 				}
 
 				:host > paper-button,
-				:host > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				:host > #dropdown > paper-button[slot="dropdown-trigger"] {
 					padding: 0;
 					margin: 0;
 					height: 40px;
@@ -46,27 +46,25 @@ export class WysiwygTool extends PolymerElement {
 					text-transform: none;
 				}
 
-				:host > paper-menu-button {
+				:host > #dropdown {
 					padding: 0;
 				}
 
 				:host > paper-button,
-				:host > paper-menu-button,
-				:host > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				:host > #dropdown,
+				:host > #dropdown > paper-button[slot="dropdown-trigger"] {
 					color: inherit;
 					background: transparent;
 				}
 
 				:host([active]) > paper-button,
-				:host([active]) > paper-menu-button,
-				:host([active]) > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				:host([active]) > #dropdown > paper-button[slot="dropdown-trigger"] {
 					color: var(--wysiwyg-tool-icon-active-color, rgba(0, 0, 0, 0.5));
 					background: transparent;
 				}
 
 				:host([disabled]) > paper-button,
-				:host([disabled]) > paper-menu-button,
-				:host([disabled]) > paper-menu-button paper-button[slot="dropdown-trigger"] {
+				:host([disabled]) > #dropdown > paper-button[slot="dropdown-trigger"] {
 					color: var(--wysiwyg-tool-icon-disabled-color, rgba(255, 255, 255, 0.5));
 					background: transparent;
 				}
@@ -97,6 +95,18 @@ export class WysiwygTool extends PolymerElement {
 				paper-item:hover {
 					cursor: pointer;
 				}
+
+				paper-toggle-button {
+					--paper-toggle-button-checked-bar-color: #2A9AF2;
+					--paper-toggle-button-checked-button-color: #2A9AF2;
+					--paper-toggle-button-unchecked-ink-color: #2A9AF2;
+					--paper-toggle-button-checked-ink-color: #2A9AF2;
+				}
+
+				:host > #dropdown > [slot="dropdown-content"] paper-menu-button {
+					padding: 0;
+					color: black;
+				} 
 			</style>
 		`
 	}
@@ -143,6 +153,9 @@ export class WysiwygTool extends PolymerElement {
 
 	static get properties() {
 		return {
+			//
+			// A computed boolean indicating whether the selection includes a node implemented by this tool
+			//
 			active: {
 				type: Boolean,
 				value: false,
@@ -151,48 +164,71 @@ export class WysiwygTool extends PolymerElement {
 				observer: '_activeChanged'
 			},
 			//
+			// Array of style types allowed by tool for the editor's sanitize method
+			//
+			allowedStyleTypes: {
+				type: Array,
+				value: function () {
+					return [];
+				}
+			},
+			//
 			// Array of tagNames allowed by tool for the editor's sanitize method
 			//
 			allowedTagNames: {
 				type: Array,
 				value: function () {
-					return [
-						'br',
-						'p',
-						'span'
-					];
+					return [];
 				}
 			},
+			//
+			// Synced to the editor's canRedo property
+			//
 			canRedo: {
 				type: Boolean,
 				value: false,
 				readOnly: true,
 				observer: '_canRedoChanged'
 			},
+			//
+			// Synced to the editor's canUndo property
+			//
 			canUndo: {
 				type: Boolean,
 				value: false,
 				readOnly: true,
 				observer: '_canUndoChanged'
 			},
+			//
+			// For simple execCommand tools
+			//
 			command: {
 				type: String,
 				value: '',
 				readOnly: true,
 				observer: '_commandChanged'
 			},
+			//
+			// Synced to the editor's commonAncestorPath property
+			//
 			commonAncestorPath: {
 				type: Array,
 				value: null,
 				readOnly: true,
 				observer: '_commonAncestorPathChanged'
 			},
+			//
+			// Synced to the editor's debug property
+			//
 			debug: {
 				type: Boolean,
 				value: false,
 				readOnly: true,
 				observer: '_debugChanged',
 			},
+			//
+			// A computed boolean indicating whether the tool can be used with the selection
+			//
 			disabled: {
 				type: Boolean,
 				value: true,
@@ -200,24 +236,36 @@ export class WysiwygTool extends PolymerElement {
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
+			//
+			// Synced to the editor's forceNarrow property
+			//
 			forceNarrow: {
 				type: Boolean,
 				value: true,
 				readOnly: true,
 				observer: '_forceNarrowChanged'
 			},
+			//
+			// Synced to the editor's language property
+			//
 			language: {
 				type: String,
 				value: '',
 				readOnly: true,
 				observer: '_languageChanged'
 			},
+			//
+			// Synced to the editor's minWidth768px property
+			//
 			minWidth768px: {
 				type: Boolean,
 				value: true,
 				readOnly: true,
 				observer: '_minWidth768pxChanged'
 			},
+			//
+			// Synced to the editor's modifier property
+			//
 			modifier: {
 				type: Object,
 				value: function () {
@@ -226,18 +274,36 @@ export class WysiwygTool extends PolymerElement {
 				readOnly: true,
 				observer: '_modifierChanged'
 			},
+			//
+			// Synced to the editor's range0 property
+			//
 			range0: {
 				type: Object,
 				value: null,
 				readOnly: true,
 				observer: '_range0Changed'
 			},
+			//
+			// Key-value pairs of tags that should be replaced by other tags
+			//
+			replacementTagNames: {
+				type: Object,
+				value: function () {
+					return {};
+				}
+			},
+			//
+			// Synced to the editor's selectionRoot property
+			//
 			selectionRoot: {
 				type: Object,
 				value: null,
 				readOnly: true,
 				observer: '_selectionRootChanged'
 			},
+			//
+			// Synced to the editor's target property
+			//
 			target: {
 				type: Object,
 				value: function () {
@@ -246,18 +312,27 @@ export class WysiwygTool extends PolymerElement {
 				readOnly: true,
 				observer: '_targetChanged'
 			},
+			//
+			// Synced to the editor's tooltipPosition property
+			//
 			tooltipPosition: {
 				type: String,
 				value: 'bottom',
 				readOnly: true,
 				observer: '_tooltipPositionChanged'
 			},
+			//
+			// A boolean indicating whether the tool exposes an interface other than a single button
+			//
 			usesDialog: {
 				type: Boolean,
 				value: false,
 				readOnly: true,
 				observer: '_usesDialogChanged'
 			},
+			//
+			// Synced to the editor's value property
+			//
 			value: {
 				type: String,
 				value: '',
@@ -419,6 +494,10 @@ export class WysiwygTool extends PolymerElement {
 				return hashMap[ent]
 			}
 		);
+	}
+
+	sanitize(node) {
+		return true;
 	}
 
 	_activeChanged() {}

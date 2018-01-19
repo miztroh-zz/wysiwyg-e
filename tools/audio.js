@@ -128,12 +128,7 @@ class WysiwygToolAudio extends WysiwygTool {
 		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
-			if (this.selectedAudio) {
-				this.audioUrl = this.selectedAudio.src;
-			} else {
-				this.audioUrl = '';
-			}
-
+			this._selectedAudioChanged();
 			this.$.dropdown.open();
 
 			setTimeout(
@@ -173,7 +168,7 @@ class WysiwygToolAudio extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['p', 'br', 'audio-wrapper', 'audio'];
+		this.allowedTagNames = ['AUDIO-WRAPPER', 'AUDIO'];
 	}
 
 	_paperDropdownClose(event) {

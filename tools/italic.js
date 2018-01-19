@@ -57,7 +57,11 @@ class WysiwygToolItalic extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['i'];
+		this.allowedTagNames = ['I'];
+
+		this.replacementTagNames = {
+			'EM': 'I'
+		};
 	}
 }
 

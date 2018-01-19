@@ -204,7 +204,34 @@ export class WysiwygE extends PolymerElement {
 				:host #editable video {
 					pointer-events: none;
 				}
-	
+
+				:host #editable table {
+					border-spacing: 0;
+					border-collapse: collapse;
+				}
+
+				:host #editable table,
+				:host #editable th,
+				:host #editable td {
+					border: 1px solid black;
+				}
+
+				:host #editable th,
+				:host #editable td {
+					padding: 5px 10px;
+				}
+
+				:host #editable thead,
+				:host #editable tfoot {
+					font-weight: bold;
+					background: #ccc;
+					text-align: center;
+				}
+
+				:host #editable tbody tr:nth-child(even) {
+					background: #f5f5f5;
+				}
+
 				paper-button {
 					padding: 0;
 					margin: 0;
@@ -350,9 +377,9 @@ export class WysiwygE extends PolymerElement {
 				type: Array,
 				value: function () {
 					return [
-						'br',
-						'p',
-						'span'
+						'BR',
+						'P',
+						'SPAN'
 					];
 				}
 			},
@@ -497,6 +524,9 @@ export class WysiwygE extends PolymerElement {
 				type: Boolean,
 				observer: '_minWidth768pxChanged'
 			},
+			//
+			// Modifier for keyboard shortcuts: Cmd key for Macs, Ctrl key for all others
+			//
 			modifier: {
 				type: Object,
 				value: function () {
@@ -594,6 +624,17 @@ export class WysiwygE extends PolymerElement {
 				type: Number,
 				readOnly: true,
 				notify: true
+			},
+			//
+			// Key-value pairs of tags that should be replaced by other tags
+			//
+			replacementTagNames: {
+				type: Object,
+				value: function () {
+					return {
+						'DIV': 'P'
+					};
+				}
 			},
 			//
 			// Contains localized versions of text for use with Polymer.AppLocalizeBehavior.
@@ -939,6 +980,32 @@ export class WysiwygE extends PolymerElement {
 			}
 		}
 
+		var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
+	
+		tools = tools.filter(
+			function (tool) {
+				return tool.nodeType === HTMLElement.ELEMENT_NODE;
+			}
+		);
+
+		var allowedStyleTypes = this.allowedStyleTypes;
+
+		for (j = 0; j < tools.length; j += 1) {
+			allowedStyleTypes = allowedStyleTypes.concat(tools[j].allowedStyleTypes);
+		}
+
+		var allowedTagNames = this.allowedTagNames;
+
+		for (j = 0; j < tools.length; j += 1) {
+			allowedTagNames = allowedTagNames.concat(tools[j].allowedTagNames);
+		}
+
+		var replacementTagNames = this.replacementTagNames;
+
+		for (j = 0; j < tools.length; j += 1) {
+			replacementTagNames = Object.assign(replacementTagNames, tools[j].replacementTagNames);
+		}
+
 		for (i = 0; i < nodes.length; i += 1) {
 			var node = nodes[i];
 
@@ -957,7 +1024,8 @@ export class WysiwygE extends PolymerElement {
 					for (j = 0; j < styles.length; j += 1) {
 						if (styles[j]) {
 							var style = styles[j].split(':')[0].trim();
-							if (this.allowedStyleTypes.indexOf(style) === -1) {
+
+							if (allowedStyleTypes.indexOf(style) === -1) {
 								node.style[style] = '';
 								if (this.debug) console.log(node, 'style: ' + style);
 								sanitized = false;
@@ -983,55 +1051,29 @@ export class WysiwygE extends PolymerElement {
 					sanitized = false;
 				}
 
-				switch (node.tagName) {
-					//Remove invalid CODE children
-					case 'CODE':
-						var childNodes = Array.prototype.slice.call(node.childNodes);
-	
-						for (j = 0; j < childNodes.length; j += 1) {
-							if (childNodes[j].tagName === 'P') {
-								node.outerHTML = node.innerHTML;
-								if (this.debug) console.log(node, 'invalid code child');
+				for (j = 0; j < Object.keys(replacementTagNames).length; j += 1) {
+					var oldTag = Object.keys(replacementTagNames)[j], newTag = replacementTagNames[Object.keys(replacementTagNames)[j]];
+
+					if (node.tagName === oldTag) {
+						node.outerHTML = '<' + newTag + '>' + node.innerHTML + '</' + newTag + '>';
+						if (this.debug) console.log(node, 'tag replacement', newTag);
+						sanitized = false;
+					}
+				}
+
+				for (j = 0; j < tools.length; j += 1) {
+					if (tools[j].allowedTagNames) {
+						for (k = 0; k < tools[j].allowedTagNames.length; k += 1) {
+							if (node.tagName === tools[j].allowedTagNames[k] && !tools[j].sanitize(node)) {
+								if (this.debug) console.log(node, 'tool sanitize');
 								sanitized = false;
 							}
 						}
-
-						break;
-					//Replace STRONG with B
-					case 'STRONG':
-						node.outerHTML = '<b>' + node.innerHTML + '</b>';
-						if (this.debug) console.log(node, 'strong');
-						sanitized = false;
-						break;
-					//Replace EM with I
-					case 'EM':
-						node.outerHTML = '<i>' + node.innerHTML + '</i>';
-						if (this.debug) console.log(node, 'em');
-						sanitized = false;
-						break;
-					//Replace DIV with P
-					case 'DIV':
-						node.outerHTML = '<p>' + node.innerHTML + '</p>';
-						if (this.debug) console.log(node, 'div');
-						sanitized = false;
-						break;
-					//Replace STRIKE with S
-					case 'STRIKE':
-						node.outerHTML = '<s>' + node.innerHTML + '</s>';
-						if (this.debug) console.log(node, 'strike');
-						sanitized = false;
-						break;
-				}
-
-				var allowedTagNames = this.allowedTagNames;
-				var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
-
-				for (j = 0; j < tools.length; j += 1) {
-					allowedTagNames = allowedTagNames.concat(tools[j].allowedTagNames);
+					}
 				}
 
 				//Make sure tagName is allowed
-				if (node.parentNode && node.tagName && allowedTagNames.indexOf(node.tagName.toLowerCase()) === -1) {
+				if (node.parentNode && node.tagName && allowedTagNames.indexOf(node.tagName) === -1) {
 					node.outerHTML = node.innerHTML;
 					if (this.debug) console.log(node, 'invalid tagName');
 					sanitized = false;

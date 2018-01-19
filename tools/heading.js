@@ -86,13 +86,13 @@ class WysiwygToolHeading extends WysiwygTool {
 			<paper-tooltip for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></wysiwyg-localize>
 			</paper-tooltip>
-			<iron-a11y-keys target="[[target]]" keys="control+0" on-keys-pressed="_p"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="control+1" on-keys-pressed="_h1"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="control+2" on-keys-pressed="_h2"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="control+3" on-keys-pressed="_h3"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="control+4" on-keys-pressed="_h4"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="control+5" on-keys-pressed="_h5"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="control+6" on-keys-pressed="_h6"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+0" on-keys-pressed="_p"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+1" on-keys-pressed="_h1"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+2" on-keys-pressed="_h2"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+3" on-keys-pressed="_h3"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+4" on-keys-pressed="_h4"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+5" on-keys-pressed="_h5"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+6" on-keys-pressed="_h6"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-heading:icon"></iron-icon>
@@ -283,13 +283,13 @@ class WysiwygToolHeading extends WysiwygTool {
 	}
 
 	_computeAllowedTagNames() {
-		var tagNames = ['p'];
-		if (this.h1) tagNames.push('h1');
-		if (this.h2) tagNames.push('h2');
-		if (this.h3) tagNames.push('h3');
-		if (this.h4) tagNames.push('h4');
-		if (this.h5) tagNames.push('h5');
-		if (this.h6) tagNames.push('h6');
+		var tagNames = [];
+		if (this.h1) tagNames.push('H1');
+		if (this.h2) tagNames.push('H2');
+		if (this.h3) tagNames.push('H3');
+		if (this.h4) tagNames.push('H4');
+		if (this.h5) tagNames.push('H5');
+		if (this.h6) tagNames.push('H6');
 		return tagNames;
 	}
 

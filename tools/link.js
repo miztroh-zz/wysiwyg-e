@@ -128,14 +128,7 @@ class WysiwygToolLink extends WysiwygTool {
 		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
-			if (this.selectedLink) {
-				this.linkUrl = this.selectedLink.href;
-				this.linkTarget = this.selectedLink.target || '_self';
-			} else {
-				this.linkUrl = '';
-				this.linkTarget = '_self';
-			}
-
+			this._selectedLinkChanged();
 			this.$.dropdown.open();
 
 			setTimeout(
@@ -169,7 +162,7 @@ class WysiwygToolLink extends WysiwygTool {
 			}
 		};
 
-		this.allowedTagNames = ['a'];
+		this.allowedTagNames = ['A'];
 	}
 	
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
@@ -218,8 +211,10 @@ class WysiwygToolLink extends WysiwygTool {
 	_selectedLinkChanged(event) {
 		if (this.selectedLink) {
 			this.linkUrl = this.selectedLink.href;
+			this.linkTarget = this.selectedLink.target || '_self';
 		} else {
 			this.linkUrl = '';
+			this.linkTarget = '_self';
 		}
 	}
 
