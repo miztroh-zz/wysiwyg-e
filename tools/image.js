@@ -133,7 +133,7 @@ class WysiwygToolImage extends WysiwygTool {
 		if (this.disabled || !this.range0) return;
 		var imageUrl = this.imageUrl, imageFloat = this.imageFloat;
 
-		if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
+		if (clickTarget && this.$.updateInsert.contains(clickTarget) || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -154,16 +154,16 @@ class WysiwygToolImage extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.remove.contains(clickTarget) || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedImage) {
 				this.selectedImage.parentNode.removeChild(this.selectedImage);
 				this._setSelectedImage(null);
 			}
 
 			this.$.dropdown.close();
-		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.close.contains(clickTarget) || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
+		} else if (!clickTarget || this.$.button.contains(clickTarget) || this.$.button.root.contains(clickTarget)) {
 			this._selectedImageChanged();
 			this.$.dropdown.open();
 

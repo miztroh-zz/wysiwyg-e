@@ -110,7 +110,7 @@ class WysiwygToolVideo extends WysiwygTool {
 		if (this.disabled || !this.range0) return;
 		var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
 
-		if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
+		if (clickTarget && this.$.updateInsert.contains(clickTarget) || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -124,12 +124,12 @@ class WysiwygToolVideo extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.remove.contains(clickTarget) || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedVideo) this.selectedVideo.parentNode.removeChild(this.selectedVideo);
 			this.$.dropdown.close();
-		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.close.contains(clickTarget) || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
+		} else if (!clickTarget || this.$.button.contains(clickTarget) || this.$.button.root.contains(clickTarget)) {
 			this._selectedVideoChanged();
 			this.$.dropdown.open();
 

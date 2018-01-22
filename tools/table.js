@@ -41,9 +41,9 @@ class WysiwygToolTable extends WysiwygTool {
 			<style include="iron-flex"></style>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Table"></wysiwyg-localize>
-				<span> (Shift + Alt + A)</span>
+				<span> (Shift + Alt + T)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+t" on-keys-pressed="execCommand"></iron-a11y-keys>
 			<paper-menu-button on-opened-changed="_paperDropdownOpenedChanged" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-table:icon"></iron-icon>
@@ -133,7 +133,7 @@ class WysiwygToolTable extends WysiwygTool {
 		if (this.disabled || !this.range0) return;
 		var rowCount = +this.rowCount, columnCount = +this.columnCount, showHeader  = this.showHeader, showFooter = this.showFooter;
 
-		if (clickTarget && this.$.updateInsert === clickTarget || this.$.updateInsert.root.contains(clickTarget)) {
+		if (clickTarget && this.$.updateInsert.contains(clickTarget) || this.$.updateInsert.root.contains(clickTarget)) {
 			this.$.dropdown.close();
 
 			setTimeout(
@@ -263,15 +263,15 @@ class WysiwygToolTable extends WysiwygTool {
 				}.bind(this),
 				10
 			);
-		} else if (clickTarget && this.$.remove === clickTarget || this.$.remove.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.remove.contains(clickTarget) || this.$.remove.root.contains(clickTarget)) {
 			if (this.selectedTable) {
 				this.selectedTable.outerHTML = this.selectedTable.innerHTML;
 			}
 
 			this.$.dropdown.close();
-		} else if (clickTarget && this.$.close === clickTarget || this.$.close.root.contains(clickTarget)) {
+		} else if (clickTarget && this.$.close.contains(clickTarget) || this.$.close.root.contains(clickTarget)) {
 			this.$.dropdown.close();
-		} else if (!clickTarget || this.$.button === clickTarget || this.$.button.root.contains(clickTarget)) {
+		} else if (!clickTarget || this.$.button.contains(clickTarget) || this.$.button.root.contains(clickTarget)) {
 			this._selectedTableChanged();
 			this.$.dropdown.open();
 
