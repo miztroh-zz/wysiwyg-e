@@ -72,19 +72,37 @@ class WysiwygToolTable extends WysiwygTool {
 					<div hidden$="[[!selectedTable]]">
 						<div class="layout horizontal">
 							<paper-menu-button dynamic-align vertical-offset="42" horizontal-offset="5" id="insertDropdown">
-								<paper-button slot="dropdown-trigger">Insert...</paper-button>
+								<paper-button slot="dropdown-trigger">
+									<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Insert"></wysiwyg-localize>
+									...
+								</paper-button>
 								<div slot="dropdown-content">
-									<paper-item on-tap="_insertCellBefore">Cell Before</paper-item>
-									<paper-item on-tap="_insertCellAfter">Cell After</paper-item>
-									<paper-item on-tap="_insertRowBefore">Row Before</paper-item>
-									<paper-item on-tap="_insertRowAfter">Row After</paper-item>
-									<paper-item on-tap="_insertColumnBefore">Column Before</paper-item>
-									<paper-item on-tap="_insertColumnAfter">Column After</paper-item>
+									<paper-item on-tap="_insertCellBefore">
+										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Cell Before"></wysiwyg-localize>
+									</paper-item>
+									<paper-item on-tap="_insertCellAfter">
+										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Cell After"></wysiwyg-localize>
+									</paper-item>
+									<paper-item on-tap="_insertRowBefore">
+										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Row Before"></wysiwyg-localize>
+									</paper-item>
+									<paper-item on-tap="_insertRowAfter">
+									<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Row After"></wysiwyg-localize>
+									</paper-item>
+									<paper-item on-tap="_insertColumnBefore">
+										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Column Before"></wysiwyg-localize>
+									</paper-item>
+									<paper-item on-tap="_insertColumnAfter">
+										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Column After"></wysiwyg-localize>
+									</paper-item>
 								</div>
 							</paper-menu-button>
 							<div class="flex"></div>
 							<paper-menu-button dynamic-align vertical-offset="42" horizontal-offset="5" id="deleteDropdown">
-								<paper-button slot="dropdown-trigger">Delete...</paper-button>
+								<paper-button slot="dropdown-trigger">
+									<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Delete"></wysiwyg-localize>
+									...
+								</paper-button>
 								<div slot="dropdown-content">
 									<paper-item on-tap="_deleteCell">Cell</paper-item>
 									<paper-item on-tap="_deleteRow">Row</paper-item>
@@ -290,21 +308,51 @@ class WysiwygToolTable extends WysiwygTool {
 
 		this.resources = {
 			'br': {
-				'Columns': 'Columns',
-				'Rows': 'Rows',
-				'Show Footer': 'Show Footer',
-				'Show Header': 'Show Header',
-				'Table': 'Table'
+				'Cell After': 'Célula Após',
+				'Cell Before': 'Célula Antes',
+				'Column': 'Coluna',
+				'Column After': 'Coluna Após',
+				'Column Before': 'Coluna Antes',
+				'Columns': 'Colunas',
+				'Delete': 'Excluir',
+				'Insert': 'Inserir',
+				'Row': 'Linha',
+				'Row After': 'Linha Após',
+				'Row Before': 'Linha Antes',
+				'Rows': 'Linhas',
+				'Show Footer': 'Mostrar Rodapé',
+				'Show Header': 'Mostrar Cabeçalho',
+				'Table': 'Tabela'
 			},
 			'en': {
+				'Cell After': 'Cell After',
+				'Cell Before': 'Cell Before',
+				'Column': 'Column',
+				'Column After': 'Column After',
+				'Column Before': 'Column Before',
 				'Columns': 'Columns',
+				'Delete': 'Delete',
+				'Insert': 'Insert',
+				'Row': 'Row',
+				'Row After': 'Row After',
+				'Row Before': 'Row Before',
 				'Rows': 'Rows',
 				'Show Footer': 'Show Footer',
 				'Show Header': 'Show Header',
 				'Table': 'Table'
 			},
 			'fr': {
+				'Cell After': 'Cell After',
+				'Cell Before': 'Cell Before',
+				'Column': 'Column',
+				'Column After': 'Column After',
+				'Column Before': 'Column Before',
 				'Columns': 'Columns',
+				'Delete': 'Delete',
+				'Insert': 'Insert',
+				'Row': 'Row',
+				'Row After': 'Row After',
+				'Row Before': 'Row Before',
 				'Rows': 'Rows',
 				'Show Footer': 'Show Footer',
 				'Show Header': 'Show Header',
