@@ -30,20 +30,19 @@ class WysiwygToolOrdered extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="insertOrderedList">
 				<iron-icon icon="wysiwyg-tool-ordered:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Ordered List"></wysiwyg-localize>
 				<span> (Shift + Alt + O)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+o" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+o" on-keys-pressed="insertOrderedList"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('insertOrderedList');
 
 		this.resources = {
 			'br': {
@@ -58,6 +57,26 @@ class WysiwygToolOrdered extends WysiwygTool {
 		};
 
 		this.allowedTagNames = ['OL', 'LI'];
+	}
+
+	insertOrderedList() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('insertOrderedList');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('insertOrderedList');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('insertOrderedList');
 	}
 }
 

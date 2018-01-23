@@ -30,20 +30,19 @@ class WysiwygToolIndent extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="indent">
 				<iron-icon icon="wysiwyg-tool-indent:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Indent"></wysiwyg-localize>
 				<span> (Tab)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="indent"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('indent');
 
 		this.resources = {
 			'br': {
@@ -60,9 +59,24 @@ class WysiwygToolIndent extends WysiwygTool {
 		this.allowedTagNames = ['BLOCKQUOTE'];
 	}
 
-	_keysPressed(event, detail) {
-		if (detail.keyboardEvent.shiftKey) return;
-		this.execCommand();
+	indent(event, detail) {
+		if ((detail && detail.keyboardEvent.shiftKey) || this.disabled || !this.range0) return false;
+		document.execCommand('indent');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('indent');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('indent');
 	}
 }
 

@@ -75,25 +75,25 @@ class WysiwygToolJustify extends WysiwygTool {
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
 				<span> ([[modifier.tooltip]] + Down)</span>
 			</paper-tooltip>
-			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+left" on-keys-pressed="_left"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+right" on-keys-pressed="_right"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+up" on-keys-pressed="_center"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+down" on-keys-pressed="_full"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+left" on-keys-pressed="justifyLeft"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+right" on-keys-pressed="justifyRight"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+up" on-keys-pressed="justifyCenter"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="[[modifier.key]]+down" on-keys-pressed="justifyFull"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon id="icon" icon="wysiwyg-tool-justify:icon"></iron-icon>
 				</paper-button>
 				<div slot="dropdown-content">
-					<paper-item id="left">
+					<paper-item id="left" on-tap="justifyLeft">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Left"></wysiwyg-localize>
 					</paper-item>
-					<paper-item id="right" hidden$="{{!right}}">
+					<paper-item id="right" hidden$="{{!right}}" on-tap="justifyRight">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
 					</paper-item>
-					<paper-item id="center" hidden$="{{!center}}">
+					<paper-item id="center" hidden$="{{!center}}" on-tap="justifyCenter">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
 					</paper-item>
-					<paper-item id="full" hidden$="{{!full}}">
+					<paper-item id="full" hidden$="{{!full}}" on-tap="justifyFull">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
 					</paper-item>
 				</div>
@@ -120,8 +120,6 @@ class WysiwygToolJustify extends WysiwygTool {
 
 	ready() {
 		super.ready();
-		this._setUsesDialog(true);
-		this._setCommand('formatBlock');
 
 		this.resources = {
 			'br': {
@@ -148,18 +146,39 @@ class WysiwygToolJustify extends WysiwygTool {
 		};
 	}
 
-	execCommand(clickTarget) {
-		if (this.disabled || !this.range0) return false;
+	justify(justification) {
+		if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
 
-		if (this.$.left.contains(clickTarget) || this.$.left.root.contains(clickTarget)) {
-			this._left();
-		} else if (this.$.right.contains(clickTarget) || this.$.right.root.contains(clickTarget)) {
-			this._right();
-		} else if (this.$.center.contains(clickTarget) || this.$.center.root.contains(clickTarget)) {
-			this._center();
-		} else if (this.$.full.contains(clickTarget) || this.$.full.root.contains(clickTarget)) {
-			this._full();
-		}
+		this.$.dropdown.close();
+
+		setTimeout(
+			function () {
+				var command = 'justify' + justification.charAt(0).toUpperCase() + justification.slice(1);
+
+				if (document.queryCommandState(command)) {
+					document.execCommand('justifyLeft');
+				} else {
+					document.execCommand(command);
+				}
+			}.bind(this),
+			10
+		);
+	}
+
+	justifyCenter() {
+		this.justify('center');
+	}
+
+	justifyFull() {
+		this.justify('full');
+	}
+
+	justifyLeft() {
+		this.justify('left');
+	}
+
+	justifyRight() {
+		this.justify('right');
 	}
 
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
@@ -206,39 +225,9 @@ class WysiwygToolJustify extends WysiwygTool {
 		return false;
 	}
 
-	_justify(justification) {
-		if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
-
-		this.$.dropdown.close();
-
-		setTimeout(
-			function () {
-				var command = 'justify' + justification.charAt(0).toUpperCase() + justification.slice(1);
-
-				if (document.queryCommandState(command)) {
-					document.execCommand('justifyLeft');
-				} else {
-					document.execCommand(command);
-				}
-			}.bind(this),
-			10
-		);
-	}
-
-	_left() {
-		this._justify('left');
-	}
-
-	_right() {
-		this._justify('right');
-	}
-
-	_center() {
-		this._justify('center');
-	}
-
-	_full() {
-		this._justify('full');
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !(document.queryCommandEnabled('justifyLeft') || document.queryCommandEnabled('justifyRight') || document.queryCommandEnabled('justifyCenter') || document.queryCommandEnabled('justifyFull'));
 	}
 
 	_paperDropdownClose(event) {

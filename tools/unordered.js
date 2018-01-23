@@ -30,20 +30,19 @@ class WysiwygToolUnordered extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="insertUnorderedList">
 				<iron-icon icon="wysiwyg-tool-unordered:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Unordered List"></wysiwyg-localize>
 				<span> (Shift + Alt + U)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+u" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+u" on-keys-pressed="insertUnorderedList"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('insertUnorderedList');
 
 		this.resources = {
 			'br': {
@@ -58,6 +57,26 @@ class WysiwygToolUnordered extends WysiwygTool {
 		};
 
 		this.allowedTagNames = ['UL', 'LI'];
+	}
+
+	insertUnorderedList() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('insertUnorderedList');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('insertUnorderedList');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('insertUnorderedList');
 	}
 }
 

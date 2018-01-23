@@ -30,20 +30,19 @@ class WysiwygToolOutdent extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="outdent">
 				<iron-icon icon="wysiwyg-tool-outdent:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Outdent"></wysiwyg-localize>
 				<span> (Shift + Tab)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="tab" on-keys-pressed="outdent"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('outdent');
 
 		this.resources = {
 			'br': {
@@ -56,6 +55,26 @@ class WysiwygToolOutdent extends WysiwygTool {
 				'Outdent': 'Diminuer le retrait'
 			}
 		};
+	}
+
+	outdent(event, detail) {
+		if ((detail && !detail.keyboardEvent.shiftKey) || this.disabled || !this.range0) return false;
+		document.execCommand('outdent');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('outdent');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('outdent');
 	}
 
 	_keysPressed(event, detail) {

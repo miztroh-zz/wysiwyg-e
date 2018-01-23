@@ -111,46 +111,6 @@ export class WysiwygTool extends PolymerElement {
 		`
 	}
 
-	connectedCallback() {
-		super.connectedCallback();
-
-		if (!this._clickHandler) {
-			this._clickHandler = function (event) {
-				var timeout = 0;
-
-				if (!this.usesDialog) {
-					timeout = 100;
-
-					this.dispatchEvent(
-						new Event(
-							'restore-selection',
-							{
-								bubbles: true,
-								composed: true
-							}
-						)
-					);
-				}
-
-				var clickTarget = event.composedPath()[0];
-
-				setTimeout(
-					function () {
-						this.execCommand(clickTarget);
-					}.bind(this),
-					timeout
-				);
-			}.bind(this);
-		}
-
-		this.addEventListener('click', this._clickHandler);
-	}
-
-	disconnectedCallback() {
-		super.disconnectedCallback();
-		this.removeEventListener('click', this._clickHandler);
-	}
-
 	static get properties() {
 		return {
 			//
@@ -159,7 +119,7 @@ export class WysiwygTool extends PolymerElement {
 			active: {
 				type: Boolean,
 				value: false,
-				computed: '_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command)',
+				computed: '_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
 				reflectToAttribute: true,
 				observer: '_activeChanged'
 			},
@@ -200,15 +160,6 @@ export class WysiwygTool extends PolymerElement {
 				observer: '_canUndoChanged'
 			},
 			//
-			// For simple execCommand tools
-			//
-			command: {
-				type: String,
-				value: '',
-				readOnly: true,
-				observer: '_commandChanged'
-			},
-			//
 			// Synced to the editor's commonAncestorPath property
 			//
 			commonAncestorPath: {
@@ -232,7 +183,7 @@ export class WysiwygTool extends PolymerElement {
 			disabled: {
 				type: Boolean,
 				value: true,
-				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command)',
+				computed: '_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath)',
 				reflectToAttribute: true,
 				observer: '_disabledChanged'
 			},
@@ -322,15 +273,6 @@ export class WysiwygTool extends PolymerElement {
 				observer: '_tooltipPositionChanged'
 			},
 			//
-			// A boolean indicating whether the tool exposes an interface other than a single button
-			//
-			usesDialog: {
-				type: Boolean,
-				value: false,
-				readOnly: true,
-				observer: '_usesDialogChanged'
-			},
-			//
 			// Synced to the editor's value property
 			//
 			value: {
@@ -340,11 +282,6 @@ export class WysiwygTool extends PolymerElement {
 				observer: '_valueChanged'
 			}
 		};
-	}
-
-	execCommand(clickTarget) {
-		if (this.disabled || !this.range0) return false;
-		document.execCommand(this.command);
 	}
 
 	// From http://locutus.io/php/get_html_translation_table/
@@ -496,6 +433,18 @@ export class WysiwygTool extends PolymerElement {
 		);
 	}
 
+	restoreSelection() {
+		this.dispatchEvent(
+			new Event(
+				'restore-selection',
+				{
+					bubbles: true,
+					composed: true
+				}
+			)
+		);
+	}
+
 	sanitize(node) {
 		return true;
 	}
@@ -506,24 +455,11 @@ export class WysiwygTool extends PolymerElement {
 
 	_canUndoChanged() {}
 
-	_commandChanged() {}
-
 	_commonAncestorPathChanged() {}
 
-	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
-		if (!range0) return false;
-		
-		try {
-			return document.queryCommandState(command);
-		} catch (ignore) {
-			return false;
-		}
-	}
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {}
 
-	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
-		if (!range0) return true;
-		return !document.queryCommandEnabled(command);
-	}
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {}
 
 	_debugChanged() {}
 
@@ -544,8 +480,6 @@ export class WysiwygTool extends PolymerElement {
 	_targetChanged() {}
 
 	_tooltipPositionChanged() {}
-
-	_usesDialogChanged() {}
 
 	_valueChanged() {}
 }

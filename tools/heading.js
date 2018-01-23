@@ -86,25 +86,25 @@ class WysiwygToolHeading extends WysiwygTool {
 			<paper-tooltip for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Headings"></wysiwyg-localize>
 			</paper-tooltip>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+0" on-keys-pressed="_p"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+1" on-keys-pressed="_h1"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+2" on-keys-pressed="_h2"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+3" on-keys-pressed="_h3"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+4" on-keys-pressed="_h4"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+5" on-keys-pressed="_h5"></iron-a11y-keys>
-			<iron-a11y-keys target="[[target]]" keys="ctrl+6" on-keys-pressed="_h6"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+0" on-keys-pressed="p"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+1" on-keys-pressed="h1"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+2" on-keys-pressed="h2"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+3" on-keys-pressed="h3"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+4" on-keys-pressed="h4"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+5" on-keys-pressed="h5"></iron-a11y-keys>
+			<iron-a11y-keys target="[[target]]" keys="ctrl+6" on-keys-pressed="h6"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-heading:icon"></iron-icon>
 				</paper-button>
 				<div slot="dropdown-content">
-					<paper-item id="p">P</paper-item>
-					<paper-item id="h1" hidden$="{{!h1}}">H1</paper-item>
-					<paper-item id="h2" hidden$="{{!h2}}">H2</paper-item>
-					<paper-item id="h3" hidden$="{{!h3}}">H3</paper-item>
-					<paper-item id="h4" hidden$="{{!h4}}">H4</paper-item>
-					<paper-item id="h5" hidden$="{{!h5}}">H5</paper-item>
-					<paper-item id="h6" hidden$="{{!h6}}">H6</paper-item>
+					<paper-item id="p" on-tap="p">P</paper-item>
+					<paper-item id="h1" hidden$="{{!h1}}" on-tap="h1">H1</paper-item>
+					<paper-item id="h2" hidden$="{{!h2}}" on-tap="h2">H2</paper-item>
+					<paper-item id="h3" hidden$="{{!h3}}" on-tap="h3">H3</paper-item>
+					<paper-item id="h4" hidden$="{{!h4}}" on-tap="h4">H4</paper-item>
+					<paper-item id="h5" hidden$="{{!h5}}" on-tap="h5">H5</paper-item>
+					<paper-item id="h6" hidden$="{{!h6}}" on-tap="h6">H6</paper-item>
 				</div>
 			</paper-menu-button>
 		`;
@@ -145,8 +145,6 @@ class WysiwygToolHeading extends WysiwygTool {
 
 	ready() {
 		super.ready();
-		this._setUsesDialog(true);
-		this._setCommand('formatBlock');
 
 		this.resources = {
 			'br': {
@@ -167,56 +165,74 @@ class WysiwygToolHeading extends WysiwygTool {
 		};
 	}
 
-	execCommand(clickTarget) {
-		if (this.disabled || !this.range0) return false
-		var action;
+	close() {
+		this.$.dropdown.close();
+	}
 
-		if (this.$.p.contains(clickTarget) || this.$.p.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(0);
-			}.bind(this);
-		} else if (this.$.h1.contains(clickTarget) || this.$.h1.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(1);
-			}.bind(this);
-		} else if (this.$.h2.contains(clickTarget) || this.$.h2.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(2);
-			}.bind(this);
-		} else if (this.$.h3.contains(clickTarget) || this.$.h3.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(3);
-			}.bind(this);
-		} else if (this.$.h4.contains(clickTarget) || this.$.h4.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(4);
-			}.bind(this);
-		} else if (this.$.h5.contains(clickTarget) || this.$.h5.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(5);
-			}.bind(this);
-		} else if (this.$.h6.contains(clickTarget) || this.$.h6.root.contains(clickTarget)) {
-			action = function () {
-				this._heading(6);
-			}.bind(this);
+	h1() {
+		this.heading(1);
+	}
+
+	h2() {
+		this.heading(2);
+	}
+
+	h3() {
+		this.heading(3);
+	}
+
+	h4() {
+		this.heading(4);
+	}
+
+	h5() {
+		this.heading(5);
+	}
+
+	h6() {
+		this.heading(6);
+	}
+
+	heading(level) {
+		if (this.disabled || !this.range0 || !Number.isInteger(level) || level < 0 || level > 6) return false;
+
+		var heading;
+
+		for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+			if (['H' + level].indexOf(this.commonAncestorPath[i].tagName) >= 0) {
+				heading = true;
+				break;
+			}
 		}
 
-		if (action) {
-			this.dispatchEvent(
-				new Event(
-					'restore-selection',
-					{
-						bubbles: true,
-						composed: true
-					}
-				)
-			);
+		this.close();
 
-			setTimeout(
-				action,
-				100
-			);
-		}
+		setTimeout(
+			function () {
+				if (heading || level === 0) {
+					document.execCommand('formatBlock', null, 'P');
+				} else {
+					document.execCommand('formatBlock', null, 'H' + level);
+				}
+			}.bind(this),
+			10
+		);
+	}
+
+	open() {
+		this._selectedAudioChanged();
+		this.$.dropdown.open();
+
+		setTimeout(
+			function () {
+				this.$.url.focus();
+			}.bind(this),
+			100
+		);
+	}
+
+	p() {
+		this._heading(0);
 	}
 
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
@@ -291,61 +307,6 @@ class WysiwygToolHeading extends WysiwygTool {
 		if (this.h5) tagNames.push('H5');
 		if (this.h6) tagNames.push('H6');
 		return tagNames;
-	}
-
-	_h1() {
-		console.log('h1');
-		this._heading(1);
-	}
-
-	_h2() {
-		this._heading(2);
-	}
-
-	_h3() {
-		this._heading(3);
-	}
-
-	_h4() {
-		this._heading(4);
-	}
-
-	_h5() {
-		this._heading(5);
-	}
-
-	_h6() {
-		this._heading(6);
-	}
-
-	_heading(level) {
-		if (this.disabled || !this.range0 || level !== parseInt(level) || level < 0 || level > 6) return false;
-
-		var heading;
-
-		for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-			if (['H' + level].indexOf(this.commonAncestorPath[i].tagName) >= 0) {
-				heading = true;
-				break;
-			}
-		}
-
-		this.$.dropdown.close();
-
-		setTimeout(
-			function () {
-				if (heading || level === 0) {
-					document.execCommand('formatBlock', null, 'P');
-				} else {
-					document.execCommand('formatBlock', null, 'H' + level);
-				}
-			}.bind(this),
-			10
-		);
-	}
-
-	_p() {
-		this._heading(0);
 	}
 
 	_paperDropdownClose(event) {

@@ -30,20 +30,19 @@ class WysiwygToolUnderline extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="underline">
 				<iron-icon icon="wysiwyg-tool-underline:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Underline"></wysiwyg-localize>
 				<span> ([[modifier.tooltip]] + U)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+u" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+u" on-keys-pressed="underline"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('underline');
 
 		this.resources = {
 			'br': {
@@ -58,6 +57,26 @@ class WysiwygToolUnderline extends WysiwygTool {
 		};
 
 		this.allowedTagNames = ['U'];
+	}
+
+	underline() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('underline');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('underline');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('underline');
 	}
 }
 

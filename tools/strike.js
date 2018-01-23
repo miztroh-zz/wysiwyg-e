@@ -30,20 +30,19 @@ class WysiwygToolStrike extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="strikeThrough">
 				<iron-icon icon="wysiwyg-tool-strike:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Strikethrough"></wysiwyg-localize>
 				<span> (Shift + Alt + D)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+d" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+d" on-keys-pressed="strikeThrough"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('strikeThrough');
 
 		this.resources = {
 			'br': {
@@ -62,6 +61,26 @@ class WysiwygToolStrike extends WysiwygTool {
 		this.replacementTagNames = {
 			'STRIKE': 'S'
 		};
+	}
+
+	strikeThrough() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('strikeThrough');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('strikeThrough');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('strikeThrough');
 	}
 }
 

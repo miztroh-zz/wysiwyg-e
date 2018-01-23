@@ -43,7 +43,7 @@ class WysiwygToolTable extends WysiwygTool {
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Table"></wysiwyg-localize>
 				<span> (Shift + Alt + T)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+t" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+t" on-keys-pressed="open"></iron-a11y-keys>
 			<paper-menu-button on-opened-changed="_paperDropdownOpenedChanged" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-table:icon"></iron-icon>
@@ -63,11 +63,11 @@ class WysiwygToolTable extends WysiwygTool {
 						</paper-toggle-button>
 					</div>
 					<div class="horizontal layout">
-						<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
+						<paper-icon-button id="close" icon="wysiwyg-tool:close" on-tap="close"></paper-icon-button>
 						<div class="flex"></div>
-						<paper-icon-button hidden$="[[!selectedTable]]" id="remove" icon="wysiwyg-tool:remove"></paper-icon-button>
+						<paper-icon-button hidden$="[[!selectedTable]]" id="remove" icon="wysiwyg-tool:remove" on-tap="remove"></paper-icon-button>
 						<div class="flex"></div>
-						<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert"></paper-icon-button>
+						<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert" on-tap="updateInsert"></paper-icon-button>
 					</div>
 					<div hidden$="[[!selectedTable]]">
 						<div class="layout horizontal">
@@ -77,22 +77,22 @@ class WysiwygToolTable extends WysiwygTool {
 									...
 								</paper-button>
 								<div slot="dropdown-content">
-									<paper-item on-tap="_insertCellBefore">
+									<paper-item on-tap="insertCellBefore">
 										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Cell Before"></wysiwyg-localize>
 									</paper-item>
-									<paper-item on-tap="_insertCellAfter">
+									<paper-item on-tap="insertCellAfter">
 										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Cell After"></wysiwyg-localize>
 									</paper-item>
-									<paper-item on-tap="_insertRowBefore">
+									<paper-item on-tap="insertRowBefore">
 										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Row Before"></wysiwyg-localize>
 									</paper-item>
-									<paper-item on-tap="_insertRowAfter">
+									<paper-item on-tap="insertRowAfter">
 									<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Row After"></wysiwyg-localize>
 									</paper-item>
-									<paper-item on-tap="_insertColumnBefore">
+									<paper-item on-tap="insertColumnBefore">
 										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Column Before"></wysiwyg-localize>
 									</paper-item>
-									<paper-item on-tap="_insertColumnAfter">
+									<paper-item on-tap="insertColumnAfter">
 										<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Column After"></wysiwyg-localize>
 									</paper-item>
 								</div>
@@ -104,9 +104,9 @@ class WysiwygToolTable extends WysiwygTool {
 									...
 								</paper-button>
 								<div slot="dropdown-content">
-									<paper-item on-tap="_deleteCell">Cell</paper-item>
-									<paper-item on-tap="_deleteRow">Row</paper-item>
-									<paper-item on-tap="_deleteColumn">Column</paper-item>
+									<paper-item on-tap="deleteCell">Cell</paper-item>
+									<paper-item on-tap="deleteRow">Row</paper-item>
+									<paper-item on-tap="deleteColumn">Column</paper-item>
 								</div>
 							</paper-menu-button>
 						</div>
@@ -146,165 +146,8 @@ class WysiwygToolTable extends WysiwygTool {
 		};
 	}
 
-	execCommand(clickTarget) {
-		if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
-		if (this.disabled || !this.range0) return;
-		var rowCount = +this.rowCount, columnCount = +this.columnCount, showHeader  = this.showHeader, showFooter = this.showFooter;
-
-		if (clickTarget && this.$.updateInsert.contains(clickTarget) || this.$.updateInsert.root.contains(clickTarget)) {
-			this.$.dropdown.close();
-
-			setTimeout(
-				function () {
-					if (!Number.isInteger(rowCount) || !Math.sign(rowCount) || !Number.isInteger(columnCount) || !Math.sign(columnCount)) return;
-					var table, row, column, existingColumns, existingRows, existingColumn, existingRow, columnCountDiff, rowCountDiff, i, j, thead, tfoot, tbody;
-
-					if (this.selectedTable) {
-						table = this.selectedTable;
-					} else {
-						table = document.createElement('table');
-					}
-
-					// BEGIN HEADER SECTION
-					thead = table.querySelector('thead');
-
-					if (!showHeader) {
-						if (thead) thead.parentNode.removeChild(thead);
-					} else {
-						if (!thead) {
-							thead = document.createElement('thead');
-							table.appendChild(thead);
-						}
-
-						existingRow = thead.querySelector('tr');
-
-						if (!existingRow) {
-							existingRow = document.createElement('tr');
-							thead.appendChild(existingRow);
-						}
-
-						existingColumns = existingRow.querySelectorAll('th'), columnCountDiff = columnCount - existingColumns.length, column;
-
-						for (j = columnCountDiff; Math.abs(j) !== 0; j -= Math.sign(columnCountDiff)) {
-							if (columnCountDiff < 0) {
-								column = existingColumns[existingColumns.length - 1];
-								column.parentNode.removeChild(column);
-							} else if (columnCountDiff > 0) {
-								column = document.createElement('th');
-								existingRow.appendChild(column);
-							}
-
-							existingColumns = existingRow.querySelectorAll('th');
-						}
-					}
-					//END HEADER SECTION
-
-					//BEGIN BODY SECTION
-					tbody = table.querySelector('tbody');
-
-					if (!tbody) {
-						tbody = document.createElement('tbody');
-						table.appendChild(tbody);
-					}
-
-					existingRows = tbody.querySelectorAll('tr'), rowCountDiff = rowCount - existingRows.length;
-
-					for (i = rowCountDiff; Math.abs(i) !== 0; i -= Math.sign(rowCountDiff)) {
-						if (rowCountDiff < 0) {
-							row = existingRows[existingRows.length - 1];
-							row.parentNode.removeChild(row);
-						} else if (rowCountDiff > 0) {
-							row = document.createElement('tr');
-							tbody.appendChild(row);
-						}
-
-						existingRows = tbody.querySelectorAll('tr');
-					}
-
-					for (i = 0; i < existingRows.length; i += 1) {
-						row = existingRows[i];
-						existingColumns = row.querySelectorAll('td'), columnCountDiff = columnCount - existingColumns.length, column;
-
-						for (j = columnCountDiff; Math.abs(j) !== 0; j -= Math.sign(columnCountDiff)) {
-							if (columnCountDiff < 0) {
-								column = existingColumns[existingColumns.length - 1];
-								column.parentNode.removeChild(column);
-							} else if (columnCountDiff > 0) {
-								column = document.createElement('td');
-								row.appendChild(column);
-							}
-
-							existingColumns = row.querySelectorAll('td');
-						}
-					}
-					//END BODY SECTION
-
-					// BEGIN FOOTER SECTION
-					tfoot = table.querySelector('tfoot');
-
-					if (!showFooter) {
-						if (tfoot) tfoot.parentNode.removeChild(tfoot);
-					} else {
-						if (!tfoot) {
-							tfoot = document.createElement('tfoot');
-							table.appendChild(tfoot);
-						}
-
-						existingRow = tfoot.querySelector('tr');
-
-						if (!existingRow) {
-							existingRow = document.createElement('tr');
-							tfoot.appendChild(existingRow);
-						}
-
-						existingColumns = existingRow.querySelectorAll('td'), columnCountDiff = columnCount - existingColumns.length, column;
-
-						for (j = columnCountDiff; Math.abs(j) !== 0; j -= Math.sign(columnCountDiff)) {
-							if (columnCountDiff < 0) {
-								column = existingColumns[existingColumns.length - 1];
-								column.parentNode.removeChild(column);
-							} else if (columnCountDiff > 0) {
-								column = document.createElement('td');
-								existingRow.appendChild(column);
-							}
-
-							existingColumns = existingRow.querySelectorAll('td');
-						}
-					}
-					//END FOOTER SECTION
-
-					if (!this.selectedTable) {
-						tbody.querySelector('td').appendChild(this.range0.extractContents());
-						this.range0.deleteContents();
-						this.range0.insertNode(table);
-					}
-				}.bind(this),
-				10
-			);
-		} else if (clickTarget && this.$.remove.contains(clickTarget) || this.$.remove.root.contains(clickTarget)) {
-			if (this.selectedTable) {
-				this.selectedTable.outerHTML = this.selectedTable.innerHTML;
-			}
-
-			this.$.dropdown.close();
-		} else if (clickTarget && this.$.close.contains(clickTarget) || this.$.close.root.contains(clickTarget)) {
-			this.$.dropdown.close();
-		} else if (!clickTarget || this.$.button.contains(clickTarget) || this.$.button.root.contains(clickTarget)) {
-			this._selectedTableChanged();
-			this.$.dropdown.open();
-
-			setTimeout(
-				function () {
-					this.$.rowCount.focus();
-				}.bind(this),
-				100
-			);
-		}
-	}
-
 	ready() {
 		super.ready();
-		this._setUsesDialog(true);
 
 		this.resources = {
 			'br': {
@@ -361,6 +204,167 @@ class WysiwygToolTable extends WysiwygTool {
 		};
 
 		this.allowedTagNames = ['TABLE', 'THEAD', 'TBODY', 'TFOOT', 'CAPTION', 'COL', 'COLGROUP', 'TR', 'TH', 'TD'];
+	}
+
+	close() {
+		this.$.dropdown.close();
+	}
+
+	open() {
+		this._selectedTableChanged();
+		this.$.dropdown.open();
+
+		setTimeout(
+			function () {
+				this.$.rowCount.focus();
+			}.bind(this),
+			100
+		);
+	}
+
+	remove() {
+		if (this.disabled || !this.range0) return;
+
+		if (this.selectedTable) {
+			this.selectedTable.parentNode.removeChild(this.selectedTable);
+			this._setSelectedTable(null);
+		}
+
+		this.close();
+	}
+
+	updateInsert(event) {
+		if (this.disabled || !this.range0) return;
+		var rowCount = +this.rowCount, columnCount = +this.columnCount, showHeader  = this.showHeader, showFooter = this.showFooter;
+		this.close();
+
+		setTimeout(
+			function () {
+				if (!Number.isInteger(rowCount) || !Math.sign(rowCount) || !Number.isInteger(columnCount) || !Math.sign(columnCount)) return;
+				var table, row, column, existingColumns, existingRows, existingColumn, existingRow, columnCountDiff, rowCountDiff, i, j, thead, tfoot, tbody;
+
+				if (this.selectedTable) {
+					table = this.selectedTable;
+				} else {
+					table = document.createElement('table');
+				}
+
+				// BEGIN HEADER SECTION
+				thead = table.querySelector('thead');
+
+				if (!showHeader) {
+					if (thead) thead.parentNode.removeChild(thead);
+				} else {
+					if (!thead) {
+						thead = document.createElement('thead');
+						table.appendChild(thead);
+					}
+
+					existingRow = thead.querySelector('tr');
+
+					if (!existingRow) {
+						existingRow = document.createElement('tr');
+						thead.appendChild(existingRow);
+					}
+
+					existingColumns = existingRow.querySelectorAll('th'), columnCountDiff = columnCount - existingColumns.length, column;
+
+					for (j = columnCountDiff; Math.abs(j) !== 0; j -= Math.sign(columnCountDiff)) {
+						if (columnCountDiff < 0) {
+							column = existingColumns[existingColumns.length - 1];
+							column.parentNode.removeChild(column);
+						} else if (columnCountDiff > 0) {
+							column = document.createElement('th');
+							existingRow.appendChild(column);
+						}
+
+						existingColumns = existingRow.querySelectorAll('th');
+					}
+				}
+				//END HEADER SECTION
+
+				//BEGIN BODY SECTION
+				tbody = table.querySelector('tbody');
+
+				if (!tbody) {
+					tbody = document.createElement('tbody');
+					table.appendChild(tbody);
+				}
+
+				existingRows = tbody.querySelectorAll('tr'), rowCountDiff = rowCount - existingRows.length;
+
+				for (i = rowCountDiff; Math.abs(i) !== 0; i -= Math.sign(rowCountDiff)) {
+					if (rowCountDiff < 0) {
+						row = existingRows[existingRows.length - 1];
+						row.parentNode.removeChild(row);
+					} else if (rowCountDiff > 0) {
+						row = document.createElement('tr');
+						tbody.appendChild(row);
+					}
+
+					existingRows = tbody.querySelectorAll('tr');
+				}
+
+				for (i = 0; i < existingRows.length; i += 1) {
+					row = existingRows[i];
+					existingColumns = row.querySelectorAll('td'), columnCountDiff = columnCount - existingColumns.length, column;
+
+					for (j = columnCountDiff; Math.abs(j) !== 0; j -= Math.sign(columnCountDiff)) {
+						if (columnCountDiff < 0) {
+							column = existingColumns[existingColumns.length - 1];
+							column.parentNode.removeChild(column);
+						} else if (columnCountDiff > 0) {
+							column = document.createElement('td');
+							row.appendChild(column);
+						}
+
+						existingColumns = row.querySelectorAll('td');
+					}
+				}
+				//END BODY SECTION
+
+				// BEGIN FOOTER SECTION
+				tfoot = table.querySelector('tfoot');
+
+				if (!showFooter) {
+					if (tfoot) tfoot.parentNode.removeChild(tfoot);
+				} else {
+					if (!tfoot) {
+						tfoot = document.createElement('tfoot');
+						table.appendChild(tfoot);
+					}
+
+					existingRow = tfoot.querySelector('tr');
+
+					if (!existingRow) {
+						existingRow = document.createElement('tr');
+						tfoot.appendChild(existingRow);
+					}
+
+					existingColumns = existingRow.querySelectorAll('td'), columnCountDiff = columnCount - existingColumns.length, column;
+
+					for (j = columnCountDiff; Math.abs(j) !== 0; j -= Math.sign(columnCountDiff)) {
+						if (columnCountDiff < 0) {
+							column = existingColumns[existingColumns.length - 1];
+							column.parentNode.removeChild(column);
+						} else if (columnCountDiff > 0) {
+							column = document.createElement('td');
+							existingRow.appendChild(column);
+						}
+
+						existingColumns = existingRow.querySelectorAll('td');
+					}
+				}
+				//END FOOTER SECTION
+
+				if (!this.selectedTable) {
+					tbody.querySelector('td').appendChild(this.range0.extractContents());
+					this.range0.deleteContents();
+					this.range0.insertNode(table);
+				}
+			}.bind(this),
+			10
+		);
 	}
 
 	sanitize(node) {

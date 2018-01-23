@@ -30,20 +30,19 @@ class WysiwygToolItalic extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="italic">
 				<iron-icon icon="wysiwyg-tool-italic:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Italic"></wysiwyg-localize>
 				<span> ([[modifier.tooltip]] + I)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+i" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+i" on-keys-pressed="italic"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('italic');
 
 		this.resources = {
 			'br': {
@@ -62,6 +61,26 @@ class WysiwygToolItalic extends WysiwygTool {
 		this.replacementTagNames = {
 			'EM': 'I'
 		};
+	}
+
+	italic() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('italic');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('italic');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('italic');
 	}
 }
 

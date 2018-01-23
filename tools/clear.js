@@ -30,20 +30,19 @@ class WysiwygToolClear extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="removeFormat">
 				<iron-icon icon="wysiwyg-tool-clear:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Clear Formatting"></wysiwyg-localize>
 				<span> ([[modifier.tooltip]] + Space)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+space" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+space" on-keys-pressed="removeFormat"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('removeFormat');
 
 		this.resources = {
 			'br': {
@@ -56,6 +55,26 @@ class WysiwygToolClear extends WysiwygTool {
 				'Clear Formatting': 'Supprimer la mise en forme'
 			}
 		};
+	}
+
+	removeFormat() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('removeFormat');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('removeFormat');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('removeFormat');
 	}
 }
 

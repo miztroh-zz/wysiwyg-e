@@ -22,14 +22,14 @@ class WysiwygToolColor extends WysiwygTool {
 					overflow: hidden;
 				}
 			</style>
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="foreColor">
 				<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}" on-paper-dropdown-close="_paperDropdownClose"></paper-swatch-picker>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Color"></wysiwyg-localize>
 				<span> (Shift + Alt + C)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="_execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="foreColor"></iron-a11y-keys>
 		`;
 	}
 
@@ -89,8 +89,6 @@ class WysiwygToolColor extends WysiwygTool {
 
 	ready() {
 		super.ready();
-		this._setUsesDialog(true);
-		this._setCommand('foreColor');
 
 		this.resources = {
 			'br': {
@@ -110,13 +108,9 @@ class WysiwygToolColor extends WysiwygTool {
 		this.$.picker.$.iconButton.parentNode.style.padding = '0';
 	}
 
-	_execCommand() {
+	foreColor() {
 		var btn = this.$.picker.shadowRoot.querySelector('paper-menu-button');
 		if (btn && !btn.opened) btn.open();
-		this.execCommand();
-	}
-
-	execCommand(clickTarget) {
 		var color = this.$.picker.color;
 		if (this.disabled || !this.range0 || !color) return;
 		this.$.picker.color = '';
@@ -131,7 +125,7 @@ class WysiwygToolColor extends WysiwygTool {
 				setTimeout(
 					function () {
 						// Set the color on the current selection
-						document.execCommand(this.command, false, color);
+						document.execCommand('foreColor', false, color);
 
 						setTimeout(
 							function () {
@@ -146,6 +140,21 @@ class WysiwygToolColor extends WysiwygTool {
 			}.bind(this),
 			20
 		);
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('foreColor');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('foreColor');
 	}
 	
 	_paperDropdownClose() {

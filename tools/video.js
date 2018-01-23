@@ -43,7 +43,7 @@ class WysiwygToolVideo extends WysiwygTool {
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Video"></wysiwyg-localize>
 				<span> (Shift + Alt + V)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+v" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+v" on-keys-pressed="open"></iron-a11y-keys>
 			<paper-menu-button on-paper-dropdown-close="_paperDropdownClose" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-video:icon"></iron-icon>
@@ -52,11 +52,11 @@ class WysiwygToolVideo extends WysiwygTool {
 					<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="URL" localized="{{_localizedUrl}}" hidden></wysiwyg-localize>
 					<paper-input label="[[_localizedUrl]]" always-float-label value="{{videoUrl}}" id="url"></paper-input>
 					<div class="horizontal layout">
-						<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
+						<paper-icon-button id="close" icon="wysiwyg-tool:close" on-tap="close"></paper-icon-button>
 						<div class="flex"></div>
-						<paper-icon-button hidden$="[[!selectedVideo]]" id="remove" icon="wysiwyg-tool:remove"></paper-icon-button>
+						<paper-icon-button hidden$="[[!selectedVideo]]" id="remove" icon="wysiwyg-tool:remove" on-tap="remove"></paper-icon-button>
 						<div class="flex"></div>
-						<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert"></paper-icon-button>
+						<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert" on-tap="updateInsert"></paper-icon-button>
 					</div>
 				</div>
 			</paper-menu-button>
@@ -105,55 +105,8 @@ class WysiwygToolVideo extends WysiwygTool {
 		};
 	}
 
-	execCommand(clickTarget) {
-		if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
-		if (this.disabled || !this.range0) return;
-		var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
-
-		if (clickTarget && this.$.updateInsert.contains(clickTarget) || this.$.updateInsert.root.contains(clickTarget)) {
-			this.$.dropdown.close();
-
-			setTimeout(
-				function () {
-					if (this.selectedVideo) {
-						this.selectedVideo.src = videoUrl;
-					} else {
-						var html = '<p><br><video-wrapper><video src="' + videoUrl + '" controls></video></video-wrapper><br></p>';
-						document.execCommand('insertHTML', false, html);
-					}
-				}.bind(this),
-				10
-			);
-		} else if (clickTarget && this.$.remove.contains(clickTarget) || this.$.remove.root.contains(clickTarget)) {
-			if (this.selectedVideo) this.selectedVideo.parentNode.removeChild(this.selectedVideo);
-			this.$.dropdown.close();
-		} else if (clickTarget && this.$.close.contains(clickTarget) || this.$.close.root.contains(clickTarget)) {
-			this.$.dropdown.close();
-		} else if (!clickTarget || this.$.button.contains(clickTarget) || this.$.button.root.contains(clickTarget)) {
-			this._selectedVideoChanged();
-			this.$.dropdown.open();
-
-			setTimeout(
-				function () {
-					this.$.url.focus();
-				}.bind(this),
-				100
-			);
-		}
-	}
-	
-	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
-		return !!this.selectedVideo;
-	}
-
-	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
-		if (this.selectedVideo || this.range0) return false;
-		return true;
-	}
-
 	ready() {
 		super.ready();
-		this._setUsesDialog(true);
 
 		this.resources = {
 			'br': {
@@ -171,6 +124,60 @@ class WysiwygToolVideo extends WysiwygTool {
 		};
 
 		this.allowedTagNames = ['VIDEO-WRAPPER', 'VIDEO'];
+	}
+
+	close() {
+		this.$.dropdown.close();
+	}
+
+	open() {
+		this._selectedVideoChanged();
+		this.$.dropdown.open();
+
+		setTimeout(
+			function () {
+				this.$.url.focus();
+			}.bind(this),
+			100
+		);
+	}
+
+	remove() {
+		if (this.disabled || !this.range0) return;
+
+		if (this.selectedVideo) {
+			this.selectedVideo.parentNode.removeChild(this.selectedVideo);
+			this._setselectedVideo(null);
+		}
+
+		this.close();
+	}
+
+	updateInsert(event) {
+		if (this.disabled || !this.range0) return;
+		var videoUrl = this.videoUrl.replace(new RegExp('"', 'g'), '&quote;');
+		this.close();
+
+		setTimeout(
+			function () {
+				if (this.selectedVideo) {
+					this.selectedVideo.src = videoUrl;
+				} else {
+					var html = '<p><br><video-wrapper><video src="' + videoUrl + '" controls></video></video-wrapper><br></p>';
+					document.execCommand('insertHTML', false, html);
+				}
+			}.bind(this),
+			10
+		);
+	}
+	
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		return !!this.selectedVideo;
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
+		if (this.selectedVideo || this.range0) return false;
+		return true;
 	}
 
 	_paperDropdownClose(event) {

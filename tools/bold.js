@@ -30,20 +30,19 @@ class WysiwygToolBold extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="bold">
 				<iron-icon icon="wysiwyg-tool-bold:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Bold"></wysiwyg-localize>
 				<span> ([[modifier.tooltip]] + B)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+b" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="[[modifier.key]]+b" on-keys-pressed="bold"></iron-a11y-keys>
 		`;
 	}
 
 	ready() {
 		super.ready();
-		this._setCommand('bold');
 
 		this.resources = {
 			'br': {
@@ -62,6 +61,26 @@ class WysiwygToolBold extends WysiwygTool {
 		this.replacementTagNames = {
 			'STRONG': 'B'
 		};
+	}
+
+	bold() {
+		if (this.disabled || !this.range0) return false;
+		document.execCommand('bold');
+	}
+
+	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return false;
+		
+		try {
+			return document.queryCommandState('bold');
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+		if (!range0) return true;
+		return !document.queryCommandEnabled('bold');
 	}
 }
 

@@ -43,7 +43,7 @@ class WysiwygToolLink extends WysiwygTool {
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Link"></wysiwyg-localize>
 				<span> (Shift + Alt + A)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+a" on-keys-pressed="open"></iron-a11y-keys>
 			<paper-menu-button on-opened-changed="_paperDropdownOpenedChanged" id="dropdown" disabled="[[disabled]]" dynamic-align>
 				<paper-button disabled="[[disabled]]" id="button" slot="dropdown-trigger">
 					<iron-icon icon="wysiwyg-tool-link:icon"></iron-icon>
@@ -61,11 +61,11 @@ class WysiwygToolLink extends WysiwygTool {
 						</paper-listbox>
 					</paper-dropdown-menu>
 					<div class="horizontal layout">
-						<paper-icon-button id="close" icon="wysiwyg-tool:close"></paper-icon-button>
+						<paper-icon-button id="close" icon="wysiwyg-tool:close" on-tap="close"></paper-icon-button>
 						<div class="flex"></div>
-						<paper-icon-button hidden$="[[!selectedLink]]" id="remove" icon="wysiwyg-tool:remove"></paper-icon-button>
+						<paper-icon-button hidden$="[[!selectedLink]]" id="remove" icon="wysiwyg-tool:remove" on-tap="remove"></paper-icon-button>
 						<div class="flex"></div>
-						<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert"></paper-icon-button>
+						<paper-icon-button id="updateInsert" icon="wysiwyg-tool:updateInsert" on-tap="updateInsert"></paper-icon-button>
 					</div>
 				</div>
 			</paper-menu-button>
@@ -91,58 +91,8 @@ class WysiwygToolLink extends WysiwygTool {
 		};
 	}
 
-	execCommand(clickTarget) {
-		if (!(clickTarget instanceof HTMLElement)) clickTarget = null;
-		if (this.disabled || !this.range0) return;
-		var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
-
-		if (clickTarget && this.$.updateInsert.contains(clickTarget) || this.$.updateInsert.root.contains(clickTarget)) {
-			this.$.dropdown.close();
-
-			setTimeout(
-				function () {
-					if (this.selectedLink) {
-						this.selectedLink.href = linkUrl;
-						this.selectedLink.target = linkTarget;
-					} else {
-						var link = document.createElement('a');
-						link.href = linkUrl;
-						this.range0.surroundContents(link);
-
-						setTimeout(
-							function () {
-								if (this.selectedLink) this.selectedLink.target = linkTarget;
-							}.bind(this),
-							10
-						);
-					}
-				}.bind(this),
-				10
-			);
-		} else if (clickTarget && this.$.remove.contains(clickTarget) || this.$.remove.root.contains(clickTarget)) {
-			if (this.selectedLink) {
-				this.selectedLink.outerHTML = this.selectedLink.innerHTML;
-			}
-
-			this.$.dropdown.close();
-		} else if (clickTarget && this.$.close.contains(clickTarget) || this.$.close.root.contains(clickTarget)) {
-			this.$.dropdown.close();
-		} else if (!clickTarget || this.$.button.contains(clickTarget) || this.$.button.root.contains(clickTarget)) {
-			this._selectedLinkChanged();
-			this.$.dropdown.open();
-
-			setTimeout(
-				function () {
-					this.$.url.focus();
-				}.bind(this),
-				100
-			);
-		}
-	}
-
 	ready() {
 		super.ready();
-		this._setUsesDialog(true);
 
 		this.resources = {
 			'br': {
@@ -163,6 +113,60 @@ class WysiwygToolLink extends WysiwygTool {
 		};
 
 		this.allowedTagNames = ['A'];
+	}
+
+	close() {
+		this.$.dropdown.close();
+	}
+
+	open() {
+		this._selectedLinkChanged();
+		this.$.dropdown.open();
+
+		setTimeout(
+			function () {
+				this.$.url.focus();
+			}.bind(this),
+			100
+		);
+	}
+
+	remove() {
+		if (this.disabled || !this.range0) return;
+
+		if (this.selectedLink) {
+			this.selectedLink.parentNode.removeChild(this.selectedLink);
+			this._setSelectedLink(null);
+		}
+
+		this.close();
+	}
+
+	updateInsert(event) {
+		if (this.disabled || !this.range0) return;
+		var linkUrl = this.linkUrl, linkTarget = this.linkTarget;
+		this.close();
+
+		setTimeout(
+			function () {
+				if (this.selectedLink) {
+					this.selectedLink.href = linkUrl;
+					this.selectedLink.target = linkTarget;
+				} else {
+					var link = document.createElement('a');
+					link.href = linkUrl;
+					this.range0.surroundContents(link);
+
+					setTimeout(
+						function () {
+							if (this.selectedLink) this.selectedLink.target = linkTarget;
+						}.bind(this),
+						10
+					);
+				}
+			}.bind(this),
+			10
+		);
 	}
 	
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {

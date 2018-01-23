@@ -30,14 +30,14 @@ class WysiwygToolCode extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="code">
 				<iron-icon icon="wysiwyg-tool-code:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Code"></wysiwyg-localize>
 				<span> (Shift + Alt + K)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+k" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+k" on-keys-pressed="code"></iron-a11y-keys>
 		`;
 	}
 
@@ -59,7 +59,7 @@ class WysiwygToolCode extends WysiwygTool {
 		this.allowedTagNames = ['CODE'];
 	}
 
-	execCommand(clickTarget) {
+	code() {
 		if (this.disabled || !this.range0) return;
 
 		if (!this.active) {

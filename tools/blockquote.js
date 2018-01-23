@@ -30,14 +30,14 @@ class WysiwygToolBlockquote extends WysiwygTool {
 	static get template() {
 		return `
 			${super.template}
-			<paper-button disabled="[[disabled]]" id="button">
+			<paper-button disabled="[[disabled]]" id="button" on-tap="blockquote">
 				<iron-icon icon="wysiwyg-tool-blockquote:icon"></iron-icon>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Blockquote"></wysiwyg-localize>
 				<span> (Shift + Alt + Q)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+q" on-keys-pressed="execCommand"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+q" on-keys-pressed="blockquote"></iron-a11y-keys>
 		`;
 	}
 
@@ -59,7 +59,7 @@ class WysiwygToolBlockquote extends WysiwygTool {
 		this.allowedTagNames = ['BLOCKQUOTE'];
 	}
 
-	execCommand(clickTarget) {
+	blockquote() {
 		if (this.disabled || !this.range0) return;
 
 		if (!this.active) {
