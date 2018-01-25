@@ -1400,6 +1400,7 @@ Command                                 | Mac Shortcut                          
 				var div = document.createElement('div');
 				div.innerHTML = value;
 				var showPlaceholder = this.target && !div.textContent.trim().length && !div.querySelectorAll('img').length && !div.querySelectorAll('audio').length && !div.querySelectorAll('video').length;
+				return showPlaceholder;
 			}
 		
 			_computeTooltipPosition(minWidth768px, forceNarrow) {
