@@ -99,12 +99,12 @@ class WysiwygToolHeading extends WysiwygTool {
 				</paper-button>
 				<div slot="dropdown-content">
 					<paper-item id="p" on-tap="p">P</paper-item>
-					<paper-item id="h1" hidden$="{{!h1}}" on-tap="h1">H1</paper-item>
-					<paper-item id="h2" hidden$="{{!h2}}" on-tap="h2">H2</paper-item>
-					<paper-item id="h3" hidden$="{{!h3}}" on-tap="h3">H3</paper-item>
-					<paper-item id="h4" hidden$="{{!h4}}" on-tap="h4">H4</paper-item>
-					<paper-item id="h5" hidden$="{{!h5}}" on-tap="h5">H5</paper-item>
-					<paper-item id="h6" hidden$="{{!h6}}" on-tap="h6">H6</paper-item>
+					<paper-item id="h1" hidden$="{{!allowH1}}" on-tap="h1">H1</paper-item>
+					<paper-item id="h2" hidden$="{{!allowH2}}" on-tap="h2">H2</paper-item>
+					<paper-item id="h3" hidden$="{{!allowH3}}" on-tap="h3">H3</paper-item>
+					<paper-item id="h4" hidden$="{{!allowH4}}" on-tap="h4">H4</paper-item>
+					<paper-item id="h5" hidden$="{{!allowH5}}" on-tap="h5">H5</paper-item>
+					<paper-item id="h6" hidden$="{{!allowH6}}" on-tap="h6">H6</paper-item>
 				</div>
 			</paper-menu-button>
 		`;
@@ -114,29 +114,29 @@ class WysiwygToolHeading extends WysiwygTool {
 		return {
 			allowedTagNames: {
 				type: Array,
-				computed: '_computeAllowedTagNames(h1, h2, h3, h4, h5, h6)'
+				computed: '_computeAllowedTagNames(allowH1, allowH2, allowH3, allowH4, allowH5, allowH6)'
 			},
-			h1: {
+			allowH1: {
 				type: Boolean,
 				value: false
 			},
-			h2: {
+			allowH2: {
 				type: Boolean,
 				value: false
 			},
-			h3: {
+			allowH3: {
 				type: Boolean,
 				value: false
 			},
-			h4: {
+			allowH4: {
 				type: Boolean,
 				value: false
 			},
-			h5: {
+			allowH5: {
 				type: Boolean,
 				value: false
 			},
-			h6: {
+			allowH6: {
 				type: Boolean,
 				value: false
 			}
@@ -232,7 +232,7 @@ class WysiwygToolHeading extends WysiwygTool {
 	}
 
 	p() {
-		this._heading(0);
+		this.heading(0);
 	}
 
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath, command) {
@@ -300,12 +300,12 @@ class WysiwygToolHeading extends WysiwygTool {
 
 	_computeAllowedTagNames() {
 		var tagNames = [];
-		if (this.h1) tagNames.push('H1');
-		if (this.h2) tagNames.push('H2');
-		if (this.h3) tagNames.push('H3');
-		if (this.h4) tagNames.push('H4');
-		if (this.h5) tagNames.push('H5');
-		if (this.h6) tagNames.push('H6');
+		if (this.allowH1) tagNames.push('H1');
+		if (this.allowH2) tagNames.push('H2');
+		if (this.allowH3) tagNames.push('H3');
+		if (this.allowH4) tagNames.push('H4');
+		if (this.allowH5) tagNames.push('H5');
+		if (this.allowH6) tagNames.push('H6');
 		return tagNames;
 	}
 

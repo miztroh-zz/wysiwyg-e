@@ -80,6 +80,7 @@ export class WysiwygE extends PolymerElement {
 					display: block;
 					position: absolute;
 					font-style: italic;
+					opacity: 0.5;
 					@apply --wysiwyg-editable-placeholder;
 				}
 	
@@ -1325,9 +1326,28 @@ export class WysiwygE extends PolymerElement {
 	}
 
 	_computeShowPlaceholder(value) {
-		var div = document.createElement('div');
-		div.innerHTML = value;
-		var showPlaceholder = this.target && !div.textContent.trim().length && !div.querySelectorAll('img').length && !div.querySelectorAll('audio').length && !div.querySelectorAll('video').length;
+		var showPlaceholder = false;
+
+		if (this.target) {
+			var div = document.createElement('div');
+			div.innerHTML = value;
+
+			if (!div.textContent.trim()) {
+				showPlaceholder = true;
+				var nodes = div.querySelectorAll('*');
+
+				for (var i = 0; i < nodes.length; i += 1) {
+					if (nodes[i].nodeType === HTMLElement.ELEMENT_NODE) {
+						if (!this.allowedTagNames.includes(nodes[i].tagName)) {
+							showPlaceholder = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return showPlaceholder;
 	}
 
 	_computeTooltipPosition(minWidth768px, forceNarrow) {

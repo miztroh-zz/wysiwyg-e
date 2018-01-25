@@ -76,11 +76,6 @@ class WysiwygToolOutdent extends WysiwygTool {
 		if (!range0) return true;
 		return !document.queryCommandEnabled('outdent');
 	}
-
-	_keysPressed(event, detail) {
-		if (!detail.keyboardEvent.shiftKey) return;
-		this.execCommand();
-	}
 }
 
 customElements.define('wysiwyg-tool-outdent', WysiwygToolOutdent);

@@ -22,14 +22,14 @@ class WysiwygToolColor extends WysiwygTool {
 					overflow: hidden;
 				}
 			</style>
-			<paper-button disabled="[[disabled]]" id="button" on-tap="foreColor">
+			<paper-button disabled="[[disabled]]" id="button">
 				<paper-swatch-picker noink id="picker" color="{{color}}" color-list="{{colorList}}" column-count="{{columnCount}}" on-paper-dropdown-close="_paperDropdownClose"></paper-swatch-picker>
 			</paper-button>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">
 				<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Color"></wysiwyg-localize>
 				<span> (Shift + Alt + C)</span>
 			</paper-tooltip>
-			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="foreColor"></iron-a11y-keys>
+			<iron-a11y-keys id="a11y" target="[[target]]" keys="shift+alt+c" on-keys-pressed="open"></iron-a11y-keys>
 		`;
 	}
 
@@ -39,7 +39,7 @@ class WysiwygToolColor extends WysiwygTool {
 				type: String,
 				value: '',
 				notify: true,
-				observer: 'execCommand'
+				observer: 'foreColor'
 			},
 			colorList: {
 				type: Array,
@@ -108,9 +108,7 @@ class WysiwygToolColor extends WysiwygTool {
 		this.$.picker.$.iconButton.parentNode.style.padding = '0';
 	}
 
-	foreColor() {
-		var btn = this.$.picker.shadowRoot.querySelector('paper-menu-button');
-		if (btn && !btn.opened) btn.open();
+	foreColor(event) {
 		var color = this.$.picker.color;
 		if (this.disabled || !this.range0 || !color) return;
 		this.$.picker.color = '';
@@ -142,6 +140,14 @@ class WysiwygToolColor extends WysiwygTool {
 		);
 	}
 
+	close() {
+		this.$.picker.shadowRoot.querySelector('paper-menu-button').close();
+	}
+
+	open() {
+		this.$.picker.shadowRoot.querySelector('paper-menu-button').open();
+	}
+
 	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
 		if (!range0) return false;
 		
@@ -158,6 +164,8 @@ class WysiwygToolColor extends WysiwygTool {
 	}
 	
 	_paperDropdownClose() {
+		this.color = null;
+
 		setTimeout(
 			function () {
 				this.dispatchEvent(

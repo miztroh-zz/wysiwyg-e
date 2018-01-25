@@ -87,7 +87,7 @@ class WysiwygToolJustify extends WysiwygTool {
 					<paper-item id="left" on-tap="justifyLeft">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Left"></wysiwyg-localize>
 					</paper-item>
-					<paper-item id="right" hidden$="{{!right}}" on-tap="justifyRight">
+					<paper-item id="right" hidden$="{{!allowRight}}" on-tap="justifyRight">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
 					</paper-item>
 					<paper-item id="center" hidden$="{{!center}}" on-tap="justifyCenter">
@@ -103,7 +103,7 @@ class WysiwygToolJustify extends WysiwygTool {
 
 	static get properties() {
 		return {
-			right: {
+			allowRight: {
 				type: Boolean,
 				value: false
 			},
@@ -147,6 +147,7 @@ class WysiwygToolJustify extends WysiwygTool {
 	}
 
 	justify(justification) {
+		var justifications
 		if (this.disabled || !this.range0 || ['left', 'right', 'center', 'full'].indexOf(justification) === -1) return false;
 
 		this.$.dropdown.close();
