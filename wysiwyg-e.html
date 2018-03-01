@@ -992,6 +992,7 @@ Command                                 | Mac Shortcut                          
 		
 				setTimeout(
 					function () {
+                        this.value = this.target ? this.target.innerHTML : '';
 						this.observe();
 					}.bind(this),
 					10
@@ -1208,6 +1209,7 @@ Command                                 | Mac Shortcut                          
 		
 				setTimeout(
 					function () {
+                        this.value = this.target ? this.target.innerHTML : '';
 						this.observe();
 					}.bind(this),
 					10
