@@ -1,10 +1,10 @@
-import { Element as PolymerElement } from '../../node_modules/@polymer/polymer/polymer-element.js';
-import "../../node_modules/@polymer/paper-button/paper-button.js"
-import "../../node_modules/@polymer/iron-icon/iron-icon.js"
-import "../../node_modules/@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "../../node_modules/@polymer/neon-animation/web-animations.js"
-import "../../node_modules/@polymer/paper-tooltip/paper-tooltip.js"
-import "../../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import "@polymer/paper-button/paper-button.js"
+import "@polymer/iron-icon/iron-icon.js"
+import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
+import "@polymer/neon-animation/web-animations.js"
+import "@polymer/paper-tooltip/paper-tooltip.js"
+import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
 import { WysiwygTool } from "../wysiwyg-tool.js"
 import { WysiwygLocalize } from "../wysiwyg-localize.js"
 
@@ -28,7 +28,7 @@ if (document) {
 
 class WysiwygToolBlockquote extends WysiwygTool {
 	static get template() {
-		return `
+		return html`
 			${super.template}
 			<paper-button disabled="[[disabled]]" id="button" on-tap="blockquote">
 				<iron-icon icon="wysiwyg-tool-blockquote:icon"></iron-icon>

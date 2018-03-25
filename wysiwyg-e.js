@@ -1,14 +1,14 @@
-import { Element as PolymerElement } from '../node_modules/@polymer/polymer/polymer-element.js';
-import "../node_modules/@webcomponents/shadycss/apply-shim.min.js"
-import "../node_modules/@polymer/font-roboto/roboto.js"
-import "../node_modules/@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "../node_modules/@polymer/iron-flex-layout/iron-flex-layout.js"
-import "../node_modules/@polymer/iron-flex-layout/iron-flex-layout-classes.js"
-import "../node_modules/@polymer/iron-icon/iron-icon.js"
-import "../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"
-import "../node_modules/@polymer/iron-media-query/iron-media-query.js"
-import "../node_modules/@polymer/paper-button/paper-button.js"
-import "../node_modules/@polymer/paper-tooltip/paper-tooltip.js"
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import "@webcomponents/shadycss/apply-shim.min.js"
+import "@polymer/font-roboto/roboto.js"
+import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
+import "@polymer/iron-flex-layout/iron-flex-layout.js"
+import "@polymer/iron-flex-layout/iron-flex-layout-classes.js"
+import "@polymer/iron-icon/iron-icon.js"
+import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
+import "@polymer/iron-media-query/iron-media-query.js"
+import "@polymer/paper-button/paper-button.js"
+import "@polymer/paper-tooltip/paper-tooltip.js"
 import { WysiwygTool } from "./wysiwyg-tool.js"
 import { WysiwygLocalize } from "./wysiwyg-localize.js"
 
@@ -51,7 +51,7 @@ export class WysiwygE extends PolymerElement {
 	}
 
   static get template() {
-    return `
+    return html`
 			<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning"></style>
 			<style>
 				:host {

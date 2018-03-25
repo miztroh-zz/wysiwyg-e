@@ -1,6 +1,6 @@
-import { Element as PolymerElement } from '../node_modules/@polymer/polymer/polymer-element.js';
-import "../node_modules/@polymer/iron-icon/iron-icon.js"
-import "../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import "@polymer/iron-icon/iron-icon.js"
+import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
 
 if (document) {
 	var iconset = document.createElement('iron-iconset-svg');
@@ -28,7 +28,7 @@ if (document) {
 
 export class WysiwygTool extends PolymerElement {
 	static get template() {
-		return `
+		return html`
 			<style>
 				:host {
 					display: block;

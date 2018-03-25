@@ -1,18 +1,18 @@
-import { Element as PolymerElement } from '../../node_modules/@polymer/polymer/polymer-element.js';
-import "../../node_modules/@polymer/paper-button/paper-button.js"
-import "../../node_modules/@polymer/iron-icon/iron-icon.js"
-import "../../node_modules/@polymer/iron-iconset-svg/iron-iconset-svg.js"
-import "../../node_modules/@polymer/paper-icon-button/paper-icon-button.js"
-import "../../node_modules/@polymer/paper-input/paper-input.js"
-import "../../node_modules/@polymer/paper-button/paper-button.js"
-import "../../node_modules/@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "../../node_modules/@polymer/neon-animation/web-animations.js"
-import "../../node_modules/@polymer/paper-tooltip/paper-tooltip.js"
-import "../../node_modules/@polymer/paper-dropdown-menu/paper-dropdown-menu.js"
-import "../../node_modules/@polymer/paper-listbox/paper-listbox.js"
-import "../../node_modules/@polymer/paper-item/paper-item.js"
-import "../../node_modules/@polymer/paper-menu-button/paper-menu-button.js"
-import "../../node_modules/@polymer/iron-flex-layout/iron-flex-layout-classes.js"
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import "@polymer/paper-button/paper-button.js"
+import "@polymer/iron-icon/iron-icon.js"
+import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
+import "@polymer/paper-icon-button/paper-icon-button.js"
+import "@polymer/paper-input/paper-input.js"
+import "@polymer/paper-button/paper-button.js"
+import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
+import "@polymer/neon-animation/web-animations.js"
+import "@polymer/paper-tooltip/paper-tooltip.js"
+import "@polymer/paper-dropdown-menu/paper-dropdown-menu.js"
+import "@polymer/paper-listbox/paper-listbox.js"
+import "@polymer/paper-item/paper-item.js"
+import "@polymer/paper-menu-button/paper-menu-button.js"
+import "@polymer/iron-flex-layout/iron-flex-layout-classes.js"
 import { WysiwygTool } from "../wysiwyg-tool.js"
 import { WysiwygLocalize } from "../wysiwyg-localize.js"
 
@@ -36,7 +36,7 @@ if (document) {
 
 class WysiwygToolImage extends WysiwygTool {
 	static get template() {
-		return `
+		return html`
 			${super.template}
 			<style include="iron-flex"></style>
 			<paper-tooltip id="tooltip" for="button" position="[[tooltipPosition]]" offset="5">

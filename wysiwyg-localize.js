@@ -1,8 +1,8 @@
-import { Element as PolymerElement } from '../node_modules/@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 
 export class WysiwygLocalize extends PolymerElement {
   static get template() {
-		return `
+		return html`
 			<slot></slot>
 		`;
 	}

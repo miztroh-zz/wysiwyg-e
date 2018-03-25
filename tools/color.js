@@ -1,15 +1,15 @@
-import { Element as PolymerElement } from '../../node_modules/@polymer/polymer/polymer-element.js';
-import "../../node_modules/@polymer/paper-button/paper-button.js"
-import "../../node_modules/@polymer/paper-swatch-picker/paper-swatch-picker.js"
-import "../../node_modules/@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "../../node_modules/@polymer/neon-animation/web-animations.js"
-import "../../node_modules/@polymer/paper-tooltip/paper-tooltip.js"
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import "@polymer/paper-button/paper-button.js"
+import "@polymer/paper-swatch-picker/paper-swatch-picker.js"
+import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
+import "@polymer/neon-animation/web-animations.js"
+import "@polymer/paper-tooltip/paper-tooltip.js"
 import { WysiwygTool } from "../wysiwyg-tool.js"
 import { WysiwygLocalize } from "../wysiwyg-localize.js"
 
 class WysiwygToolColor extends WysiwygTool {
 	static get template() {
-		return `
+		return html`
 			${super.template}
 			<style>
 				:host {
