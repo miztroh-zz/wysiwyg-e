@@ -19,7 +19,7 @@ if (document) {
 		<svg>
 			<defs>
 				<g id="icon">
-					<path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3V9H3v3z"></path>
+                    <path d="M5 4v3h5.5v12h3V7H19V4z"/>
 				</g>
 			</defs>
 		</svg>

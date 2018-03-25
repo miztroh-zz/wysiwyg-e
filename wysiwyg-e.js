@@ -79,7 +79,6 @@ export class WysiwygE extends PolymerElement {
 					content: attr(placeholder);
 					display: block;
 					position: absolute;
-					font-style: italic;
 					opacity: 0.5;
 					@apply --wysiwyg-editable-placeholder;
 				}
