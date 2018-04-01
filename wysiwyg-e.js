@@ -1,6 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@webcomponents/shadycss/entrypoints/apply-shim.js';
-import '@polymer/font-roboto-local/roboto.js';
+import '@polymer/font-roboto/roboto.js';
 import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
