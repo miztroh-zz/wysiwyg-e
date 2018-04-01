@@ -1,16 +1,16 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import "@webcomponents/shadycss/apply-shim.min.js"
-import "@polymer/font-roboto/roboto.js"
-import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "@polymer/iron-flex-layout/iron-flex-layout.js"
-import "@polymer/iron-flex-layout/iron-flex-layout-classes.js"
-import "@polymer/iron-icon/iron-icon.js"
-import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
-import "@polymer/iron-media-query/iron-media-query.js"
-import "@polymer/paper-button/paper-button.js"
-import "@polymer/paper-tooltip/paper-tooltip.js"
-import { WysiwygTool } from "./wysiwyg-tool.js"
-import { WysiwygLocalize } from "./wysiwyg-localize.js"
+import '@webcomponents/shadycss/entrypoints/apply-shim.js';
+import '@polymer/font-roboto/roboto.js';
+import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
+import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import '@polymer/iron-media-query/iron-media-query.js';
+import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-tooltip/paper-tooltip.js';
+import { WysiwygTool } from './wysiwyg-tool.js';
+import { WysiwygLocalize } from './wysiwyg-localize.js';
 
 if (document) {
 	var iconset = document.createElement('iron-iconset-svg');
@@ -47,7 +47,7 @@ if (document) {
 
 export class WysiwygE extends PolymerElement {
 	static get _targetTemplate() {
-		return `<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>`;
+		return html`<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>`;
 	}
 
   static get template() {

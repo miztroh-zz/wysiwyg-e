@@ -20,6 +20,7 @@
     "@polymer/paper-listbox": "^3.0.0-pre.12",
     "@polymer/paper-menu-button": "^3.0.0-pre.12",
     "@polymer/paper-swatch-picker": "^3.0.0-pre.12",
+    "@polymer/paper-toggle-button": "^3.0.0-pre.12",
     "@polymer/paper-tooltip": "^3.0.0-pre.12",
     "@polymer/polymer": "^3.0.0-pre.12",
     "web-animations-js": "https://github.com/web-animations/web-animations-js.git"

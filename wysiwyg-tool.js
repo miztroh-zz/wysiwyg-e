@@ -1,6 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import "@polymer/iron-icon/iron-icon.js"
-import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
 
 if (document) {
 	var iconset = document.createElement('iron-iconset-svg');

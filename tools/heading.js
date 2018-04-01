@@ -1,14 +1,13 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import "@polymer/paper-button/paper-button.js"
-import "@polymer/iron-icon/iron-icon.js"
-import "@polymer/iron-iconset-svg/iron-iconset-svg.js"
-import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "@polymer/neon-animation/web-animations.js"
-import "@polymer/paper-tooltip/paper-tooltip.js"
-import "@polymer/font-roboto/roboto.js"
-import "@polymer/paper-item/paper-item.js"
-import { WysiwygTool } from "../wysiwyg-tool.js"
-import { WysiwygLocalize } from "../wysiwyg-localize.js"
+import '@polymer/paper-button/paper-button.js';
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-iconset-svg/iron-iconset-svg.js';
+import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
+import '@polymer/paper-tooltip/paper-tooltip.js';
+import '@polymer/font-roboto/roboto.js';
+import '@polymer/paper-item/paper-item.js';
+import { WysiwygTool } from '../wysiwyg-tool.js';
+import { WysiwygLocalize } from '../wysiwyg-localize.js';
 
 if (document) {
 	var iconset = document.createElement('iron-iconset-svg');

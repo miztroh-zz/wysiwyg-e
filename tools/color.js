@@ -1,11 +1,10 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import "@polymer/paper-button/paper-button.js"
-import "@polymer/paper-swatch-picker/paper-swatch-picker.js"
-import "@polymer/iron-a11y-keys/iron-a11y-keys.js"
-import "@polymer/neon-animation/web-animations.js"
-import "@polymer/paper-tooltip/paper-tooltip.js"
-import { WysiwygTool } from "../wysiwyg-tool.js"
-import { WysiwygLocalize } from "../wysiwyg-localize.js"
+import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-swatch-picker/paper-swatch-picker.js';
+import '@polymer/iron-a11y-keys/iron-a11y-keys.js';
+import '@polymer/paper-tooltip/paper-tooltip.js';
+import { WysiwygTool } from '../wysiwyg-tool.js';
+import { WysiwygLocalize } from '../wysiwyg-localize.js';
 
 class WysiwygToolColor extends WysiwygTool {
 	static get template() {
