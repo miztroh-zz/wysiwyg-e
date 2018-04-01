@@ -184,21 +184,21 @@ class WysiwygToolTable extends WysiwygTool {
 				'Table': 'Table'
 			},
 			'fr': {
-				'Cell After': 'Cell After',
-				'Cell Before': 'Cell Before',
-				'Column': 'Column',
-				'Column After': 'Column After',
-				'Column Before': 'Column Before',
-				'Columns': 'Columns',
-				'Delete': 'Delete',
-				'Insert': 'Insert',
-				'Row': 'Row',
-				'Row After': 'Row After',
-				'Row Before': 'Row Before',
-				'Rows': 'Rows',
-				'Show Footer': 'Show Footer',
-				'Show Header': 'Show Header',
-				'Table': 'Table'
+				'Cell After': 'Cellule Après',
+				'Cell Before': 'Cellule Avant',
+				'Column': 'Colonne',
+				'Column After': 'Colonne Après',
+				'Column Before': 'Colonne Avant',
+				'Columns': 'Colonnes',
+				'Delete': 'Supprimer',
+				'Insert': 'Insérer',
+				'Row': 'Ligne',
+				'Row After': 'Ligne Après',
+				'Row Before': 'Ligne Avant',
+				'Rows': 'Lignes',
+				'Show Footer': 'Montrer Pied de page',
+				'Show Header': 'Montrer Entête',
+				'Table': 'Tableau'
 			}
 		};
 
