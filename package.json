@@ -1,6 +1,6 @@
 {
   "name": "wysiwyg-e",
-  "version": "3.0.0-pre.3",
+  "version": "3.0.0-pre.4",
   "main": "wysiwyg-e.js",
   "license": "MIT",
   "dependencies": {
@@ -23,6 +23,6 @@
     "@polymer/paper-toggle-button": "^3.0.0-pre.12",
     "@polymer/paper-tooltip": "^3.0.0-pre.12",
     "@polymer/polymer": "^3.0.0-pre.12",
-    "web-animations-js": "https://github.com/web-animations/web-animations-js.git"
+    "web-animations-js": "https://github.com/web-animations/web-animations-js.git#^2.3.1"
   }
 }
