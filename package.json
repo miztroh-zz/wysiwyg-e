@@ -22,6 +22,6 @@
     "@polymer/paper-swatch-picker": "^3.0.0-pre.12",
     "@polymer/paper-tooltip": "^3.0.0-pre.12",
     "@polymer/polymer": "^3.0.0-pre.12",
-    "web-animations/web-animations-js": "#latest"
+    "web-animations-js": "https://github.com/web-animations/web-animations-js.git"
   }
 }
