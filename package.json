@@ -4,7 +4,7 @@
   "main": "wysiwyg-e.js",
   "license": "MIT",
   "dependencies": {
-    "@polymer/font-roboto-local": "^3.0.0-pre.12",
+    "@polymer/font-roboto": "^3.0.0-pre.12",
     "@polymer/iron-a11y-keys": "^3.0.0-pre.12",
     "@polymer/iron-ajax": "^3.0.0-pre.12",
     "@polymer/iron-component-page": "^3.0.0-pre.12",
