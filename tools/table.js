@@ -209,6 +209,75 @@ class WysiwygToolTable extends WysiwygTool {
 		this.$.dropdown.close();
 	}
 
+	deleteCell() {
+		this._deleteCommon();
+
+		if (this.selectedTable && this.commonAncestorPath) {
+			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+				if (['TD', 'TH'].includes(this.commonAncestorPath[i].tagName)) {
+					this.commonAncestorPath[i].parentNode.removeChild(this.commonAncestorPath[i]);
+					break;
+				}
+			}
+		}
+	}
+
+	deleteColumn() {
+		this._deleteCommon();
+
+		if (this.selectedTable && this.commonAncestorPath) {
+			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+				if (['TD', 'TH'].includes(this.commonAncestorPath[i].tagName)) {
+					var nthChild = Array.prototype.indexOf.call(this.commonAncestorPath[i].parentNode.children, this.commonAncestorPath[i]) + 1;
+					var cellsToDelete = this.selectedTable.querySelectorAll('td:nth-child(' + nthChild + '), th:nth-child(' + nthChild + ')');
+
+					for (var j = 0; j < cellsToDelete.length; j += 1) {
+						cellsToDelete[j].parentNode.removeChild(cellsToDelete[j]);
+					}
+
+					break;
+				}
+			}
+		}
+	}
+
+	deleteRow() {
+		this._deleteCommon();
+
+		if (this.selectedTable && this.commonAncestorPath) {
+			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+				if (this.commonAncestorPath[i].tagName === 'TR') {
+					this.commonAncestorPath[i].parentNode.removeChild(this.commonAncestorPath[i]);
+					break;
+				}
+			}
+		}
+	}
+
+	insertCellAfter() {
+		this._insertCell(true);
+	}
+
+	insertCellBefore() {
+		this._insertCell(false);
+	}
+
+	insertColumnAfter() {
+		this._insertColumn(true);
+	}
+
+	insertColumnBefore() {
+		this._insertColumn(false);
+	}
+
+	insertRowAfter() {
+		this._insertRow(true);
+	}
+
+	insertRowBefore() {
+		this._insertRow(false);
+	}
+
 	open() {
 		this._selectedTableChanged();
 		this.$.dropdown.open();
@@ -448,56 +517,6 @@ class WysiwygToolTable extends WysiwygTool {
 		this.$.dropdown.close();
 	}
 
-	_deleteCell() {
-		this._deleteCommon();
-
-		if (this.selectedTable && this.commonAncestorPath) {
-			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-				if (['TD', 'TH'].includes(this.commonAncestorPath[i].tagName)) {
-					this.commonAncestorPath[i].parentNode.removeChild(this.commonAncestorPath[i]);
-					break;
-				}
-			}
-		}
-	}
-
-	_deleteRow() {
-		this._deleteCommon();
-
-		if (this.selectedTable && this.commonAncestorPath) {
-			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-				if (this.commonAncestorPath[i].tagName === 'TR') {
-					this.commonAncestorPath[i].parentNode.removeChild(this.commonAncestorPath[i]);
-					break;
-				}
-			}
-		}
-	}
-
-	_deleteColumn() {
-		this._deleteCommon();
-
-		if (this.selectedTable && this.commonAncestorPath) {
-			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-				if (['TD', 'TH'].includes(this.commonAncestorPath[i].tagName)) {
-					var nthChild = Array.prototype.indexOf.call(this.commonAncestorPath[i].parentNode.children, this.commonAncestorPath[i]) + 1;
-					var cellsToDelete = this.selectedTable.querySelectorAll('td:nth-child(' + nthChild + '), th:nth-child(' + nthChild + ')');
-
-					for (var j = 0; j < cellsToDelete.length; j += 1) {
-						cellsToDelete[j].parentNode.removeChild(cellsToDelete[j]);
-					}
-
-					break;
-				}
-			}
-		}
-	}
-
-	_insertCommon() {
-		this.$.insertDropdown.close();
-		this.$.dropdown.close();
-	}
-
 	_insertCell(after) {
 		this._insertCommon();
 
@@ -512,40 +531,9 @@ class WysiwygToolTable extends WysiwygTool {
 		}
 	}
 
-	_insertCellBefore() {
-		this._insertCell(false);
-	}
-
-	_insertCellAfter() {
-		this._insertCell(true);
-	}
-
-	_insertRow(after) {
-		this._insertCommon();
-
-		if (this.selectedTable && this.commonAncestorPath) {
-			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
-				if (this.commonAncestorPath[i].tagName === 'TR') {
-					var row = document.createElement('tr');
-
-					for (var j = 0; j < this.commonAncestorPath[i].querySelectorAll(this.commonAncestorPath[i].parentNode.tagName === 'THEAD' ?  'TH' : 'TD').length; j += 1) {
-						var cell = document.createElement(this.commonAncestorPath[i].parentNode.tagName === 'THEAD' ?  'TH' : 'TD');
-						row.appendChild(cell);
-					}
-
-					this.commonAncestorPath[i].parentNode.insertBefore(row, after ? this.commonAncestorPath[i].nextSibling : this.commonAncestorPath[i]);
-					break;
-				}
-			}
-		}
-	}
-
-	_insertRowBefore() {
-		this._insertRow(false);
-	}
-
-	_insertRowAfter() {
-		this._insertRow(true);
+	_insertCommon() {
+		this.$.insertDropdown.close();
+		this.$.dropdown.close();
 	}
 
 	_insertColumn(after) {
@@ -574,12 +562,24 @@ class WysiwygToolTable extends WysiwygTool {
 		}
 	}
 
-	_insertColumnBefore() {
-		this._insertColumn(false);
-	}
+	_insertRow(after) {
+		this._insertCommon();
 
-	_insertColumnAfter() {
-		this._insertColumn(true);
+		if (this.selectedTable && this.commonAncestorPath) {
+			for (var i = 0; i < this.commonAncestorPath.length; i += 1) {
+				if (this.commonAncestorPath[i].tagName === 'TR') {
+					var row = document.createElement('tr');
+
+					for (var j = 0; j < this.commonAncestorPath[i].querySelectorAll(this.commonAncestorPath[i].parentNode.tagName === 'THEAD' ?  'TH' : 'TD').length; j += 1) {
+						var cell = document.createElement(this.commonAncestorPath[i].parentNode.tagName === 'THEAD' ?  'TH' : 'TD');
+						row.appendChild(cell);
+					}
+
+					this.commonAncestorPath[i].parentNode.insertBefore(row, after ? this.commonAncestorPath[i].nextSibling : this.commonAncestorPath[i]);
+					break;
+				}
+			}
+		}
 	}
 
 	_paperDropdownOpenedChanged(event) {
