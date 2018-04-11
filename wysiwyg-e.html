@@ -1216,6 +1216,44 @@ Command                                 | Mac Shortcut                          
 				);
 			}
 			//
+			// Editor focus
+			//
+			focus() {
+				if (this.target) this.target.focus();
+				return this.target;
+			}
+			//
+			// Insert HTML at cursor position
+			//
+			insertText(html) {
+				var sel, range;
+				// IE9 and non-IE
+				sel = this.getSelection();
+				if (sel.getRangeAt && sel.rangeCount) {
+					range = sel.getRangeAt(0);
+					range.deleteContents();
+
+					// Range.createContextualFragment() would be useful here but is
+					// non-standard and not supported in all browsers (IE9, for one)
+					var el = document.createElement("div");
+					el.innerHTML = html;
+					var frag = document.createDocumentFragment(), node, lastNode;
+					while ( (node = el.firstChild) ) {
+							lastNode = frag.appendChild(node);
+					}
+					range.insertNode(frag);
+
+					// Preserve the selection
+					if (lastNode) {
+						range = range.cloneRange();
+						range.setStartAfter(lastNode);
+						range.collapse(true);
+						sel.removeAllRanges();
+						sel.addRange(range);
+					}
+				}
+			}
+			//
 			// Update properties based on the current selection
 			//
 			updateSelection() {
