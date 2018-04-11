@@ -1183,7 +1183,7 @@ Command                                 | Mac Shortcut                          
 			//
 			selectElement(element) {
 				if (typeof super.selectElement === 'function') super.selectElement(element);
-				if (!this.target.contains(element)) return;
+				if (element === target || !this.target.contains(element)) return;
 				var selection = this.getSelection();
 				selection.removeAllRanges();
 				var range = document.createRange();
@@ -1221,8 +1221,10 @@ Command                                 | Mac Shortcut                          
 			updateSelection() {
 				if (typeof super.updateSelection === 'function') super.updateSelection();
 				var selection = this.getSelection();
+                if (!selection || !selection.anchorNode) return;
+                var selectionNode = selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode;
 		
-				if (selection && selection.anchorNode && this.target.contains(selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode)) {
+				if (selectionNode !== this.target && this.target.contains(selectionNode)) {
 					this._setAnchorNode(selection.anchorNode);
 					this._setAnchorOffset(selection.anchorOffset);
 					this._setBaseNode(selection.baseNode);
@@ -1318,7 +1320,8 @@ Command                                 | Mac Shortcut                          
 			}
 		
 			_backspace(event) {
-				if (!this.target || !this.target.contains(event.composedPath()[0])) return;
+                var eventTarget = event.composedPath()[0];
+				if (!this.target || !(this.target === eventTarget || this.target.contains(eventTarget))) return;
 				event.preventDefault();
 				if (!this.range0) return;
 				if (event.altKey || event.shiftKey) return;
@@ -1411,11 +1414,11 @@ Command                                 | Mac Shortcut                          
 			}
 		
 			_delete(event) {
-				if (!this.target || !this.target.contains(event.composedPath()[0])) return;
+                var eventTarget = event.composedPath()[0];
+				if (!this.target || !(this.target === eventTarget || this.target.contains(eventTarget))) return;
 				event.preventDefault();
 				document.execCommand('forwardDelete');
 			}
-		
 		
 			/*
 			Gets the offset of a node within another node. Text nodes are
