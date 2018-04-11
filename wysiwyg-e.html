@@ -1219,7 +1219,8 @@ Command                                 | Mac Shortcut                          
 			// Editor focus
 			//
 			focus() {
-				this.$.editable.focus();
+				if (this.target) this.target.focus();
+				return this.target;
 			}
 			//
 			// Insert HTML at cursor position
