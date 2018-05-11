@@ -206,6 +206,14 @@ class WysiwygToolImage extends WysiwygTool {
 				'none': 'aucun',
 				'left': 'gauche',
 				'right': 'droite'
+			},
+			'de': {
+				'Image': 'Bild',
+				'URL': 'URL',
+				'Float': 'Verschiebung',
+				'none': 'keins',
+				'left': 'links',
+				'right': 'rechts'
 			}
 		};
 

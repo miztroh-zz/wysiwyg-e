@@ -52,6 +52,9 @@ class WysiwygToolUnderline extends WysiwygTool {
 			},
 			'fr': {
 				'Underline': 'Souligner'
+			},
+			'de': {
+				'Underline': 'Unterstreichen'
 			}
 		};
 

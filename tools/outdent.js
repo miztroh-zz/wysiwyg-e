@@ -52,6 +52,9 @@ class WysiwygToolOutdent extends WysiwygTool {
 			},
 			'fr': {
 				'Outdent': 'Diminuer le retrait'
+			},
+			'de': {
+				'Outdent': 'Ausrücken'
 			}
 		};
 	}
