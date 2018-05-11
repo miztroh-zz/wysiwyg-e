@@ -60,8 +60,6 @@
 
                             req.onreadystatechange = function () {
                                 if (req.readyState === XMLHttpRequest.DONE && req.status === 200) {
-                                    console.log(marked(req.responseText));
-                                    document.querySelector('wysiwyg-e').debug = true;
                                     document.querySelector('wysiwyg-e').value = marked(req.responseText);
                                 }
                             };
