@@ -1,26 +1,11 @@
 {
   "name": "wysiwyg-e",
-  "version": "3.0.2",
+  "version": "4.0-preview",
   "main": "wysiwyg-e.js",
   "license": "MIT",
   "dependencies": {
-    "@polymer/font-roboto": "^3.0.0-pre.19",
-    "@polymer/iron-a11y-keys": "^3.0.0-pre.19",
-    "@polymer/iron-flex-layout": "^3.0.0-pre.19",
-    "@polymer/iron-icon": "^3.0.0-pre.19",
-    "@polymer/iron-iconset-svg": "^3.0.0-pre.19",
-    "@polymer/iron-media-query": "^3.0.0-pre.19",
-    "@polymer/paper-button": "^3.0.0-pre.19",
-    "@polymer/paper-dropdown-menu": "^3.0.0-pre.19",
-    "@polymer/paper-icon-button": "^3.0.0-pre.19",
-    "@polymer/paper-input": "^3.0.0-pre.19",
-    "@polymer/paper-item": "^3.0.0-pre.19",
-    "@polymer/paper-listbox": "^3.0.0-pre.19",
-    "@polymer/paper-menu-button": "^3.0.0-pre.19",
-    "@polymer/paper-swatch-picker": "^3.0.0-pre.19",
-    "@polymer/paper-toggle-button": "^3.0.0-pre.19",
-    "@polymer/paper-tooltip": "^3.0.0-pre.19",
-    "@polymer/polymer": "^3.0.2",
-    "web-animations-js": "https://github.com/web-animations/web-animations-js.git#2.3.1"
+    "@material/mwc-button": "^0.1.1",
+    "@polymer/lit-element": "^0.5.1",
+    "@webcomponents/webcomponentsjs": "^2.0.0"
   }
 }
