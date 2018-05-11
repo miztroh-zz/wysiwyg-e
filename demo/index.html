@@ -45,9 +45,34 @@
 			<wysiwyg-tool-unordered></wysiwyg-tool-unordered>
 			<wysiwyg-tool-indent></wysiwyg-tool-indent>
 			<wysiwyg-tool-outdent></wysiwyg-tool-outdent>
-			<wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
-			<wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+			<wysiwyg-tool-justify allow-right allow-center allow-full></wysiwyg-tool-justify>
+			<wysiwyg-tool-heading allow-h1 allow-h2 allow-h3 allow-h4 allow-h5 allow-h6></wysiwyg-tool-heading>
 			<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-		</wysiwyg-e>
+        </wysiwyg-e>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script>
+            document.addEventListener(
+                'DOMContentLoaded',
+                function () {
+                    setTimeout(
+                        function () {
+                            var req = new XMLHttpRequest();
+
+                            req.onreadystatechange = function () {
+                                if (req.readyState === XMLHttpRequest.DONE && req.status === 200) {
+                                    console.log(marked(req.responseText));
+                                    document.querySelector('wysiwyg-e').debug = true;
+                                    document.querySelector('wysiwyg-e').value = marked(req.responseText);
+                                }
+                            };
+
+                            req.open('GET', '../README.md', true);
+                            req.send();
+                        },
+                        1000
+                    );
+                }
+            );
+        </script>
 	</body>
 </html>

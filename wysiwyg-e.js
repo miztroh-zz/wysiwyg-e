@@ -66,7 +66,11 @@ export class WysiwygE extends PolymerElement {
 					user-select: none;
 					color: var(--wysiwyg-toolbar-color, white);
 					@apply --wysiwyg-toolbar;
-				}
+                }
+
+                #toolbarLayout {
+                    overflow: hidden;
+                }
 	
 				#editable {
 					padding: 20px;
@@ -200,35 +204,35 @@ export class WysiwygE extends PolymerElement {
 					display: block;
 				}
 	
-				:host #editable audio,
-				:host #editable video {
+				#editable audio,
+				#editable video {
 					pointer-events: none;
 				}
 
-				:host #editable table {
+				#editable table {
 					border-spacing: 0;
 					border-collapse: collapse;
 				}
 
-				:host #editable table,
-				:host #editable th,
-				:host #editable td {
+				#editable table,
+				#editable th,
+				#editable td {
 					border: 1px solid black;
 				}
 
-				:host #editable th,
-				:host #editable td {
+				#editable th,
+				#editable td {
 					padding: 5px 10px;
 				}
 
-				:host #editable thead,
-				:host #editable tfoot {
+				#editable thead,
+				#editable tfoot {
 					font-weight: bold;
 					background: #ccc;
 					text-align: center;
 				}
 
-				:host #editable tbody tr:nth-child(even) {
+				#editable tbody tr:nth-child(even) {
 					background: #f5f5f5;
 				}
 
@@ -262,7 +266,6 @@ export class WysiwygE extends PolymerElement {
 						@apply --layout-horizontal;
 						@apply --layout-flex;
 						flex-wrap: nowrap;
-						overflow-x: hidden;
 					}
 	
 					#layout[force-narrow] {
@@ -278,7 +281,6 @@ export class WysiwygE extends PolymerElement {
 						@apply --layout-vertical;
 						width: 40px;
 						max-height: calc(100% - 80px);
-						overflow-y: hidden;
 					}
 				}
 	
@@ -295,7 +297,6 @@ export class WysiwygE extends PolymerElement {
 						@apply --layout-vertical;
 						width: 40px;
 						max-height: calc(100% - 80px);
-						overflow-y: hidden;
 					}
 				}
 	

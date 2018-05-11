@@ -89,10 +89,10 @@ class WysiwygToolJustify extends WysiwygTool {
 					<paper-item id="right" hidden$="{{!allowRight}}" on-tap="justifyRight">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Right"></wysiwyg-localize>
 					</paper-item>
-					<paper-item id="center" hidden$="{{!center}}" on-tap="justifyCenter">
+					<paper-item id="center" hidden$="{{!allowCenter}}" on-tap="justifyCenter">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Center"></wysiwyg-localize>
 					</paper-item>
-					<paper-item id="full" hidden$="{{!full}}" on-tap="justifyFull">
+					<paper-item id="full" hidden$="{{!allowFull}}" on-tap="justifyFull">
 						<wysiwyg-localize language="[[language]]" resources="[[resources]]" string-key="Full"></wysiwyg-localize>
 					</paper-item>
 				</div>
@@ -106,11 +106,11 @@ class WysiwygToolJustify extends WysiwygTool {
 				type: Boolean,
 				value: false
 			},
-			center: {
+			allowCenter: {
 				type: Boolean,
 				value: false
 			},
-			full: {
+			allowFull: {
 				type: Boolean,
 				value: false
 			}
