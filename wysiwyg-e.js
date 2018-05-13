@@ -981,11 +981,11 @@ export class WysiwygE extends PolymerElement {
 			}
 		}
 
-		var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
+        var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
 	
 		tools = tools.filter(
 			function (tool) {
-				return tool.nodeType === HTMLElement.ELEMENT_NODE;
+				return tool.nodeType === Node.ELEMENT_NODE;
 			}
 		);
 
@@ -1337,7 +1337,7 @@ export class WysiwygE extends PolymerElement {
 				var nodes = div.querySelectorAll('*');
 
 				for (var i = 0; i < nodes.length; i += 1) {
-					if (nodes[i].nodeType === HTMLElement.ELEMENT_NODE) {
+					if (nodes[i].nodeType === Node.ELEMENT_NODE) {
 						if (!this.allowedTagNames.includes(nodes[i].tagName)) {
 							showPlaceholder = false;
 							break;

@@ -34,8 +34,8 @@ export class WysiwygTool extends PolymerElement {
 					display: block;
 				}
 
-				:host > paper-button,
-				:host > #dropdown > paper-button[slot="dropdown-trigger"] {
+				paper-button,
+				#dropdown > paper-button[slot="dropdown-trigger"] {
 					padding: 0;
 					margin: 0;
 					height: 40px;
@@ -46,13 +46,13 @@ export class WysiwygTool extends PolymerElement {
 					text-transform: none;
 				}
 
-				:host > #dropdown {
+				#dropdown {
 					padding: 0;
 				}
 
-				:host > paper-button,
-				:host > #dropdown,
-				:host > #dropdown > paper-button[slot="dropdown-trigger"] {
+				paper-button,
+				#dropdown,
+				#dropdown > paper-button[slot="dropdown-trigger"] {
 					color: inherit;
 					background: transparent;
 				}
@@ -103,7 +103,7 @@ export class WysiwygTool extends PolymerElement {
 					--paper-toggle-button-checked-ink-color: #2A9AF2;
 				}
 
-				:host > #dropdown > [slot="dropdown-content"] paper-menu-button {
+				#dropdown > [slot="dropdown-content"] paper-menu-button {
 					padding: 0;
 					color: black;
 				} 

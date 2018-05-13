@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>WYSIWYG-E Demo</title>
-		<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js" async></script>
+		<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 		<script src="../../web-animations-js/web-animations-next-lite.min.js" async></script>
 		<script type="module" src="../wysiwyg-e.js"async></script>
 		<script type="module" src="../tools/bold.js" async></script>
@@ -60,14 +60,16 @@
 
                             req.onreadystatechange = function () {
                                 if (req.readyState === XMLHttpRequest.DONE && req.status === 200) {
-                                    document.querySelector('wysiwyg-e').value = marked(req.responseText);
+                                    var wysiwygE = document.querySelector('wysiwyg-e');
+                                    wysiwygE.debug = true;
+                                    wysiwygE.value = marked(req.responseText);
                                 }
                             };
 
                             req.open('GET', '../README.md', true);
                             req.send();
                         },
-                        1000
+                        10000
                     );
                 }
             );
