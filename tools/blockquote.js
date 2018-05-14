@@ -52,6 +52,9 @@ class WysiwygToolBlockquote extends WysiwygTool {
 			},
 			'fr': {
 				'Blockquote': 'Citation'
+			},
+			'de': {
+				'Blockquote': 'Blockquote'
 			}
 		};
 

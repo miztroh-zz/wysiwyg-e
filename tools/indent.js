@@ -52,6 +52,9 @@ class WysiwygToolIndent extends WysiwygTool {
 			},
 			'fr': {
 				'Indent': 'Augmenter le retrait'
+			},
+			'de': {
+				'Indent': 'Einrücken'
 			}
 		};
 

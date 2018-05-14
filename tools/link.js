@@ -108,6 +108,11 @@ class WysiwygToolLink extends WysiwygTool {
 				'Link': 'Lien',
 				'URL': 'URL',
 				'Target': 'Cible'
+			},
+			'de': {
+				'Link': 'Link',
+				'URL': 'URL',
+				'Target': 'Ziel'
 			}
 		};
 

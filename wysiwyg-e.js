@@ -655,6 +655,10 @@ export class WysiwygE extends PolymerElement {
 						'fr': {
 							'Undo': 'Annuler',
 							'Redo': 'Rétablir'
+						},
+						'de': {
+							'Undo': 'Rückgängig',
+							'Redo': 'Wiederholen'
 						}
 					};
 				}

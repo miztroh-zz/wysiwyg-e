@@ -119,6 +119,10 @@ class WysiwygToolVideo extends WysiwygTool {
 			'fr': {
 				'Video': 'Vidéo',
 				'URL': 'URL'
+			},
+			'de': {
+				'Video': 'Video',
+				'URL': 'URL'
 			}
 		};
 

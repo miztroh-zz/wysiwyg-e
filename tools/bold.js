@@ -52,6 +52,9 @@ class WysiwygToolBold extends WysiwygTool {
 			},
 			'fr': {
 				'Bold': 'Gras'
+			},
+			'de': {
+				'Bold': 'Fett'
 			}
 		};
 

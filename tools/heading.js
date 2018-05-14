@@ -160,6 +160,11 @@ class WysiwygToolHeading extends WysiwygTool {
 				'Headings': 'Titres',
 				'Paragraph': 'Paragraphe',
 				'Heading': 'Titre {number}'
+			},
+			'de': {
+				'Headings': 'Überschriften',
+				'Paragraph': 'Paragraf',
+				'Heading': 'Überschrift {number}'
 			}
 		};
 	}

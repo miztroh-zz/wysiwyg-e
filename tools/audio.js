@@ -117,6 +117,10 @@ class WysiwygToolAudio extends WysiwygTool {
 			'fr': {
 				'Audio': 'Audio',
 				'URL': 'URL'
+			},			
+			'de': {
+				'Audio': 'Audio',
+				'URL': 'URL'
 			}
 		};
 
