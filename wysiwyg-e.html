@@ -1087,14 +1087,23 @@ Command                                 | Mac Shortcut                          
 							if (this.debug) console.log(node, 'class attribute');
 							sanitized = false;
 						}
-		
+
 						//If node is a text node immediate child of target, wrap inside a P
 						if (node.parentNode === this.target && node.nodeType === Node.TEXT_NODE) {
 							if (!node.textContent.trim().length) continue;
 							p = document.createElement('p');
 							this.target.insertBefore(p, node.nextSibling);
 							p.appendChild(node);
-							if (this.debug) console.log(node, 'wrap top level text nodes inside p node');
+							if (this.debug) console.log(node, 'wrap top level text nodes inside P node');
+							sanitized = false;
+						}
+
+						//If node is a BR node immediate child of target, wrap inside a P
+						if (node.parentNode === this.target && node.tagName === 'BR') {
+							p = document.createElement('p');
+							this.target.insertBefore(p, node.nextSibling);
+							p.appendChild(node);
+							if (this.debug) console.log(node, 'wrap top level BR nodes inside P node');
 							sanitized = false;
 						}
 		
@@ -1221,8 +1230,19 @@ Command                                 | Mac Shortcut                          
 			updateSelection() {
 				if (typeof super.updateSelection === 'function') super.updateSelection();
 				var selection = this.getSelection();
-                if (!selection || !selection.anchorNode) return;
-                var selectionNode = selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode;
+
+				if (selection && selection.focusNode === this.target && selection.getRangeAt(0).endOffset === 0) {
+					var range = document.createRange();
+					var node = this.target.children[0];
+					range.setStart(node, 0);
+					range.setEnd(node, 0);
+					selection.removeAllRanges();
+					selection.addRange(range);
+					return;
+				}
+
+        if (!selection || !selection.anchorNode) return;
+        var selectionNode = selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode;
 		
 				if (selectionNode !== this.target && this.target.contains(selectionNode)) {
 					this._setAnchorNode(selection.anchorNode);
