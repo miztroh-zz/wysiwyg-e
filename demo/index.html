@@ -5,27 +5,27 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>WYSIWYG-E Demo</title>
 		<script src="../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-		<script src="../../web-animations-js/web-animations-next-lite.min.js" async></script>
-		<script type="module" src="../wysiwyg-e.js"async></script>
-		<script type="module" src="../tools/bold.js" async></script>
-		<script type="module" src="../tools/italic.js" async></script>
-		<script type="module" src="../tools/underline.js" async></script>
-		<script type="module" src="../tools/strike.js" async></script>
-		<script type="module" src="../tools/color.js" async></script>
-		<script type="module" src="../tools/clear.js" async></script>
-		<script type="module" src="../tools/code.js" async></script>
-		<script type="module" src="../tools/table.js" async></script>
-		<script type="module" src="../tools/link.js" async></script>
-		<script type="module" src="../tools/image.js" async></script>
-		<script type="module" src="../tools/audio.js" async></script>
-		<script type="module" src="../tools/video.js" async></script>
-		<script type="module" src="../tools/ordered.js" async></script>
-		<script type="module" src="../tools/unordered.js" async></script>
-		<script type="module" src="../tools/indent.js" async></script>
-		<script type="module" src="../tools/outdent.js" async></script>
-		<script type="module" src="../tools/justify.js" async></script>
-		<script type="module" src="../tools/heading.js" async></script>
-		<script type="module" src="../tools/blockquote.js" async></script>
+		<script src="../../web-animations-js/web-animations-next-lite.min.js"></script>
+		<script type="module" src="../wysiwyg-e.js"></script>
+		<script type="module" src="../tools/bold.js"></script>
+		<script type="module" src="../tools/italic.js"></script>
+		<script type="module" src="../tools/underline.js"></script>
+		<script type="module" src="../tools/strike.js"></script>
+		<script type="module" src="../tools/color.js"></script>
+		<script type="module" src="../tools/clear.js"></script>
+		<script type="module" src="../tools/code.js"></script>
+		<script type="module" src="../tools/table.js"></script>
+		<script type="module" src="../tools/link.js"></script>
+		<script type="module" src="../tools/image.js"></script>
+		<script type="module" src="../tools/audio.js"></script>
+		<script type="module" src="../tools/video.js"></script>
+		<script type="module" src="../tools/ordered.js"></script>
+		<script type="module" src="../tools/unordered.js"></script>
+		<script type="module" src="../tools/indent.js"></script>
+		<script type="module" src="../tools/outdent.js"></script>
+		<script type="module" src="../tools/justify.js"></script>
+		<script type="module" src="../tools/heading.js"></script>
+		<script type="module" src="../tools/blockquote.js"></script>
 	</head>
 	<body style="margin: 0;">
 		<wysiwyg-e style="width: 100vw; height: 100vh;" id="wysiwygE">
@@ -35,8 +35,8 @@
 			<wysiwyg-tool-strike></wysiwyg-tool-strike>
 			<wysiwyg-tool-color></wysiwyg-tool-color>
 			<wysiwyg-tool-clear></wysiwyg-tool-clear>
-            <wysiwyg-tool-code></wysiwyg-tool-code>
-            <wysiwyg-tool-table></wysiwyg-tool-table>
+      <wysiwyg-tool-code></wysiwyg-tool-code>
+    	<wysiwyg-tool-table></wysiwyg-tool-table>
 			<wysiwyg-tool-link></wysiwyg-tool-link>
 			<wysiwyg-tool-image></wysiwyg-tool-image>
 			<wysiwyg-tool-audio></wysiwyg-tool-audio>
@@ -48,31 +48,26 @@
 			<wysiwyg-tool-justify allow-right allow-center allow-full></wysiwyg-tool-justify>
 			<wysiwyg-tool-heading allow-h1 allow-h2 allow-h3 allow-h4 allow-h5 allow-h6></wysiwyg-tool-heading>
 			<wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-        </wysiwyg-e>
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script>
-            document.addEventListener(
-                'DOMContentLoaded',
-                function () {
-                    setTimeout(
-                        function () {
-                            var req = new XMLHttpRequest();
+    </wysiwyg-e>
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<script>
+			window.addEventListener(
+				'load',
+				function () {
+					var req = new XMLHttpRequest();
 
-                            req.onreadystatechange = function () {
-                                if (req.readyState === XMLHttpRequest.DONE && req.status === 200) {
-                                    var wysiwygE = document.querySelector('wysiwyg-e');
-                                    wysiwygE.debug = true;
-                                    wysiwygE.value = marked(req.responseText);
-                                }
-                            };
+					req.onreadystatechange = function () {
+						if (req.readyState === XMLHttpRequest.DONE && req.status === 200) {
+							var wysiwygE = document.querySelector('wysiwyg-e');
+							wysiwygE.debug = true;
+							wysiwygE.value = marked(req.responseText);
+						}
+					};
 
-                            req.open('GET', '../README.md', true);
-                            req.send();
-                        },
-                        1000
-                    );
-                }
-            );
-        </script>
+					req.open('GET', '../README.md', true);
+					req.send();
+				}
+			);
+		</script>
 	</body>
 </html>
