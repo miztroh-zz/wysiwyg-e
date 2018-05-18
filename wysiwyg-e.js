@@ -1,119 +1,118 @@
 import {LitElement, html} from '@polymer/lit-element';
 import './wysiwyg-tool-button.js';
+import {WysiwygTool} from './wysiwyg-tool.js';
+import './wysiwyg-localize.js';
 import {WysiwygFlexLayout} from './wysiwyg-flex-layout.js';
+import '@polymer/paper-tooltip';
+import '@polymer/iron-a11y-keys';
 
 class WysiwygE extends LitElement {
-    constructor() {
-        super();
-        this.activeState = 0;
+	constructor() {
+		super();
+		this.activeState = 0;
 
-        this.allowedStyleTypes = [
-            'text-align',
-            'color'
-        ];
+		this.allowedStyleTypes = [
+			'text-align',
+			'color'
+		];
 
-        this.allowedTagNames = [
-            'BR',
-            'P',
-            'SPAN'
-        ];
+		this.allowedTagNames = [
+			'BR',
+			'P',
+			'SPAN'
+		];
 
-        this.canRedo = false;
-        this.canToolbarScrollPrevious = false;
-        this.canToolbarScrollNext = false;
-        this.canUndo = false;
-        this.debug = false;
-        this.commonAncestorPath = null;
-        this.forceNarrow = false;
-        this.isCollapsed = false;
-        this.language = 'en';
-        this.minWidth768px = false;
-        var isMac = navigator.platform.indexOf('Mac') >= 0;
-    
-        this.modifier = {
-            key: isMac ? 'meta' : 'ctrl',
-            tooltip: isMac ? '⌘' : 'Ctrl'
-        };
+		this.debug = false;
+		this.commonAncestorPath = null;
+		this.forceNarrow = false;
+		this.isCollapsed = false;
+		this.language = 'en';
+		this.minWidth768px = false;
+		var isMac = navigator.platform.indexOf('Mac') >= 0;
 
-        var sanitizeQueue = [], sanitizing = false;
-        this.sanitizeQueue = sanitizeQueue;
+		this.modifier = {
+			key: isMac ? 'meta' : 'ctrl',
+			tooltip: isMac ? '⌘' : 'Ctrl'
+		};
 
-        var sanitize = function () {
-            sanitizing = true;
-            var mutations = sanitizeQueue.shift();
-            var sanitized = this.sanitize(mutations);
+		var sanitizeQueue = [], sanitizing = false;
+		this.sanitizeQueue = sanitizeQueue;
 
-            if (sanitizeQueue.length) {
-                sanitize();
-            } else {
-                sanitizing = false;
+		var sanitize = function () {
+			sanitizing = true;
+			var mutations = sanitizeQueue.shift();
+			var sanitized = this.sanitize(mutations);
 
-                if (sanitized) {
-                    var html = this.target.innerHTML || '';
-                    if (this.states.length > 1) this.states.splice(this.activeState + 1, this.states.length);
+			if (sanitizeQueue.length) {
+				sanitize();
+			} else {
+				sanitizing = false;
 
-                    var state = {
-                        html: html
-                    };
+				if (sanitized) {
+					var html = this.target.innerHTML || '';
+					if (this.states.length > 1) this.states.splice(this.activeState + 1, this.states.length);
 
-                    if (state.html !== this.states[this.activeState].html) {
-                        this.states.push(state);
-                        this.activeState = this.states.length - 1;
-                        this.value = html;
-                        this.text = this.target ? this.target.textContent : '';
-                    }
-                }
-            }
+					var state = {
+						html: html
+					};
 
-            return sanitized;
-        }.bind(this);
+					if (state.html !== this.states[this.activeState].html) {
+						this.states.push(state);
+						this.activeState = this.states.length - 1;
+						this.value = html;
+						this.text = this.target ? this.target.textContent : '';
+					}
+				}
+			}
 
-        this.mutationObserver = new MutationObserver(
-            function (mutations) {
-                sanitizeQueue.push(mutations);
-                if (!sanitizing) sanitize();
-                setTimeout(this.updateSelection.bind(this), 10);
-            }.bind(this)
-        );
+			return sanitized;
+		}.bind(this);
 
-        this.noRedo = false;
-        this.noUndo = false;
-        this.placeholder = 'Edit your content here...';
+		this.mutationObserver = new MutationObserver(
+			function (mutations) {
+				sanitizeQueue.push(mutations);
+				if (!sanitizing) sanitize();
+				setTimeout(this.updateSelection.bind(this), 10);
+			}.bind(this)
+		);
 
-        this.replacementTagNames = {
-            'DIV': 'P'
-        };
+		this.noRedo = false;
+		this.noUndo = false;
+		this.placeholder = 'Edit your content here...';
 
-        this.resources = {
-            'br': {
-                'Undo': 'Desfazer',
-                'Redo': 'Refazer'
-            },
-            'en': {
-                'Undo': 'Undo',
-                'Redo': 'Redo'
-            },
-            'fr': {
-                'Undo': 'Annuler',
-                'Redo': 'Rétablir'
-            }
-        };
+		this.replacementTagNames = {
+			'DIV': 'P'
+		};
 
-        this.toolbarScrollDelay = 1;
-        this.toolbarScrollStep = 10;
-        this.toolbarScrollHeight = 0;
-        this.toolbarScrollLeft = 0;
-        this.toolbarScrollTop = 0;
-        this.toolbarScrollWidth = 0;
-        this.showPlaceholder = true;
+		this.resources = {
+			'br': {
+				'Undo': 'Desfazer',
+				'Redo': 'Refazer'
+			},
+			'en': {
+				'Undo': 'Undo',
+				'Redo': 'Redo'
+			},
+			'fr': {
+				'Undo': 'Annuler',
+				'Redo': 'Rétablir'
+			}
+		};
 
-        this.states = [
-            {
-                html: '<p><br></p>',
-                selection: null
-            }
-        ];
-    }
+		this.toolbarScrollDelay = 1;
+		this.toolbarScrollStep = 10;
+		this.toolbarScrollHeight = 0;
+		this.toolbarScrollLeft = 0;
+		this.toolbarScrollTop = 0;
+		this.toolbarScrollWidth = 0;
+
+		this.states = [
+			{
+				html: '<p><br></p>',
+				selection: null
+			}
+		];
+	}
 
 	connectedCallback() {
 		super.connectedCallback();
@@ -129,7 +128,7 @@ class WysiwygE extends LitElement {
 
 		if (!this._resizeHandler) {
 			this._resizeHandler = function () {
-                this.minWidth768px = window.innerWidth >= 768;
+				this.minWidth768px = window.innerWidth >= 768;
 				this.toolbarScrollHeight = Math.max(0, this.shadowRoot.querySelector('#toolbarLayout').scrollHeight - this.shadowRoot.querySelector('#toolbarLayout').offsetHeight);
 				this.toolbarScrollWidth = Math.max(0, this.shadowRoot.querySelector('#toolbarLayout').scrollWidth - this.shadowRoot.querySelector('#toolbarLayout').offsetWidth);
 			}.bind(this);
@@ -190,9 +189,9 @@ class WysiwygE extends LitElement {
 		}
 
 		this.shadowRoot.querySelector('#tools').addEventListener('slotchange', this._slotchangeHandler);
-    }
+	}
 
-    //
+	//
 	// Stop MutationObserver
 	//
 	disconnect() {
@@ -253,10 +252,6 @@ class WysiwygE extends LitElement {
 			anchorOffset: Number,
 			baseNode: Object,
 			baseOffset: Number,
-			canRedo: Boolean,
-			canToolbarScrollPrevious: Boolean,
-			canToolbarScrollNext: Boolean,
-			canUndo: Boolean,
 			debug: Boolean,
 			commonAncestorPath: Array,
 			extentNode: Object,
@@ -282,15 +277,13 @@ class WysiwygE extends LitElement {
 			toolbarScrollLeft: Number,
 			toolbarScrollTop: Number,
 			toolbarScrollWidth: Number,
-			showPlaceholder: Boolean,
 			states: Array,
 			target: Object,
 			text: String,
-			tooltipPosition: String,
 			type: String,
 			value: String
 		};
-    }
+	}
 
 	ready() {
 		super.ready();
@@ -304,9 +297,9 @@ class WysiwygE extends LitElement {
 			}.bind(this),
 			100
 		);
-    }
+	}
 
-    //
+	//
 	// Revert an undo operation
 	//
 	redo() {
@@ -322,12 +315,13 @@ class WysiwygE extends LitElement {
 			}.bind(this),
 			10
 		);
-    }
+	}
 
 	//
 	// Restore selection state
 	//
 	restoreSelection() {
+		this.target.focus();
 		if (this.debug) console.log('Restoring selection!');
 		var charIndex = 0, range = this.target.ownerDocument.createRange(), target = this.target, savedSel = this.states[this.activeState].selection;
 		if (!savedSel) return;
@@ -514,7 +508,7 @@ class WysiwygE extends LitElement {
 		range.selectNodeContents(this.target);
 		selection.addRange(range);
 		setTimeout(this.updateSelection.bind(this), 10);
-    }
+	}
 
 	//
 	// Select node or contents of a node within target
@@ -534,14 +528,14 @@ class WysiwygE extends LitElement {
 
 		selection.addRange(range);
 		setTimeout(this.updateSelection.bind(this), 10);
-    }
+	}
 
 	//
 	// Perform an undo operation
 	//
 	undo() {
 		if (this.noUndo) return;
-        if (typeof super.undo === 'function') super.undo();
+				if (typeof super.undo === 'function') super.undo();
 		if (!this.states.length || this.activeState <= 0) return false;
 		this.disconnect();
 		this.activeState -= 1;
@@ -552,18 +546,19 @@ class WysiwygE extends LitElement {
 			}.bind(this),
 			10
 		);
-    }
+	}
 
 	//
 	// Update properties based on the current selection
 	//
 	updateSelection() {
+		if (this.debug) console.log('Updating selection!');
 		if (typeof super.updateSelection === 'function') super.updateSelection();
 		var selection = this.getSelection();
 
 		if (selection && selection.focusNode === this.target && selection.getRangeAt(0).endOffset === 0) {
 			var range = document.createRange();
-            var node = this.target.children[0];
+			var node = this.target.children[0];
 			range.setStart(node, 0);
 			range.setEnd(node, 0);
 			selection.removeAllRanges();
@@ -612,7 +607,7 @@ class WysiwygE extends LitElement {
 				50
 			);
 		}
-    }
+	}
 
 	//
 	// Update tools properties
@@ -622,8 +617,8 @@ class WysiwygE extends LitElement {
 		var now = new Date();
 
 		if (this._toolUpdateTimeout) {
-			delete this._toolUpdateTimeout;
 			clearTimeout(this._toolUpdateTimeout);
+			delete this._toolUpdateTimeout;
 		}
 
 		if (this._lastToolUpdate && now - this._lastToolUpdate < 250) {
@@ -631,26 +626,24 @@ class WysiwygE extends LitElement {
 			return;
 		}
 
+		if (this.debug) console.log('Updating tools!');
 		this._lastToolUpdate = now;
 		var tools = this.shadowRoot.querySelector('#tools').assignedNodes ? this.shadowRoot.querySelector('#tools').assignedNodes({flatten: true}) : [];
 
 		for (var i = 0; i < tools.length; i += 1) {
 			if (!(tools[i] instanceof WysiwygTool)) continue;
-			tools[i]._setRange0(this.range0);
-			tools[i]._setSelectionRoot(this.shadowRoot || document);
-			tools[i]._setCanRedo(this.canRedo);
-			tools[i]._setCanUndo(this.canUndo);
-			tools[i]._setValue(this.value);
-			tools[i]._setCommonAncestorPath(this.commonAncestorPath);
-			tools[i]._setTarget(this.target);
-			tools[i]._setMinWidth768px(this.minWidth768px);
-			tools[i]._setForceNarrow(this.forceNarrow);
-			tools[i]._setTooltipPosition(this.tooltipPosition);
-			tools[i]._setLanguage(this.language);
-			tools[i]._setDebug(this.debug);
-			tools[i]._setModifier(this.modifier);
+			tools[i].range0 = this.range0;
+			tools[i].selectionRoot = this.shadowRoot || document;
+			tools[i].value = this.value;
+			tools[i].commonAncestorPath = this.commonAncestorPath;
+			tools[i].target = this.target;
+			tools[i].minWidth768px = this.minWidth768px;
+			tools[i].forceNarrow = this.forceNarrow;
+			tools[i].language = this.language;
+			tools[i].debug = this.debug;
+			tools[i].modifier = this.modifier;
 		}
-    }
+	}
 
 	_activeStateChanged(newValue, oldValue) {
 		if (this.activeState !== +this.activeState.toFixed(0)) {
@@ -728,22 +721,95 @@ class WysiwygE extends LitElement {
 		return offset;
 	}
 
+	_computeCanRedo(states, activeState) {
+		return states && activeState < states.length - 1;
+	}
+
+	_computeCanToolbarScrollNext(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
+		if (minWidth768px && !forceNarrow) return scrollLeft < scrollWidth;
+		return scrollTop < scrollHeight;
+	}
+
+	_computeCanToolbarScrollPrevious(minWidth768px, forceNarrow, scrollHeight, scrollTop, scrollWidth, scrollLeft) {
+		if (minWidth768px && !forceNarrow) return scrollLeft > 0;
+		return scrollTop > 0;
+	}
+
+	_computeCanUndo(states, activeState) {
+		return states && activeState > 0;
+	}
+
+	_computeShowPlaceholder(value) {
+		var showPlaceholder = false;
+
+		if (this.target) {
+			var div = document.createElement('div');
+			div.innerHTML = value;
+
+			if (!div.textContent.trim()) {
+				showPlaceholder = true;
+				var nodes = div.querySelectorAll('*');
+
+				for (var i = 0; i < nodes.length; i += 1) {
+					if (nodes[i].nodeType === Node.ELEMENT_NODE && !this.allowedTagNames.includes(nodes[i].tagName)) {
+						showPlaceholder = false;
+						break;
+					}
+				}
+			}
+		}
+
+		return showPlaceholder;
+	}
+
+	_computeTooltipPosition(minWidth768px, forceNarrow) {
+		if (minWidth768px && !forceNarrow) return 'bottom';
+		return 'right';
+	}
+
 	_delete(event) {
 		if (!this.target || !this.target.contains(event.composedPath()[0])) return;
 		event.preventDefault();
 		document.execCommand('forwardDelete');
 	}
 
-    _didRender(props, changedProps, prevProps) {
-        var wysiwygE = this;
+	_didRender(props, changedProps, prevProps) {
+		var wysiwygE = this, changedPropNames = Object.keys(changedProps);
 
-        Object.keys(changedProps).forEach(
-            (key) => {
-                var callback = '_' + key + 'Changed';
-                if (typeof wysiwygE[callback] === 'function') wysiwygE[callback](changedProps[key], prevProps[key]);
-            }
-        );
-    }
+		changedPropNames.forEach(
+			(key) => {
+				var callback = '_' + key + 'Changed';
+				if (typeof wysiwygE[callback] === 'function') wysiwygE[callback](changedProps[key], prevProps[key]);
+			}
+		);
+	
+		setTimeout(
+			function () {
+				var observeProps = [
+					'range0',
+					'value',
+					'commonAncestorPath',
+					'minWidth768px',
+					'forceNarrow',
+					'language',
+					'debug',
+					'modifier'
+				];
+
+				if (changedPropNames.some(r => observeProps.includes(r))) this.updateTools(
+					props.range0,
+					props.value,
+					props.commonAncestorPath,
+					props.minWidth768px,
+					props.forceNarrow,
+					props.language,
+					props.debug,
+					props.modifier
+				);
+			}.bind(this),
+			10
+		);
+	}
 
 	_getNodeOffset(start, dest) {
 		var offset = 0;
@@ -850,7 +916,7 @@ class WysiwygE extends LitElement {
 				}
 			}
 		}
-    }
+	}
 
 	_minWidth768pxChanged() {
 		this.toolbarScrollTop = 0;
@@ -863,214 +929,213 @@ class WysiwygE extends LitElement {
 		this.observe();
 	}
 
-    _onToolbarScrollButtonUp() {
+	_onToolbarScrollButtonUp() {
 		clearInterval(this._toolbarScrollJob);
 		this._toolbarScrollJob = null;
 	}
 
 	_onToolbarScrollNext() {
+		console.log('jibba');
 		this._toolbarScrollNext();
-		this._toolbarScrollJob = setInterval(this._toolbarScrollNext.bind(this), this.scrollDelay);
+		this._toolbarScrollJob = setInterval(this._toolbarScrollNext.bind(this), this.toolbarScrollDelay);
 	}
 
 	_onToolbarScrollPrevious() {
 		this._toolbarScrollPrevious();
-		this._toolbarScrollJob = setInterval(this._toolbarScrollPrevious.bind(this), this.scrollDelay);
+		this._toolbarScrollJob = setInterval(this._toolbarScrollPrevious.bind(this), this.toolbarScrollDelay);
 	}
 
-    _render({target, modifier, forceNarrow, canToolbarScrollPrevious, minWidth768px, toolbarScrollTop, toolbarScrollLeft, canUndo, noUndo, tooltipPosition, language, resources, canRedo, noRedo, canToolbarScrollNext}) {
-        return html`
-            ${WysiwygFlexLayout}
-            <style>
-                :host {
-                    display: block;
-                    position: relative;
-                    overflow-y: hidden;
-                    font-family: var(--wysiwyg-font, Roboto);
-                }
+	_render({target, modifier, forceNarrow, minWidth768px, toolbarScrollTop, toolbarScrollLeft, toolbarScrollHeight, toolbarScrollWidth, noUndo, language, resources, noRedo, states, activeState, placeholder, value}) {
+		return html`
+			${WysiwygFlexLayout}
+			<style>
+				:host {
+					display: block;
+					position: relative;
+					overflow-y: hidden;
+					font-family: var(--wysiwyg-font, Roboto);
+				}
 
-                #toolbar {
-                    background: var(--wysiwyg-toolbar-background, #2A9AF2);
-                    user-select: none;
-                    color: var(--wysiwyg-toolbar-color, white);
-                }
+				#toolbar {
+					background: var(--wysiwyg-toolbar-background, #2A9AF2);
+					user-select: none;
+				}
 
-                #toolbarLayout {
-                    overflow: hidden;
-                }
+				#toolbarLayout {
+					overflow: hidden;
+				}
 
-                #editable {
-                    padding: 20px;
-                    outline: none;
-                }
+				#editable {
+					padding: 20px;
+					outline: none;
+				}
 
-                #editable[show-placeholder]:before {
-                    content: attr(placeholder);
-                    display: block;
-                    position: absolute;
-                    opacity: 0.5;
-                }
+				#editable[show-placeholder="true"]:before {
+					content: attr(placeholder);
+					display: block;
+					position: absolute;
+					opacity: 0.5;
+				}
 
-                #editable > :first-child {
-                    margin-top: 0;
-                }
+				#editable > :first-child {
+					margin-top: 0;
+				}
 
-                #editable > :last-child {
-                    margin-bottom: 0;
-                }
+				#editable > :last-child {
+					margin-bottom: 0;
+				}
 
-                #editable ::selection {
-                    color: white;
-                    background: #2A9AF2;
-                }
+				#editable ::selection {
+					color: white;
+					background: #2A9AF2;
+				}
 
-                #editable ol {
-                    padding-left: 30px;
-                }
+				#editable ol {
+					padding-left: 30px;
+				}
 
-                #editable ul {
-                    padding-left: 30px;
-                }
+				#editable ul {
+					padding-left: 30px;
+				}
 
-                #editable li {
-                }
+				#editable li {}
 
-                #editable a {
-                    color: #2A9AF2;
-                }
+				#editable a {
+					color: #2A9AF2;
+				}
 
-                #editable img {}
+				#editable img {}
 
-                #editable blockquote[blockquote] {
-                    padding: 15px;
-                    margin: 0;
-                    border-left: 5px solid #eee;
-                }
+				#editable blockquote[blockquote] {
+					padding: 15px;
+					margin: 0;
+					border-left: 5px solid #eee;
+				}
 
-                #editable blockquote:not([blockquote]) {
-                    padding: 0;
-                    margin: 0 0 0 20px;
-                }
+				#editable blockquote:not([blockquote]) {
+					padding: 0;
+					margin: 0 0 0 20px;
+				}
 
-                #editable code {
-                    display: block;
-                    padding: 10px;
-                    margin: 10px 0;
-                    line-height: 1.5;
-                    background-color: #f7f7f7;
-                    border-radius: 3px;
-                    white-space: pre-wrap;
-                    font-family: monospace;
-                }
+				#editable code {
+					display: block;
+					padding: 10px;
+					margin: 10px 0;
+					line-height: 1.5;
+					background-color: #f7f7f7;
+					border-radius: 3px;
+					white-space: pre-wrap;
+					font-family: monospace;
+				}
 
-                #editable p:first-child {
-                    margin-top: 0;
-                }
+				#editable p:first-child {
+					margin-top: 0;
+				}
 
-                #editable p {}
+				#editable p {}
 
-                #editable h1 {}
+				#editable h1 {}
 
-                #editable h2{}
+				#editable h2{}
 
-                #editable h3 {}
+				#editable h3 {}
 
-                #editable h4 {}
+				#editable h4 {}
 
-                #editable h5 {}
+				#editable h5 {}
 
-                #editable h6 {}
+				#editable h6 {}
 
-                #editable b {}
+				#editable b {}
 
-                #editable u {}
+				#editable u {}
 
-                #editable i {}
+				#editable i {}
 
-                #editable strike {}
+				#editable strike {}
 
-                #editable audio-wrapper,
-                #editable video-wrapper {
-                    display: block;
-                }
+				#editable audio-wrapper,
+				#editable video-wrapper {
+					display: block;
+				}
 
-                #editable audio,
-                #editable video {
-                    pointer-events: none;
-                }
+				#editable audio,
+				#editable video {
+					pointer-events: none;
+				}
 
-                #editable table {
-                    border-spacing: 0;
-                    border-collapse: collapse;
-                }
+				#editable table {
+					border-spacing: 0;
+					border-collapse: collapse;
+				}
 
-                #editable table,
-                #editable th,
-                #editable td {
-                    border: 1px solid black;
-                }
+				#editable table,
+				#editable th,
+				#editable td {
+					border: 1px solid black;
+				}
 
-                #editable th,
-                #editable td {
-                    padding: 5px 10px;
-                }
+				#editable th,
+				#editable td {
+					padding: 5px 10px;
+				}
 
-                #editable thead,
-                #editable tfoot {
-                    font-weight: bold;
-                    background: #ccc;
-                    text-align: center;
-                }
+				#editable thead,
+				#editable tfoot {
+					font-weight: bold;
+					background: #ccc;
+					text-align: center;
+				}
 
-                #editable tbody tr:nth-child(even) {
-                    background: #f5f5f5;
-                }
+				#editable tbody tr:nth-child(even) {
+					background: #f5f5f5;
+				}
 
-                @media (min-width: 768px) {
-                    #toolbarLayout {
-                        height: 40px;
-                        flex-wrap: nowrap;
-                    }
-                }
+				@media (min-width: 768px) {
+					#toolbarLayout {
+						height: 40px;
+						flex-wrap: nowrap;
+					}
+				}
 
-                @media (max-width: 767.9px) {
-                    #toolbarLayout {
-                        width: 40px;
-                        max-height: calc(100% - 80px);
-                    }
-                }
+				@media (max-width: 767.9px) {
+					#toolbarLayout {
+						width: 40px;
+						max-height: calc(100% - 80px);
+					}
+				}
 
-                #content {
-                    overflow-y: auto;
-                    position: relative;
-                }
-            </style>
-            <iron-a11y-keys target="${target}" keys="${modifier.key}+z" on-keys-pressed="undo"></iron-a11y-keys>
-            <iron-a11y-keys target="${target}" keys="${modifier.key}+y" on-keys-pressed="redo"></iron-a11y-keys>
-            <div class$="fit layout ${!minWidth768px ? 'horizontal' : 'vertical'}" id="layout"  view$="${(!minWidth768px | forceNarrow) ? 'narrow' : 'wide'}">
-                <div id="toolbar" on-tap="updateTools" class$="layout ${minWidth768px ? 'horizontal' : 'vertical'}">
-                    <wysiwyg-tool-button id="toolbarScrollPrevious" disabled="${!canToolbarScrollPrevious}" icon="${this._toolbarScrollPreviousIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
-                    <div id="toolbarLayout" class$="flex layout ${minWidth768px ? 'horizontal' : 'vertical'}">
-                        <slot id="tools"></slot>
-                        <wysiwyg-tool-button id="undo" icon="undo" on-mousedown="${(e) => this.undo()}"></wysiwyg-tool-button>
-                        <paper-tooltip for="undo" position="${tooltipPosition}" offset="5" hidden>
-                            <wysiwyg-localize language="${language}" resources="${resources}" string-key="Undo"></wysiwyg-localize>
-                            <span> (${modifier.tooltip} + Z)</span>
-                        </paper-tooltip>
-                        <wysiwyg-tool-button id="redo" icon="redo"" on-mousedown="${(e) => this.redo()}"></wysiwyg-tool-button>
-                        <paper-tooltip for="redo" position="${tooltipPosition}" offset="5" hidden>
-                            <wysiwyg-localize language="${language}" resources="${resources}" string-key="Redo"></wysiwyg-localize>
-                            <span> (${modifier.tooltip} + Y)</span>
-                        </paper-tooltip>
-                    </div>
-                    <wysiwyg-tool-button id="toolbarScrollNext" icon="${this._toolbarScrollNextIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
-                </div>
-                <div id="content" class="flex">
-                    <div id="editable" class="fit" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>
-                </div>
-            </div>
-        `;
-    }
+				#content {
+					overflow-y: auto;
+					position: relative;
+				}
+			</style>
+			<iron-a11y-keys target="${target}" keys="${modifier.key}+z" on-keys-pressed="${(e) => this.undo()}"></iron-a11y-keys>
+			<iron-a11y-keys target="${target}" keys="${modifier.key}+y" on-keys-pressed="${(e) => this.redo()}"></iron-a11y-keys>
+			<div class$="fit layout ${!minWidth768px ? 'horizontal' : 'vertical'}" id="layout"	view$="${(!minWidth768px | forceNarrow) ? 'narrow' : 'wide'}">
+				<div id="toolbar" on-mousedown="${(e) => this.updateTools()}" on-mousedown="updateTools" class$="layout ${minWidth768px ? 'horizontal' : 'vertical'}">
+					<wysiwyg-tool-button id="toolbarScrollPrevious" on-mouseup="${(e) => this._onToolbarScrollButtonUp()}" on-mousedown="${(e) => this._onToolbarScrollPrevious()}" disabled="${!this._computeCanToolbarScrollPrevious(minWidth768px, forceNarrow, toolbarScrollHeight, toolbarScrollTop, toolbarScrollWidth, toolbarScrollLeft)}" icon="${this._toolbarScrollPreviousIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
+					<div id="toolbarLayout" class$="flex layout ${minWidth768px ? 'horizontal' : 'vertical'}" scrollTop="${toolbarScrollTop}" scrollLeft="${toolbarScrollLeft}">
+						<slot id="tools"></slot>
+						<wysiwyg-tool-button id="undo" icon="undo" on-mousedown="${(e) => this.undo()}" disabled="${noUndo | !this._computeCanUndo(states, activeState)}"></wysiwyg-tool-button>
+						<paper-tooltip for="undo" position="${this._computeTooltipPosition(minWidth768px, forceNarrow)}" offset="5">
+							<wysiwyg-localize language="${language}" resources="${resources}" stringKey="${'Undo'}"></wysiwyg-localize>
+							<span> (${modifier.tooltip} + Z)</span>
+						</paper-tooltip>
+						<wysiwyg-tool-button id="redo" icon="redo"" on-mousedown="${(e) => this.redo()}" disabled="${noRedo | !this._computeCanRedo(states, activeState)}"></wysiwyg-tool-button>
+						<paper-tooltip for="redo" position="${this._computeTooltipPosition(minWidth768px, forceNarrow)}" offset="5">
+							<wysiwyg-localize language="${language}" resources="${resources}" stringKey="${'Redo'}"></wysiwyg-localize>
+							<span> (${modifier.tooltip} + Y)</span>
+						</paper-tooltip>
+					</div>
+					<wysiwyg-tool-button id="toolbarScrollNext" on-mouseup="${(e) => this._onToolbarScrollButtonUp()}" on-mousedown="${(e) => this._onToolbarScrollNext()}" disabled="${!this._computeCanToolbarScrollNext(minWidth768px, forceNarrow, toolbarScrollHeight, toolbarScrollTop, toolbarScrollWidth, toolbarScrollLeft)}" icon="${this._toolbarScrollNextIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
+				</div>
+				<div id="content" class="flex">
+					<div id="editable" class="fit" contenteditable placeholder$="${placeholder}" show-placeholder$="${this._computeShowPlaceholder(value)}"></div>
+				</div>
+			</div>
+		`;
+	}
 
 	_tab(event) {
 		event.preventDefault();
@@ -1082,63 +1147,63 @@ class WysiwygE extends LitElement {
 		this.observe();
 		if (!this.value) this.value = '';
 		this.target.innerHTML = this.value;
-    }
+	}
 
-    _toolbarScroll(dx) {
+	_toolbarScroll(dx) {
 		if (!this.forceNarrow && this.minWidth768px) {
-			this.toolbarScrollLeft = this.scrollLeft + dx;
+			this.toolbarScrollLeft = this.toolbarScrollLeft + dx;
 		} else {
-			this.toolbarScrollTop = this.scrollTop + dx;
+			this.toolbarScrollTop = this.toolbarScrollTop + dx;
 		}
 	}
 
 	_toolbarScrollNext() {
 		if (!this.forceNarrow && this.minWidth768px) {
-			if (this.scrollLeft + this.scrollStep > this.scrollWidth) {
-				this._toolbarScroll(this.scrollWidth - this.scrollLeft);
-				this._onScrollButtonUp();
+			if (this.toolbarScrollLeft + this.toolbarScrollStep > this.toolbarScrollWidth) {
+				this._toolbarScroll(this.toolbarScrollWidth - this.toolbarScrollLeft);
+				this._onToolbarScrollButtonUp();
 			} else {
-				this._toolbarScroll(this.scrollStep);
+				this._toolbarScroll(this.toolbarScrollStep);
 			}
 		} else {
-			if (this.scrollTop + this.scrollStep > this.scrollHeight) {
-				this._toolbarScroll(this.scrollHeight - this.scrollTop);
-				this._onScrollButtonUp();
+			if (this.toolbarScrollTop + this.toolbarScrollStep > this.toolbarScrollHeight) {
+				this._toolbarScroll(this.toolbarScrollHeight - this.toolbarScrollTop);
+				this._onToolbarScrollButtonUp();
 			} else {
-				this._toolbarScroll(this.scrollStep);
+				this._toolbarScroll(this.toolbarScrollStep);
 			}
 		}
 	}
 
-    _toolbarScrollNextIcon(minWidth768px, forceNarrow) {
+	_toolbarScrollNextIcon(minWidth768px, forceNarrow) {
 		if (minWidth768px && !forceNarrow) return 'chevron_right';
 		return 'expand_more';
 	}
 
 	_toolbarScrollPrevious() {
 		if (!this.forceNarrow && this.minWidth768px) {
-			if (this.scrollLeft - this.scrollStep < 0) {
-				this._toolbarScroll(-this.scrollLeft);
-				this._onScrollButtonUp();
+			if (this.toolbarScrollLeft - this.toolbarScrollStep < 0) {
+				this._toolbarScroll(-this.toolbarScrollLeft);
+				this._onToolbarScrollButtonUp();
 			} else {
-				this._toolbarScroll(-this.scrollStep);
+				this._toolbarScroll(-this.toolbarScrollStep);
 			}
 		} else {
-			if (this.scrollTop - this.scrollStep < 0) {
-				this._toolbarScroll(-this.scrollTop);
-				this._onScrollButtonUp();
+			if (this.toolbarScrollTop - this.toolbarScrollStep < 0) {
+				this._toolbarScroll(-this.toolbarScrollTop);
+				this._onToolbarScrollButtonUp();
 			} else {
-				this._toolbarScroll(-this.scrollStep);
-            }
-        }
-    }
+				this._toolbarScroll(-this.toolbarScrollStep);
+			}
+		}
+	}
 
-    _toolbarScrollPreviousIcon(minWidth768px, forceNarrow) {
+	_toolbarScrollPreviousIcon(minWidth768px, forceNarrow) {
 		if (minWidth768px && !forceNarrow) return 'chevron_left';
 		return 'expand_less';
-    }
+	}
 
-    _totalOffsets(parentNode, offset) {
+	_totalOffsets(parentNode, offset) {
 		if (parentNode.nodeType == 3) return offset;
 
 		if (parentNode.nodeType == 1) {
@@ -1154,9 +1219,9 @@ class WysiwygE extends LitElement {
 		return 0;
 	}
 
-    _updateMinWidth768px(event) {
-        this.minWidth768px = event.detail.value;
-    }
+	_updateMinWidth768px(event) {
+		this.minWidth768px = event.detail.value;
+	}
 
 	_valueChanged(newVal, oldVal) {
 		if (typeof super._valueChanged === 'function') super._valueChanged();

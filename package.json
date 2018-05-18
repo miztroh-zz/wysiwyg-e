@@ -1,12 +1,13 @@
 {
   "name": "wysiwyg-e",
-  "version": "4.0-preview",
+  "version": "4.0.0-pre.1",
   "main": "wysiwyg-e.js",
   "license": "MIT",
   "dependencies": {
     "@material/mwc-button": "^0.1.1",
-    "@material/mwc-icon": "^0.1.1",
+    "@polymer/iron-a11y-keys": "^3.0.0-pre.19",
     "@polymer/lit-element": "^0.5.1",
+    "@polymer/paper-tooltip": "^3.0.0-pre.19",
     "@webcomponents/webcomponentsjs": "^2.0.0"
   }
 }
