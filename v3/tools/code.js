@@ -52,6 +52,9 @@ class WysiwygToolCode extends WysiwygTool {
 			},
 			'fr': {
 				'Code': 'Code'
+			},
+			'de': {
+				'Code': 'Code'
 			}
 		};
 

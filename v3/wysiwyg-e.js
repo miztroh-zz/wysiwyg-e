@@ -47,13 +47,14 @@ if (document) {
 
 export class WysiwygE extends PolymerElement {
 	static get _targetTemplate() {
-		return html`<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>`;
+		return html`
+			<div id="editable" contenteditable placeholder$="[[placeholder]]" show-placeholder$="[[showPlaceholder]]"></div>
+		`;
 	}
 
   static get template() {
     return html`
-			<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning"></style>
-			<style>
+			<style include="iron-flex iron-flex-alignment iron-flex-factors iron-positioning">
 				:host {
 					display: block;
 					position: relative;
@@ -66,11 +67,11 @@ export class WysiwygE extends PolymerElement {
 					user-select: none;
 					color: var(--wysiwyg-toolbar-color, white);
 					@apply --wysiwyg-toolbar;
-                }
+        }
 
-                #toolbarLayout {
-                    overflow: hidden;
-                }
+        #toolbarLayout {
+          overflow: hidden;
+        }
 	
 				#editable {
 					padding: 20px;
@@ -655,6 +656,10 @@ export class WysiwygE extends PolymerElement {
 						'fr': {
 							'Undo': 'Annuler',
 							'Redo': 'Rétablir'
+						},
+						'de': {
+							'Undo': 'Rückgängig',
+							'Redo': 'Wiederholen'
 						}
 					};
 				}
@@ -929,15 +934,14 @@ export class WysiwygE extends PolymerElement {
 	// Restore selection state
 	//
 	restoreSelection() {
+		if (this.debug) console.log('Restoring selection!');
 		var charIndex = 0, range = this.target.ownerDocument.createRange(), target = this.target, savedSel = this.states[this.activeState].selection;
 		if (!savedSel) return;
 		var startNodeOffset, endNodeOffset;
 		startNodeOffset = this._getNodeAndOffsetAt(target, savedSel.start);
 		endNodeOffset = this._getNodeAndOffsetAt(target, savedSel.end);
-
 		range.setStart(startNodeOffset.node, startNodeOffset.offset);
 		range.setEnd(endNodeOffset.node, endNodeOffset.offset);
-
 		var sel = window.getSelection();
 		sel.removeAllRanges();
 		sel.addRange(range);
@@ -982,10 +986,10 @@ export class WysiwygE extends PolymerElement {
 		}
 
 		var tools = this.$.tools.assignedNodes ? this.$.tools.assignedNodes({flatten: true}) : [];
-	
+
 		tools = tools.filter(
 			function (tool) {
-				return tool.nodeType === HTMLElement.ELEMENT_NODE;
+				return tool.nodeType === Node.ELEMENT_NODE;
 			}
 		);
 
@@ -1048,7 +1052,16 @@ export class WysiwygE extends PolymerElement {
 					p = document.createElement('p');
 					this.target.insertBefore(p, node.nextSibling);
 					p.appendChild(node);
-					if (this.debug) console.log(node, 'wrap top level text nodes inside p node');
+					if (this.debug) console.log(node, 'wrap top level text nodes inside P node');
+					sanitized = false;
+				}
+
+				//If node is a BR node immediate child of target, wrap inside a P
+				if (node.parentNode === this.target && node.tagName === 'BR') {
+					p = document.createElement('p');
+					this.target.insertBefore(p, node.nextSibling);
+					p.appendChild(node);
+					if (this.debug) console.log(node, 'wrap top level BR nodes inside P node');
 					sanitized = false;
 				}
 
@@ -1148,6 +1161,16 @@ export class WysiwygE extends PolymerElement {
 	updateSelection() {
 		if (typeof super.updateSelection === 'function') super.updateSelection();
 		var selection = this.getSelection();
+
+		if (selection && selection.focusNode === this.target && selection.getRangeAt(0).endOffset === 0) {
+			var range = document.createRange();
+			var node = this.target.children[0];
+			range.setStart(node, 0);
+			range.setEnd(node, 0);
+			selection.removeAllRanges();
+			selection.addRange(range);
+			return;
+		}
 
 		if (selection && selection.anchorNode && this.target.contains(selection.anchorNode.nodeType === 1 ? selection.anchorNode : selection.anchorNode.parentNode)) {
 			this._setAnchorNode(selection.anchorNode);
@@ -1288,18 +1311,18 @@ export class WysiwygE extends PolymerElement {
 			singleBackspace();
 		}
 	}
-	// Calculate the total offsets of a node
+
 	_calculateNodeOffset(node) {
 		var offset = 0;
 
-		// If text, count length
-		if (node.nodeType === 3)
+		if (node.nodeType === 3) {
 			offset += node.nodeValue.length + 1;
-		else
+		} else {
 			offset += 1;
+		}
 
 		if (node.childNodes) {
-			for (var i=0;i<node.childNodes.length;i++) {
+			for (var i = 0; i < node.childNodes.length; i += 1) {
 				offset += this._calculateNodeOffset(node.childNodes[i]);
 			}
 		}
@@ -1337,11 +1360,9 @@ export class WysiwygE extends PolymerElement {
 				var nodes = div.querySelectorAll('*');
 
 				for (var i = 0; i < nodes.length; i += 1) {
-					if (nodes[i].nodeType === HTMLElement.ELEMENT_NODE) {
-						if (!this.allowedTagNames.includes(nodes[i].tagName)) {
-							showPlaceholder = false;
-							break;
-						}
+					if (nodes[i].nodeType === Node.ELEMENT_NODE && !this.allowedTagNames.includes(nodes[i].tagName)) {
+						showPlaceholder = false;
+						break;
 					}
 				}
 			}
@@ -1361,12 +1382,6 @@ export class WysiwygE extends PolymerElement {
 		document.execCommand('forwardDelete');
 	}
 
-
-	/*
-	Gets the offset of a node within another node. Text nodes are
-	counted a n where n is the length. Entering (or passing) an
-	element is one offset. Exiting is 0.
-	*/
 	_getNodeOffset(start, dest) {
 		var offset = 0;
 
@@ -1378,39 +1393,29 @@ export class WysiwygE extends PolymerElement {
 				return offset;
 			}
 
-			// Go into children
 			if (node.firstChild) {
-				// Going into first one doesn't count
-				if (node !== start)
-					offset += 1;
+				if (node !== start) offset += 1;
 				stack.push(node);
 				node = node.firstChild;
-			}
-			// If can go to next sibling
-			else if (stack.length > 0 && node.nextSibling) {
-				// If text, count length (plus 1)
-				if (node.nodeType === 3)
+			} else if (stack.length > 0 && node.nextSibling) {
+				if (node.nodeType === 3) {
 					offset += node.nodeValue.length + 1;
-				else
+				} else {
 					offset += 1;
+				}
 
 				node = node.nextSibling;
-			}
-			else {
-				// If text, count length
-				if (node.nodeType === 3)
+			} else {
+				if (node.nodeType === 3) {
 					offset += node.nodeValue.length + 1;
-				else
+				} else {
 					offset += 1;
+				}
 
-				// No children or siblings, move up stack
 				while (true) {
-					if (stack.length <= 1)
-						return offset;
-
+					if (stack.length <= 1) return offset;
 					var next = stack.pop();
 
-					// Go to sibling
 					if (next.nextSibling) {
 						node = next.nextSibling;
 						break;
@@ -1419,56 +1424,62 @@ export class WysiwygE extends PolymerElement {
 			}
 		}
 	}
+
 	_getNodeAndOffsetAt(start, offset) {
 		var node = start;
 		var stack = [];
 
 		while (true) {
-			// If arrived
-			if (offset <= 0)
-				return { node: node, offset: 0 };
+			if (offset <= 0) {
+				return {
+					node: node,
+					offset: 0
+				};
+			}
 
-			// If will be within current text node
-			if (node.nodeType == 3 && (offset <= node.nodeValue.length))
-				return { node: node, offset: Math.min(offset, node.nodeValue.length) };
+			if (node.nodeType == 3 && (offset <= node.nodeValue.length)) {
+				return {
+					node: node,
+					offset: Math.min(offset, node.nodeValue.length)
+				};
+			}
 
-			// Go into children (first one doesn't count)
 			if (node.firstChild) {
-				if (node !== start)
-					offset -= 1;
+				if (node !== start) offset -= 1;
 				stack.push(node);
 				node = node.firstChild;
-			}
-			// If can go to next sibling
-			else if (stack.length > 0 && node.nextSibling) {
-				// If text, count length
-				if (node.nodeType === 3)
+			} else if (stack.length > 0 && node.nextSibling) {
+				if (node.nodeType === 3) {
 					offset -= node.nodeValue.length + 1;
-				else
+				} else {
 					offset -= 1;
+				}
 
 				node = node.nextSibling;
-			}
-			else {
-				// No children or siblings, move up stack
+			} else {
 				while (true) {
 					if (stack.length <= 1) {
-						// No more options, use current node
-						if (node.nodeType == 3)
-							return { node: node, offset: Math.min(offset, node.nodeValue.length) };
-						else
-							return { node: node, offset: 0 };
+						if (node.nodeType == 3) {
+							return {
+								node: node,
+								offset: Math.min(offset, node.nodeValue.length)
+							};
+						} else {
+							return {
+								node: node,
+								offset: 0
+							};
+						}
 					}
 
 					var next = stack.pop();
 
-					// Go to sibling
 					if (next.nextSibling) {
-						// If text, count length
-						if (node.nodeType === 3)
+						if (node.nodeType === 3) {
 							offset -= node.nodeValue.length + 1;
-						else
+						} else {
 							offset -= 1;
+						}
 
 						node = next.nextSibling;
 						break;
@@ -1569,17 +1580,17 @@ export class WysiwygE extends PolymerElement {
 		if (!this.value) this.value = '';
 		this.target.innerHTML = this.value;
 	}
-	// Determine total offset length from returned offset from ranges
+
 	_totalOffsets(parentNode, offset) {
-		if (parentNode.nodeType == 3)
-			return offset;
+		if (parentNode.nodeType == 3) return offset;
 
 		if (parentNode.nodeType == 1) {
 			var total = 0;
-			// Get child nodes
-			for (var i=0;i<offset;i++) {
+
+			for (var i = 0; i < offset; i += 1) {
 				total += this._calculateNodeOffset(parentNode.childNodes[i]);
 			}
+
 			return total;
 		}
 

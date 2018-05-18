@@ -52,6 +52,9 @@ class WysiwygToolStrike extends WysiwygTool {
 			},
 			'fr': {
 				'Strikethrough': 'Barrer'
+			},
+			'de': {
+				'Strikethrough': 'Durchgestrichen'
 			}
 		};
 

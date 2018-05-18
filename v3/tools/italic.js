@@ -52,6 +52,9 @@ class WysiwygToolItalic extends WysiwygTool {
 			},
 			'fr': {
 				'Italic': 'Italique'
+			},
+			'de': {
+				'Italic': 'Kursiv'
 			}
 		};
 

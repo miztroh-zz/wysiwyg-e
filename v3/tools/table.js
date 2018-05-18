@@ -199,6 +199,23 @@ class WysiwygToolTable extends WysiwygTool {
 				'Show Footer': 'Montrer Pied de page',
 				'Show Header': 'Montrer Entête',
 				'Table': 'Tableau'
+			},
+			'de': {
+				'Cell After': 'Zelle danach',
+				'Cell Before': 'Zelle davor',
+				'Column': 'Spalte',
+				'Column After': 'Spalte danach',
+				'Column Before': 'Spalte davor',
+				'Columns': 'Spalten',
+				'Delete': 'Löschen',
+				'Insert': 'Einfügen',
+				'Row': 'Zeile',
+				'Row After': 'Zeile danach',
+				'Row Before': 'Zeile davor',
+				'Rows': 'Zeilen',
+				'Show Footer': 'Fußzeile anzeigen',
+				'Show Header': 'Kopfzeile anzeigen',
+				'Table': 'Tabelle'
 			}
 		};
 

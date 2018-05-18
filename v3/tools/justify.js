@@ -141,6 +141,13 @@ class WysiwygToolJustify extends WysiwygTool {
 				'Right': 'Droite',
 				'Center': 'Centrer',
 				'Full': 'Entier'
+			},
+			'de': {
+				'Justify': 'Anordnung',
+				'Left': 'Links',
+				'Right': 'Rechts',
+				'Center': 'Zentriert',
+				'Full': 'Ganze Breite'
 			}
 		};
 	}

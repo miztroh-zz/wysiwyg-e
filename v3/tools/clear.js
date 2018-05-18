@@ -52,6 +52,9 @@ class WysiwygToolClear extends WysiwygTool {
 			},
 			'fr': {
 				'Clear Formatting': 'Supprimer la mise en forme'
+			},
+			'de': {
+				'Clear Formatting': 'Format entfernen'
 			}
 		};
 	}

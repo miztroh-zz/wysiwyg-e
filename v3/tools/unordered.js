@@ -52,6 +52,9 @@ class WysiwygToolUnordered extends WysiwygTool {
 			},
 			'fr': {
 				'Unordered List': 'Liste non-ordonnée'
+			},
+			'de': {
+				'Unordered List': 'Ungeordnete Liste'
 			}
 		};
 

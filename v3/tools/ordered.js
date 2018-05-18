@@ -52,6 +52,9 @@ class WysiwygToolOrdered extends WysiwygTool {
 			},
 			'fr': {
 				'Ordered List': 'Liste ordonnée'
+			},
+			'de': {
+				'Ordered List': 'Geordnete Liste'
 			}
 		};
 

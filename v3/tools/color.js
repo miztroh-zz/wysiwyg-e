@@ -98,6 +98,9 @@ class WysiwygToolColor extends WysiwygTool {
 			},
 			'fr': {
 				'Color': 'Couleur'
+			},
+			'de': {
+				'Color': 'Farbe'
 			}
 		};
 
