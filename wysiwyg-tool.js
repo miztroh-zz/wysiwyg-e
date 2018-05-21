@@ -49,37 +49,6 @@ export class WysiwygTool extends LitElement {
 	sanitize(node) {
 		return true;
 	}
-
-	_commonAncestorPathChanged() {}
-
-	_debugChanged() {}
-
-	_didRender(props, changedProps, prevProps) {
-		var wysiwygTool = this, changedPropNames = Object.keys(changedProps);
-
-		changedPropNames.forEach(
-			(key) => {
-				var callback = '_' + key + 'Changed';
-				if (typeof wysiwygTool[callback] === 'function') wysiwygTool[callback](changedProps[key], prevProps[key]);
-			}
-		);
-	}
-
-	_forceNarrowChanged() {}
-
-	_languageChanged() {}
-
-	_minWidth768pxChanged() {}
-
-	_modifierChanged() {}
-
-	_range0Changed() {}
-
-	_selectionRootChanged() {}
-
-	_targetChanged() {}
-
-	_valueChanged() {}
 }
 
 customElements.define('wysiwyg-tool', WysiwygTool);

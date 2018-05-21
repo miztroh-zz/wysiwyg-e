@@ -87,15 +87,21 @@ class WysiwygE extends LitElement {
 		this.resources = {
 			'br': {
 				'Undo': 'Desfazer',
-				'Redo': 'Refazer'
+				'Redo': 'Refazer',
+                'Scroll Next': 'Scroll Next',
+                'Scroll Previous': 'Scroll Previous'
 			},
 			'en': {
 				'Undo': 'Undo',
-				'Redo': 'Redo'
+                'Redo': 'Redo',
+                'Scroll Next': 'Scroll Next',
+                'Scroll Previous': 'Scroll Previous'
 			},
 			'fr': {
 				'Undo': 'Annuler',
-				'Redo': 'Rétablir'
+				'Redo': 'Rétablir',
+                'Scroll Next': 'Scroll Next',
+                'Scroll Previous': 'Scroll Previous'
 			}
 		};
 
@@ -935,7 +941,6 @@ class WysiwygE extends LitElement {
 	}
 
 	_onToolbarScrollNext() {
-		console.log('jibba');
 		this._toolbarScrollNext();
 		this._toolbarScrollJob = setInterval(this._toolbarScrollNext.bind(this), this.toolbarScrollDelay);
 	}
@@ -1111,10 +1116,16 @@ class WysiwygE extends LitElement {
 				}
 			</style>
 			<iron-a11y-keys target="${target}" keys="${modifier.key}+z" on-keys-pressed="${(e) => this.undo()}"></iron-a11y-keys>
-			<iron-a11y-keys target="${target}" keys="${modifier.key}+y" on-keys-pressed="${(e) => this.redo()}"></iron-a11y-keys>
+            <iron-a11y-keys target="${target}" keys="${modifier.key}+y" on-keys-pressed="${(e) => this.redo()}"></iron-a11y-keys>
+            <iron-a11y-keys target="${target}" keys="shift+alt+${(!minWidth768px | forceNarrow) ? 'up' : 'left'}" on-keys-pressed="${(e) => this._onToolbarScrollPrevious()}"></iron-a11y-keys>
+            <iron-a11y-keys target="${target}" keys="shift+alt+${(!minWidth768px | forceNarrow) ? 'down' : 'right'}" on-keys-pressed="${(e) => this._onToolbarScrollNext()}"></iron-a11y-keys>
 			<div class$="fit layout ${!minWidth768px ? 'horizontal' : 'vertical'}" id="layout"	view$="${(!minWidth768px | forceNarrow) ? 'narrow' : 'wide'}">
 				<div id="toolbar" on-mousedown="${(e) => this.updateTools()}" on-mousedown="updateTools" class$="layout ${minWidth768px ? 'horizontal' : 'vertical'}">
-					<wysiwyg-tool-button id="toolbarScrollPrevious" on-mouseup="${(e) => this._onToolbarScrollButtonUp()}" on-mousedown="${(e) => this._onToolbarScrollPrevious()}" disabled="${!this._computeCanToolbarScrollPrevious(minWidth768px, forceNarrow, toolbarScrollHeight, toolbarScrollTop, toolbarScrollWidth, toolbarScrollLeft)}" icon="${this._toolbarScrollPreviousIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
+                    <wysiwyg-tool-button id="toolbarScrollPrevious" on-mouseup="${(e) => this._onToolbarScrollButtonUp()}" on-mousedown="${(e) => this._onToolbarScrollPrevious()}" disabled="${!this._computeCanToolbarScrollPrevious(minWidth768px, forceNarrow, toolbarScrollHeight, toolbarScrollTop, toolbarScrollWidth, toolbarScrollLeft)}" icon="${this._toolbarScrollPreviousIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
+                    <paper-tooltip for="toolbarScrollPrevious" position="${this._computeTooltipPosition(minWidth768px, forceNarrow)}" offset="5">
+                        <wysiwyg-localize language="${language}" resources="${resources}" stringKey="${'Scroll Previous'}"></wysiwyg-localize>
+						<span> (Shift + Alt + ${(!minWidth768px | forceNarrow) ? 'Up' : 'Left'})</span>
+                    </paper-tooltip>
 					<div id="toolbarLayout" class$="flex layout ${minWidth768px ? 'horizontal' : 'vertical'}" scrollTop="${toolbarScrollTop}" scrollLeft="${toolbarScrollLeft}">
 						<slot id="tools"></slot>
 						<wysiwyg-tool-button id="undo" icon="undo" on-mousedown="${(e) => this.undo()}" disabled="${noUndo | !this._computeCanUndo(states, activeState)}"></wysiwyg-tool-button>
@@ -1129,6 +1140,10 @@ class WysiwygE extends LitElement {
 						</paper-tooltip>
 					</div>
 					<wysiwyg-tool-button id="toolbarScrollNext" on-mouseup="${(e) => this._onToolbarScrollButtonUp()}" on-mousedown="${(e) => this._onToolbarScrollNext()}" disabled="${!this._computeCanToolbarScrollNext(minWidth768px, forceNarrow, toolbarScrollHeight, toolbarScrollTop, toolbarScrollWidth, toolbarScrollLeft)}" icon="${this._toolbarScrollNextIcon(minWidth768px, forceNarrow)}"></wysiwyg-tool-button>
+                    <paper-tooltip for="toolbarScrollNext" position="${this._computeTooltipPosition(minWidth768px, forceNarrow)}" offset="5">
+                        <wysiwyg-localize language="${language}" resources="${resources}" stringKey="${'Scroll Next'}"></wysiwyg-localize>
+						<span> (Shift + Alt + ${(!minWidth768px | forceNarrow) ? 'Down' : 'Right'})</span>
+                    </paper-tooltip>
 				</div>
 				<div id="content" class="flex">
 					<div id="editable" class="fit" contenteditable placeholder$="${placeholder}" show-placeholder$="${this._computeShowPlaceholder(value)}"></div>

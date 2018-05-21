@@ -4,6 +4,7 @@
   "main": "wysiwyg-e.js",
   "license": "MIT",
   "dependencies": {
+    "@material/dialog": "^0.35.0",
     "@material/mwc-button": "^0.1.1",
     "@polymer/iron-a11y-keys": "^3.0.0-pre.19",
     "@polymer/lit-element": "^0.5.1",

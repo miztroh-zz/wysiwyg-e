@@ -1,9 +1,9 @@
 import {html} from '@polymer/lit-element/lit-element.js';
 import {WysiwygTool} from '../wysiwyg-tool.js';
-import '../wysiwyg-tool-button.js';
+import '@polymer/iron-a11y-keys';
 import '@polymer/paper-tooltip';
 import '../wysiwyg-localize.js';
-import '@polymer/iron-a11y-keys';
+import '../wysiwyg-tool-button.js';
 
 export class WysiwygToolBold extends WysiwygTool {
 	constructor() {
@@ -32,16 +32,15 @@ export class WysiwygToolBold extends WysiwygTool {
 	}
 
 	bold() {
-		if (this.disabled || !this.range0) return false;
+		if (this._computeDisabled(this.range0, this.selectionRoot, this.value, this.commonAncestorPath)) return;
 		document.execCommand('bold');
-		this.restoreSelection(100);
 	}
 
-	_computeActive(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+	_computeActive(range0, selectionRoot, value, commonAncestorPath) {
 		return range0 ? document.queryCommandState('bold') : false;
 	}
 
-	_computeDisabled(range0, selectionRoot, canRedo, canUndo, value, commonAncestorPath) {
+	_computeDisabled(range0, selectionRoot, value, commonAncestorPath) {
 		return range0 ? !document.queryCommandEnabled('bold') : true;
 	}
 
